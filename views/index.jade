@@ -63,7 +63,7 @@ block content
             }
 
             var product = getProductFromItem(newProduct);
-            $.post("/newProduct", product)
+            $.post(window.location.href +  "newProduct", product)
                     .done(function () {
                         console.log("Product added");
                         newProduct.find('.description').empty();
@@ -79,7 +79,7 @@ block content
         });
 
         function getUpdates(){
-            $.get("/list", function (data) {
+            $.get(window.location.href + "list", function (data) {
                 updateList(data);
             });
         }
