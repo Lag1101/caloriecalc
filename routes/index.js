@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Products = require('../Products');
+var Products = require('../products');
 
 var products = new Products();
 
