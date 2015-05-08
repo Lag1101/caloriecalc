@@ -1,41 +1,68 @@
 extends layout
 
 block content
-    div(class='currentDish col-md-6')
+    div(class='currentDish row col-sm-6')
+        div(class='result row col-sm-2')
+            p(class='item') Белки
+            p(class='item') Жиры
+            p(class='item') Углеводы
+            p(class='item') Ccal
+        div(class='result col-sm-6 row')
+            p(class='proteins item') 0
+            p(class='triglyceride item') 0
+            p(class='carbohydrate item') 0
+            p(class='calorie item') 0
+        ul(class='currentDishProducts col-sm-12')
 
-    div(class='products row col-md-6')
-        button(class='addProductButton col-md-2') Добавить
-        div(class='newProduct col-md-10')
-            input(class='description col-md-6' placeholder='Описание')
-            input(class='proteins col-md-2' placeholder='Белки')
-            input(class='triglyceride col-md-2' placeholder='Жиры')
-            input(class='carbohydrate col-md-2' placeholder='Углеводы')
-        ul(class='productsList col-md-10 col-md-offset-2')
+    div(class='products row col-sm-6')
+        ul(class='newProduct')
+            div(class='product row col-sm-12')
+                button(class='addProductButton col-sm-1') +
+                input(class='description item col-sm-4' placeholder='Описание')
+                input(class='proteins item col-sm-1' placeholder='Белки')
+                input(class='triglyceride item col-sm-1' placeholder='Жиры')
+                input(class='carbohydrate item col-sm-1' placeholder='Углеводы')
+        ul(class='productsList')
 
 
     div(id='templates' class='hide')
-        div(class='product')
-            p(class='description item col-md-6') Описание
-            p(class='proteins item col-md-2') Белки
-            p(class='triglyceride item col-md-2') Жиры
-            p(class='carbohydrate item col-md-2') Углеводы
+        div(class='product row col-sm-12')
+            button(class='add col-sm-1') +
+            input(disabled=true class='description item col-sm-4' placeholder='Описание')
+            input(disabled=true class='proteins item col-sm-1' placeholder='Белки')
+            input(disabled=true class='triglyceride item col-sm-1' placeholder='Жиры')
+            input(disabled=true class='carbohydrate item col-sm-1' placeholder='Углеводы')
+        div(class='dishProduct row')
+            button(class='remove col-sm-1') -
+            input(disabled=true class='description item col-sm-5' placeholder='Описание')
+            input(disabled=true class='proteins item col-sm-1' placeholder='Белки')
+            input(disabled=true class='triglyceride item col-sm-1' placeholder='Жиры')
+            input(disabled=true class='carbohydrate item col-sm-1' placeholder='Углеводы')
+            input(class='mass col-sm-2' placeholder='Вес' value='0.1')
 
     script.
         var templates = $('#templates');
         var addButton = $('.addProductButton');
         var newProduct = $('.newProduct');
         var productsList = $('.productsList');
+        var currentDishProducts = $('.currentDishProducts');
+        var result = $('.result');
 
 
         getUpdates();
 
         addButton.click(function(){
-            var product = {
-                description: newProduct.find('.description').val(),
-                proteins: newProduct.find('.proteins').val(),
-                triglyceride: newProduct.find('.triglyceride').val(),
-                carbohydrate: newProduct.find('.carbohydrate').val()
-            };
+
+            if( newProduct.find('.description').val() == '' ||
+                newProduct.find('.proteins').val() == '' ||
+                newProduct.find('.triglyceride').val() == '' ||
+                newProduct.find('.carbohydrate').val() == '')
+            {
+                console.error("Wrong product");
+                return;
+            }
+
+            var product = getProductFromItem(newProduct);
             $.post("/newProduct", product)
                     .done(function () {
                         console.log("Product added");
@@ -57,6 +84,65 @@ block content
             });
         }
 
+        function getProductFromItem(item){
+            return {
+                description: item.find('.description').val(),
+                proteins: item.find('.proteins').val(),
+                triglyceride: item.find('.triglyceride').val(),
+                carbohydrate: item.find('.carbohydrate').val()
+            }
+        }
+
+        function removeFromCurrentDish(view){
+            view.detach();
+            reCalc();
+        }
+
+        function addToCurrentDish(product){
+            var productView = templates.find('.dishProduct').clone();
+
+            productView.find('.description').val(product.description);
+            productView.find('.proteins').val(product.proteins);
+            productView.find('.triglyceride').val(product.triglyceride);
+            productView.find('.carbohydrate').val(product.carbohydrate);
+            productView.find('.remove').click(removeFromCurrentDish.bind(null, productView));
+
+            productView.find('input').on('input propertychange paste', reCalc);
+
+            productView.appendTo(currentDishProducts);
+
+            reCalc();
+        }
+
+        function calcCalorie(product){
+            return  product.proteins * 4 +
+                    product.triglyceride * 4 +
+                    product.carbohydrate * 8;
+        }
+
+        function reCalc(){
+            var res = {
+                proteins: 0,
+                triglyceride: 0,
+                carbohydrate: 0
+            }
+            currentDishProducts.find('.dishProduct').each(function(){
+                var item = $(this);
+                var product = getProductFromItem(item);
+                var mass = +(item.find('.mass').val());
+
+                res.proteins += +product.proteins * mass;
+                res.triglyceride += +product.triglyceride * mass;
+                res.carbohydrate += +product.carbohydrate * mass;
+            });
+
+            result.find('.proteins').text(res.proteins);
+            result.find('.triglyceride').text(res.triglyceride);
+            result.find('.carbohydrate').text(res.carbohydrate);
+
+            result.find('.calorie').text(calcCalorie(res));
+        }
+
         function updateList(list) {
             productsList.empty();
 
@@ -65,10 +151,13 @@ block content
 
                 var productView = templates.find('.product').clone();
 
-                productView.find('.description').text(product.description);
-                productView.find('.proteins').text(product.proteins);
-                productView.find('.triglyceride').text(product.triglyceride);
-                productView.find('.carbohydrate').text(product.carbohydrate);
+                productView.find('.description').val(product.description);
+                productView.find('.proteins').val(product.proteins);
+                productView.find('.triglyceride').val(product.triglyceride);
+                productView.find('.carbohydrate').val(product.carbohydrate);
+
+                productView.find('.add').click(addToCurrentDish.bind(null, product));
+
 
                 productView.appendTo(productsList);
             }
