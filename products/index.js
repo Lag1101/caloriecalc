@@ -43,3 +43,4 @@ Products.prototype.push = function(product) {
 
 
 module.exports = Products;
+module.exports.products = module.exports.products || new Products();

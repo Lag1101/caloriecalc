@@ -1,9 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Products = require('../products');
-
-var products = new Products();
-
+var products = require('../products').products;
 products.load(function(err, list){
     if(err)
         console.error(err);
