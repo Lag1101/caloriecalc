@@ -1,5 +1,75 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+    div(class='currentDish col-md-6')
+
+    div(class='products row col-md-6')
+        button(class='addProductButton col-md-2') Добавить
+        div(class='newProduct col-md-10')
+            input(class='description col-md-6' placeholder='Описание')
+            input(class='proteins col-md-2' placeholder='Белки')
+            input(class='triglyceride col-md-2' placeholder='Жиры')
+            input(class='carbohydrate col-md-2' placeholder='Углеводы')
+        ul(class='productsList col-md-10 col-md-offset-2')
+
+
+    div(id='templates' class='hide')
+        div(class='product')
+            p(class='description item col-md-6') Описание
+            p(class='proteins item col-md-2') Белки
+            p(class='triglyceride item col-md-2') Жиры
+            p(class='carbohydrate item col-md-2') Углеводы
+
+    script.
+        var templates = $('#templates');
+        var addButton = $('.addProductButton');
+        var newProduct = $('.newProduct');
+        var productsList = $('.productsList');
+
+
+        getUpdates();
+
+        addButton.click(function(){
+            var product = {
+                description: newProduct.find('.description').val(),
+                proteins: newProduct.find('.proteins').val(),
+                triglyceride: newProduct.find('.triglyceride').val(),
+                carbohydrate: newProduct.find('.carbohydrate').val()
+            };
+            $.post("/newProduct", product)
+                    .done(function () {
+                        console.log("Product added");
+                        newProduct.find('.description').empty();
+                        newProduct.find('.proteins').empty();
+                        newProduct.find('.triglyceride').empty();
+                        newProduct.find('.carbohydrate').empty();
+
+                        getUpdates();
+                    })
+                    .fail(function (error) {
+                        console.log(error.responseText);
+                    });
+        });
+
+        function getUpdates(){
+            $.get("/list", function (data) {
+                updateList(data);
+            });
+        }
+
+        function updateList(list) {
+            productsList.empty();
+
+            for(var i = 0; i < list.length; i++){
+                var product = list[i];
+
+                var productView = templates.find('.product').clone();
+
+                productView.find('.description').text(product.description);
+                productView.find('.proteins').text(product.proteins);
+                productView.find('.triglyceride').text(product.triglyceride);
+                productView.find('.carbohydrate').text(product.carbohydrate);
+
+                productView.appendTo(productsList);
+            }
+        }
