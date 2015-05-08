@@ -1,0 +1,7 @@
+{
+  "name": "bower",
+  "dependencies": {
+    "bootstrap": "*",
+    "jquery": "*"
+  }
+}
