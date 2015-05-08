@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "postinstall": "cd ./public/vendor; bower install;"
+    "postinstall": "cd ./public; bower install;"
   },
   "dependencies": {
     "bower": "*",
