@@ -138,11 +138,11 @@ block content
                 res.calorie += +product.calorie * mass;
             });
 
-            result.find('.proteins').text(res.proteins);
-            result.find('.triglyceride').text(res.triglyceride);
-            result.find('.carbohydrate').text(res.carbohydrate);
+            result.find('.proteins').text(res.proteins + ' г');
+            result.find('.triglyceride').text(res.triglyceride + ' г');
+            result.find('.carbohydrate').text(res.carbohydrate + ' г');
 
-            result.find('.calorie').text(res.calorie);
+            result.find('.calorie').text(res.calorie + ' Ккал');
         }
 
         function updateList(list) {
