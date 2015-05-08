@@ -6,7 +6,7 @@ block content
             p(class='item') Белки
             p(class='item') Жиры
             p(class='item') Углеводы
-            p(class='item') Ccal
+            p(class='item') Ккал
         div(class='result col-sm-6 row')
             p(class='proteins item') 0
             p(class='triglyceride item') 0
@@ -22,6 +22,7 @@ block content
                 input(class='proteins item col-sm-1' placeholder='Белки')
                 input(class='triglyceride item col-sm-1' placeholder='Жиры')
                 input(class='carbohydrate item col-sm-1' placeholder='Углеводы')
+                input(class='calorie item col-sm-1' placeholder='Ккал')
         ul(class='productsList')
 
 
@@ -32,13 +33,15 @@ block content
             input(disabled=true class='proteins item col-sm-1' placeholder='Белки')
             input(disabled=true class='triglyceride item col-sm-1' placeholder='Жиры')
             input(disabled=true class='carbohydrate item col-sm-1' placeholder='Углеводы')
+            input(disabled=true class='calorie item col-sm-1' placeholder='Ккал')
         div(class='dishProduct row')
             button(class='remove col-sm-1') -
             input(disabled=true class='description item col-sm-5' placeholder='Описание')
             input(disabled=true class='proteins item col-sm-1' placeholder='Белки')
             input(disabled=true class='triglyceride item col-sm-1' placeholder='Жиры')
             input(disabled=true class='carbohydrate item col-sm-1' placeholder='Углеводы')
-            input(class='mass col-sm-2' placeholder='Вес' value='0.1')
+            input(disabled=true class='calorie item col-sm-1' placeholder='Ккал')
+            input(class='mass col-sm-2' placeholder='Вес' value='100')
 
     script.
         var templates = $('#templates');
@@ -70,6 +73,7 @@ block content
                         newProduct.find('.proteins').empty();
                         newProduct.find('.triglyceride').empty();
                         newProduct.find('.carbohydrate').empty();
+                        newProduct.find('.calorie').empty();
 
                         getUpdates();
                     })
@@ -89,7 +93,8 @@ block content
                 description: item.find('.description').val(),
                 proteins: item.find('.proteins').val(),
                 triglyceride: item.find('.triglyceride').val(),
-                carbohydrate: item.find('.carbohydrate').val()
+                carbohydrate: item.find('.carbohydrate').val(),
+                calorie: item.find('.calorie').val()
             }
         }
 
@@ -105,6 +110,7 @@ block content
             productView.find('.proteins').val(product.proteins);
             productView.find('.triglyceride').val(product.triglyceride);
             productView.find('.carbohydrate').val(product.carbohydrate);
+            productView.find('.calorie').val(product.calorie);
             productView.find('.remove').click(removeFromCurrentDish.bind(null, productView));
 
             productView.find('input').on('input propertychange paste', reCalc);
@@ -114,33 +120,29 @@ block content
             reCalc();
         }
 
-        function calcCalorie(product){
-            return  product.proteins * 4 +
-                    product.triglyceride * 4 +
-                    product.carbohydrate * 8;
-        }
-
         function reCalc(){
             var res = {
                 proteins: 0,
                 triglyceride: 0,
-                carbohydrate: 0
+                carbohydrate: 0,
+                calorie: 0
             }
             currentDishProducts.find('.dishProduct').each(function(){
                 var item = $(this);
                 var product = getProductFromItem(item);
-                var mass = +(item.find('.mass').val());
+                var mass = +(item.find('.mass').val()) / 100;
 
                 res.proteins += +product.proteins * mass;
                 res.triglyceride += +product.triglyceride * mass;
                 res.carbohydrate += +product.carbohydrate * mass;
+                res.calorie += +product.calorie * mass;
             });
 
             result.find('.proteins').text(res.proteins);
             result.find('.triglyceride').text(res.triglyceride);
             result.find('.carbohydrate').text(res.carbohydrate);
 
-            result.find('.calorie').text(calcCalorie(res));
+            result.find('.calorie').text(res.calorie);
         }
 
         function updateList(list) {
@@ -155,6 +157,7 @@ block content
                 productView.find('.proteins').val(product.proteins);
                 productView.find('.triglyceride').val(product.triglyceride);
                 productView.find('.carbohydrate').val(product.carbohydrate);
+                productView.find('.calorie').val(product.calorie);
 
                 productView.find('.add').click(addToCurrentDish.bind(null, product));
 
