@@ -1,59 +1,53 @@
 extends layout
 
 block content
-    div(class='currentDish row col-sm-6')
-        div(class='result row col-sm-2')
-            p(class='item') Белки
-            p(class='item') Жиры
-            p(class='item') Углеводы
-            p(class='item') Ккал
-        div(class='result col-sm-6 row')
-            p(class='proteins item') 0
-            p(class='triglyceride item') 0
-            p(class='carbohydrate item') 0
-            p(class='calorie item') 0
-        ul(class='currentDishProducts col-sm-12')
+    table(class='result')
+        tr
+            td
+                p(class='label') Белки
+                p(class='proteins item') 0
+            td
+                p(class='label') Жиры
+                p(class='triglyceride item') 0
+            td
+                p(class='label') Углеводы
+                p(class='carbohydrate item') 0
+            td
+                p(class='label') Ккал
+                p(class='calorie item') 0
 
-    div(class='products row col-sm-6')
+    table(class="table")
+        tr
+            td
+                table(class='currentDishProducts')
+            td
+                table
+                    tr(class='newProduct')
+                        td
+                            button(class='addProductButton item') +
+                        td
+                            input(class='description item' placeholder='Описание')
+                        td
+                            input(class='proteins item' placeholder='Белки')
+                        td
+                            input(class='triglyceride item' placeholder='Жиры')
+                        td
+                            input(class='carbohydrate item' placeholder='Углеводы')
+                        td
+                            input(class='calorie item' placeholder='Ккал')
+                select(class='sortBy')
+                    option(value="description" selected=) Имя
+                    option(value="proteins") Белки
+                    option(value="triglyceride") Жиры
+                    option(value="carbohydrate") Углеводы
+                    option(value="calorie") Каллории
+                select(class='sortOrder')
+                    option(value="greater" selected) По возрастанию
+                    option(value="lower") По убыванию
 
 
+                table(class='productsList')
 
-        div(class='newProduct product row col-sm-12')
-            button(class='addProductButton col-sm-1') +
-            input(class='description item col-sm-4' placeholder='Описание')
-            input(class='proteins item col-sm-1' placeholder='Белки')
-            input(class='triglyceride item col-sm-1' placeholder='Жиры')
-            input(class='carbohydrate item col-sm-1' placeholder='Углеводы')
-            input(class='calorie item col-sm-1' placeholder='Ккал')
-        div
-            select(class='sortBy')
-                option(value="description" selected=) Имя
-                option(value="proteins") Белки
-                option(value="triglyceride") Жиры
-                option(value="carbohydrate") Углеводы
-                option(value="calorie") Каллории
-            select(class='sortOrder')
-                option(value="greater" selected) По возрастанию
-                option(value="lower") По убыванию
-            div(class='productsList')
-
-
-    div(id='templates' class='hide')
-        div(class='product row col-sm-12')
-            button(class='add col-sm-1') +
-            input(disabled=true class='description item col-sm-4' placeholder='Описание')
-            input(disabled=true class='proteins item col-sm-1' placeholder='Белки')
-            input(disabled=true class='triglyceride item col-sm-1' placeholder='Жиры')
-            input(disabled=true class='carbohydrate item col-sm-1' placeholder='Углеводы')
-            input(disabled=true class='calorie item col-sm-1' placeholder='Ккал')
-        div(class='dishProduct row')
-            button(class='remove col-sm-1') -
-            input(disabled=true class='description item col-sm-5' placeholder='Описание')
-            input(disabled=true class='proteins item col-sm-1' placeholder='Белки')
-            input(disabled=true class='triglyceride item col-sm-1' placeholder='Жиры')
-            input(disabled=true class='carbohydrate item col-sm-1' placeholder='Углеводы')
-            input(disabled=true class='calorie item col-sm-1' placeholder='Ккал')
-            input(class='mass col-sm-2' placeholder='Вес' value='100')
 
     script.
         var templates = $('#templates');
@@ -107,17 +101,19 @@ block content
 
             if( !validateEl.bind(newProduct.find('.proteins'))() ||
                 !validateEl.bind(newProduct.find('.triglyceride'))() ||
-                !validateEl.bind(newProduct.find('.carbohydrate'))())
+                !validateEl.bind(newProduct.find('.carbohydrate'))() ||
+                !validateEl.bind(newProduct.find('.calorie'))()
+            )
             {
                 console.error("Wrong product");
                 return;
             }
 
-            var product = getProductFromItem(newProduct);
+            var product = getProductFromInput(newProduct);
             $.post(window.location.href +  "newProduct", product)
                     .done(function () {
                         console.log("Product added");
-                        newProduct.find('.item').empty();
+                        newProduct.find('.item:not(button)').empty();
                         getUpdates();
                     })
                     .fail(function (error) {
@@ -132,22 +128,32 @@ block content
             });
         }
 
-        function getProductFromItem(item){
+        function getProductFromInput(item){
             return {
                 description: item.find('.description').val(),
-                proteins: item.find('.proteins').val(),
+                proteins: item.find('.proteins').val() ,
                 triglyceride: item.find('.triglyceride').val(),
                 carbohydrate: item.find('.carbohydrate').val(),
                 calorie: item.find('.calorie').val()
             }
         }
+        function getProductFromP(item) {
+            return {
+                description: item.find('.description').text(),
+                proteins: item.find('.proteins').text(),
+                triglyceride: item.find('.triglyceride').text(),
+                carbohydrate: item.find('.carbohydrate').text(),
+                calorie: item.find('.calorie').text()
+            }
+        }
 
         function setProduct(view, product) {
-            view.find('.description').val(product.description);
-            view.find('.proteins').val(product.proteins);
-            view.find('.triglyceride').val(product.triglyceride);
-            view.find('.carbohydrate').val(product.carbohydrate);
-            view.find('.calorie').val(product.calorie);
+
+            view.find('.description').text(product.description);
+            view.find('.proteins').text(product.proteins);
+            view.find('.triglyceride').text(product.triglyceride);
+            view.find('.carbohydrate').text(product.carbohydrate);
+            view.find('.calorie').text(product.calorie);
         }
 
         function removeFromCurrentDish(view){
@@ -156,7 +162,20 @@ block content
         }
 
         function addToCurrentDish(product){
-            var productView = templates.find('.dishProduct').clone();
+            var productView = $('<tr>')
+                .append($('<div>')
+                    .addClass('product')
+                    .append($('<td>')
+                        .append($('<button>').addClass('item remove').text('-')))
+                    .append($('<td>').addClass('description item'))
+                    .append($('<td>').addClass('proteins item').text('-'))
+                    .append($('<td>').addClass('triglyceride item').text('-'))
+                    .append($('<td>').addClass('carbohydrate item').text('-'))
+                    .append($('<td>').addClass('calorie item').text('-'))
+                    .append($('<td>')
+                        .append($('<input>').addClass('mass item').attr('placeholder', 'Вес').attr('value', '100').text('-')))
+            );
+
 
             setProduct(productView, product);
             productView.find('.remove').click(removeFromCurrentDish.bind(null, productView));
@@ -175,9 +194,9 @@ block content
                 carbohydrate: 0,
                 calorie: 0
             }
-            currentDishProducts.find('.dishProduct').each(function(){
+            currentDishProducts.find('.product').each(function(){
                 var item = $(this);
-                var product = getProductFromItem(item);
+                var product = getProductFromP(item);
                 var mass = +(item.find('.mass').val()) / 100;
 
                 res.proteins += +product.proteins * mass;
@@ -185,7 +204,6 @@ block content
                 res.carbohydrate += +product.carbohydrate * mass;
                 res.calorie += +product.calorie * mass;
             });
-
             result.find('.proteins').text(res.proteins + ' г');
             result.find('.triglyceride').text(res.triglyceride + ' г');
             result.find('.carbohydrate').text(res.carbohydrate + ' г');
@@ -201,7 +219,17 @@ block content
             for(var i = 0; i < products.length; i++){
                 var product = products[i];
 
-                var productView = templates.find('.product').clone();
+                var productView = $('<tr>')
+                    .append($('<div>')
+                        .append($('<td>')
+                                .append($('<button></button>').addClass('item add').text('+')))
+                        .append($('<td>').addClass('description item').text('Описание'))
+                        .append($('<td>').addClass('proteins item').text('Белки'))
+                        .append($('<td>').addClass('triglyceride item').text('Жиры'))
+                        .append($('<td>').addClass('carbohydrate item').text('Углеводы'))
+                        .append($('<td>').addClass('calorie item').text('Ккал'))
+                        .addClass('product'));
+
 
                 setProduct(productView, product);
 
