@@ -1,52 +1,99 @@
 extends layout
 
 block content
-    table(class='result')
+    table
         tr
             td
-                p(class='label') Белки
-                p(class='proteins item') 0
-            td
-                p(class='label') Жиры
-                p(class='triglyceride item') 0
-            td
-                p(class='label') Углеводы
-                p(class='carbohydrate item') 0
-            td
-                p(class='label') Ккал
-                p(class='calorie item') 0
-
-    table(class="table")
-        tr
-            td
-                table(class='currentDishProducts')
-            td
-                table
-                    tr(class='newProduct')
+                table(class='resultDish')
+                    tr
                         td
+                            p(class='label') Белки
+                            p(class='proteins item') 0
+                        td
+                            p(class='label') Жиры
+                            p(class='triglyceride item') 0
+                        td
+                            p(class='label') Углеводы
+                            p(class='carbohydrate item') 0
+                        td
+                            p(class='label') Ккал
+                            p(class='calorie item') 0
+            td
+                div(class='daily')
+                    div(class='result product')
+                        p(class='label') Итог
+                        p(class='proteins item') Белки
+                        p(class='triglyceride item') Жиры
+                        p(class='carbohydrate item') Углеводы
+                        p(class='calorie item') Ккал
+                    div(class='morning product')
+                        p(class='label') Завтрак
+                        input(class='proteins item' placeholder='Белки')
+                        input(class='triglyceride item' placeholder='Жиры')
+                        input(class='carbohydrate item' placeholder='Углеводы')
+                        input(class='calorie item' placeholder='Ккал')
+                    div(class='day product')
+                        p(class='label') Ланч
+                        input(class='proteins item' placeholder='Белки')
+                        input(class='triglyceride item' placeholder='Жиры')
+                        input(class='carbohydrate item' placeholder='Углеводы')
+                        input(class='calorie item' placeholder='Ккал')
+                    div(class='evening product')
+                        p(class='label') Обед
+                        input(class='proteins item' placeholder='Белки')
+                        input(class='triglyceride item' placeholder='Жиры')
+                        input(class='carbohydrate item' placeholder='Углеводы')
+                        input(class='calorie item' placeholder='Ккал')
+                    div(class='evening product')
+                        p(class='label') Перекус
+                        input(class='proteins item' placeholder='Белки')
+                        input(class='triglyceride item' placeholder='Жиры')
+                        input(class='carbohydrate item' placeholder='Углеводы')
+                        input(class='calorie item' placeholder='Ккал')
+                    div(class='evening product')
+                        p(class='label') Ужин
+                        input(class='proteins item' placeholder='Белки')
+                        input(class='triglyceride item' placeholder='Жиры')
+                        input(class='carbohydrate item' placeholder='Углеводы')
+                        input(class='calorie item' placeholder='Ккал')
+                    div(class='evening product')
+                        p(class='label') Перед сном
+                        input(class='proteins item' placeholder='Белки')
+                        input(class='triglyceride item' placeholder='Жиры')
+                        input(class='carbohydrate item' placeholder='Углеводы')
+                        input(class='calorie item' placeholder='Ккал')
+                    div(class='newItem product')
+                        button(class='label addButton') +
+                        input(class='proteins item' placeholder='Белки')
+                        input(class='triglyceride item' placeholder='Жиры')
+                        input(class='carbohydrate item' placeholder='Углеводы')
+                        input(class='calorie item' placeholder='Ккал')
+
+        tr
+            table(class="table")
+                tr
+                    td
+                        table(class='currentDishProducts')
+                    td
+                        div(class='newProduct')
                             button(class='addProductButton item') +
-                        td
                             input(class='description item' placeholder='Описание')
-                        td
                             input(class='proteins item' placeholder='Белки')
-                        td
                             input(class='triglyceride item' placeholder='Жиры')
-                        td
                             input(class='carbohydrate item' placeholder='Углеводы')
-                        td
                             input(class='calorie item' placeholder='Ккал')
-                select(class='sortBy')
-                    option(value="description" selected=) Имя
-                    option(value="proteins") Белки
-                    option(value="triglyceride") Жиры
-                    option(value="carbohydrate") Углеводы
-                    option(value="calorie") Каллории
-                select(class='sortOrder')
-                    option(value="greater" selected) По возрастанию
-                    option(value="lower") По убыванию
+                        select(class='sortBy')
+                            option(value="description" selected=) Имя
+                            option(value="proteins") Белки
+                            option(value="triglyceride") Жиры
+                            option(value="carbohydrate") Углеводы
+                            option(value="calorie") Каллории
+                        select(class='sortOrder')
+                            option(value="greater" selected) По возрастанию
+                            option(value="lower") По убыванию
 
 
-                table(class='productsList')
+                        table(class='productsList')
 
 
     script.
@@ -56,13 +103,54 @@ block content
         var productsList = $('.productsList');
         var products = [];
         var currentDishProducts = $('.currentDishProducts');
-        var result = $('.result');
+        var resultDish = $('.resultDish');
         var sortBy = $('.sortBy');
         var sortOrder = $('.sortOrder');
 
         var sortKey = sortBy.find('option:selected').val();
         var order = sortOrder.find('option:selected').val();
 
+        $('.daily input').on('input propertychange paste',reCalcDaily);
+        function reCalcDaily(){
+            var res = {
+                proteins: 0,
+                triglyceride: 0,
+                carbohydrate: 0,
+                calorie: 0
+            }
+            var daily = $('.daily');
+            daily.find('.proteins').each(function(){
+
+                res.proteins += +$(this).val();
+            });
+            daily.find('.triglyceride').each(function () {
+                res.triglyceride += +$(this).val();
+            });
+            daily.find('.carbohydrate').each(function () {
+                res.carbohydrate += +$(this).val();
+            });
+            daily.find('.calorie').each(function () {
+                res.calorie += +$(this).val();
+            });
+            var resEl = $('.result');
+            resEl.find('.proteins').text(res.proteins + ' г');
+            resEl.find('.triglyceride').text(res.triglyceride + ' г');
+            resEl.find('.carbohydrate').text(res.carbohydrate + ' г');
+            resEl.find('.calorie').text(res.calorie + ' Ккал');
+
+        }
+        $('.addButton').click(function(){
+            var daily = $('.daily');
+            var newItem = daily.find('.newItem').clone();
+
+            newItem.find('button').text('-');
+            newItem.find('button').click(removeFromCurrentDish.bind(null, newItem, reCalcDaily));
+            newItem.removeClass('newItem');
+            newItem.find('input').on('input propertychange paste',reCalcDaily);
+            daily.find('.newItem').find('input').val('');
+
+            daily.find('.newItem').before(newItem);
+        });
 
         sortBy.on('change', function () {
             sortKey = sortBy.find('option:selected').val();
@@ -156,9 +244,9 @@ block content
             view.find('.calorie').text(product.calorie);
         }
 
-        function removeFromCurrentDish(view){
+        function removeFromCurrentDish(view, cb){
             view.detach();
-            reCalc();
+            return cb && cb();
         }
 
         function addToCurrentDish(product){
@@ -178,7 +266,7 @@ block content
 
 
             setProduct(productView, product);
-            productView.find('.remove').click(removeFromCurrentDish.bind(null, productView));
+            productView.find('.remove').click(removeFromCurrentDish.bind(null, productView, reCalc));
 
             productView.find('input').on('input propertychange paste', reCalc);
 
@@ -204,10 +292,10 @@ block content
                 res.carbohydrate += +product.carbohydrate * mass;
                 res.calorie += +product.calorie * mass;
             });
-            result.find('.proteins').text(res.proteins + ' г');
-            result.find('.triglyceride').text(res.triglyceride + ' г');
-            result.find('.carbohydrate').text(res.carbohydrate + ' г');
-            result.find('.calorie').text(res.calorie + ' Ккал');
+            resultDish.find('.proteins').text(res.proteins + ' г');
+            resultDish.find('.triglyceride').text(res.triglyceride + ' г');
+            resultDish.find('.carbohydrate').text(res.carbohydrate + ' г');
+            resultDish.find('.calorie').text(res.calorie + ' Ккал');
         }
 
         function updateList() {
