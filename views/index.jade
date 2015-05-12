@@ -1,99 +1,102 @@
 extends layout
 
 block content
-    table
-        tr
-            td
-                table(class='resultDish')
-                    tr
-                        td
-                            p(class='label') Белки
-                            p(class='proteins item') 0
-                        td
-                            p(class='label') Жиры
-                            p(class='triglyceride item') 0
-                        td
-                            p(class='label') Углеводы
-                            p(class='carbohydrate item') 0
-                        td
-                            p(class='label') Ккал
-                            p(class='calorie item') 0
-            td
-                div(class='daily')
-                    div(class='result product')
-                        p(class='label') Итог
-                        p(class='proteins item') Белки
-                        p(class='triglyceride item') Жиры
-                        p(class='carbohydrate item') Углеводы
-                        p(class='calorie item') Ккал
-                    div(class='morning product')
-                        p(class='label') Завтрак
-                        input(class='proteins item' placeholder='Белки')
-                        input(class='triglyceride item' placeholder='Жиры')
-                        input(class='carbohydrate item' placeholder='Углеводы')
-                        input(class='calorie item' placeholder='Ккал')
-                    div(class='day product')
-                        p(class='label') Ланч
-                        input(class='proteins item' placeholder='Белки')
-                        input(class='triglyceride item' placeholder='Жиры')
-                        input(class='carbohydrate item' placeholder='Углеводы')
-                        input(class='calorie item' placeholder='Ккал')
-                    div(class='evening product')
-                        p(class='label') Обед
-                        input(class='proteins item' placeholder='Белки')
-                        input(class='triglyceride item' placeholder='Жиры')
-                        input(class='carbohydrate item' placeholder='Углеводы')
-                        input(class='calorie item' placeholder='Ккал')
-                    div(class='evening product')
-                        p(class='label') Перекус
-                        input(class='proteins item' placeholder='Белки')
-                        input(class='triglyceride item' placeholder='Жиры')
-                        input(class='carbohydrate item' placeholder='Углеводы')
-                        input(class='calorie item' placeholder='Ккал')
-                    div(class='evening product')
-                        p(class='label') Ужин
-                        input(class='proteins item' placeholder='Белки')
-                        input(class='triglyceride item' placeholder='Жиры')
-                        input(class='carbohydrate item' placeholder='Углеводы')
-                        input(class='calorie item' placeholder='Ккал')
-                    div(class='evening product')
-                        p(class='label') Перед сном
-                        input(class='proteins item' placeholder='Белки')
-                        input(class='triglyceride item' placeholder='Жиры')
-                        input(class='carbohydrate item' placeholder='Углеводы')
-                        input(class='calorie item' placeholder='Ккал')
-                    div(class='newItem product')
-                        button(class='label addButton') +
-                        input(class='proteins item' placeholder='Белки')
-                        input(class='triglyceride item' placeholder='Жиры')
-                        input(class='carbohydrate item' placeholder='Углеводы')
-                        input(class='calorie item' placeholder='Ккал')
-
-        tr
-            table(class="table")
-                tr
-                    td
-                        table(class='currentDishProducts')
-                    td
-                        div(class='newProduct')
-                            button(class='addProductButton item') +
-                            input(class='description item' placeholder='Описание')
-                            input(class='proteins item' placeholder='Белки')
-                            input(class='triglyceride item' placeholder='Жиры')
-                            input(class='carbohydrate item' placeholder='Углеводы')
-                            input(class='calorie item' placeholder='Ккал')
-                        select(class='sortBy')
-                            option(value="description" selected=) Имя
-                            option(value="proteins") Белки
-                            option(value="triglyceride") Жиры
-                            option(value="carbohydrate") Углеводы
-                            option(value="calorie") Каллории
-                        select(class='sortOrder')
-                            option(value="greater" selected) По возрастанию
-                            option(value="lower") По убыванию
+    div
+        div(class='resultDish table')
+            div
+                div(class='product')
+                    p(class='item') Белки
+                    p(class='item') Жиры
+                    p(class='item') Углеводы
+                    p(class='item') Ккал
+            div
+                div(class='product')
+                    p(class='proteins item') 0
+                    p(class='triglyceride item') 0
+                    p(class='carbohydrate item') 0
+                    p(class='calorie item') 0
+        div(class='daily table')
+            div(class='result')
+                div(class='product')
+                    p(class='label') Итог
+                    p(class='proteins item') Белки
+                    p(class='triglyceride item') Жиры
+                    p(class='carbohydrate item') Углеводы
+                    p(class='calorie item') Ккал
+            div(class='morning')
+                div(class='product')
+                    p(class='label') Завтрак
+                    input(class='proteins item' placeholder='Белки')
+                    input(class='triglyceride item' placeholder='Жиры')
+                    input(class='carbohydrate item' placeholder='Углеводы')
+                    input(class='calorie item' placeholder='Ккал')
+            div(class='day')
+                div(class='product')
+                    p(class='label') Ланч
+                    input(class='proteins item' placeholder='Белки')
+                    input(class='triglyceride item' placeholder='Жиры')
+                    input(class='carbohydrate item' placeholder='Углеводы')
+                    input(class='calorie item' placeholder='Ккал')
+            div(class='evening')
+                div(class='product')
+                    p(class='label') Обед
+                    input(class='proteins item' placeholder='Белки')
+                    input(class='triglyceride item' placeholder='Жиры')
+                    input(class='carbohydrate item' placeholder='Углеводы')
+                    input(class='calorie item' placeholder='Ккал')
+            div(class='evening')
+                div(class='product')
+                    p(class='label') Перекус
+                    input(class='proteins item' placeholder='Белки')
+                    input(class='triglyceride item' placeholder='Жиры')
+                    input(class='carbohydrate item' placeholder='Углеводы')
+                    input(class='calorie item' placeholder='Ккал')
+            div(class='evening')
+                div(class='product')
+                    p(class='label') Ужин
+                    input(class='proteins item' placeholder='Белки')
+                    input(class='triglyceride item' placeholder='Жиры')
+                    input(class='carbohydrate item' placeholder='Углеводы')
+                    input(class='calorie item' placeholder='Ккал')
+            div(class='evening')
+                div(class='product')
+                    p(class='label') Перед сном
+                    input(class='proteins item' placeholder='Белки')
+                    input(class='triglyceride item' placeholder='Жиры')
+                    input(class='carbohydrate item' placeholder='Углеводы')
+                    input(class='calorie item' placeholder='Ккал')
+            div(class='newItem')
+                div(class='product')
+                    button(class='label addButton') +
+                    input(class='proteins item' placeholder='Белки')
+                    input(class='triglyceride item' placeholder='Жиры')
+                    input(class='carbohydrate item' placeholder='Углеводы')
+                    input(class='calorie item' placeholder='Ккал')
 
 
-                        table(class='productsList')
+    div(class='currentDishProducts table')
+
+    div(class='table allProducts')
+        div(class='newProduct product')
+            button(class='addProductButton item') +
+            input(class='description item' placeholder='Описание')
+            input(class='proteins item' placeholder='Белки')
+            input(class='triglyceride item' placeholder='Жиры')
+            input(class='carbohydrate item' placeholder='Углеводы')
+            input(class='calorie item' placeholder='Ккал')
+        div
+            select(class='sortBy product')
+                option(value="description" selected=) Имя
+                option(value="proteins") Белки
+                option(value="triglyceride") Жиры
+                option(value="carbohydrate") Углеводы
+                option(value="calorie") Каллории
+            select(class='sortOrder product')
+                option(value="greater" selected) По возрастанию
+                option(value="lower") По убыванию
+
+
+        div(class='productsList')
 
 
     script.
@@ -253,15 +256,13 @@ block content
             var productView = $('<tr>')
                 .append($('<div>')
                     .addClass('product')
-                    .append($('<td>')
-                        .append($('<button>').addClass('item remove').text('-')))
-                    .append($('<td>').addClass('description item'))
-                    .append($('<td>').addClass('proteins item').text('-'))
-                    .append($('<td>').addClass('triglyceride item').text('-'))
-                    .append($('<td>').addClass('carbohydrate item').text('-'))
-                    .append($('<td>').addClass('calorie item').text('-'))
-                    .append($('<td>')
-                        .append($('<input>').addClass('mass item').attr('placeholder', 'Вес').attr('value', '100').text('-')))
+                    .append($('<button>').addClass('item remove').text('-'))
+                    .append($('<p>').addClass('description item'))
+                    .append($('<p>').addClass('proteins item').text('-'))
+                    .append($('<p>').addClass('triglyceride item').text('-'))
+                    .append($('<p>').addClass('carbohydrate item').text('-'))
+                    .append($('<p>').addClass('calorie item').text('-'))
+                    .append($('<input>').addClass('mass item').attr('placeholder', 'Вес').attr('value', '100').text('-'))
             );
 
 
@@ -309,13 +310,12 @@ block content
 
                 var productView = $('<tr>')
                     .append($('<div>')
-                        .append($('<td>')
-                                .append($('<button></button>').addClass('item add').text('+')))
-                        .append($('<td>').addClass('description item').text('Описание'))
-                        .append($('<td>').addClass('proteins item').text('Белки'))
-                        .append($('<td>').addClass('triglyceride item').text('Жиры'))
-                        .append($('<td>').addClass('carbohydrate item').text('Углеводы'))
-                        .append($('<td>').addClass('calorie item').text('Ккал'))
+                        .append($('<button></button>').addClass('item add').text('+'))
+                        .append($('<p>').addClass('description item').text('Описание'))
+                        .append($('<p>').addClass('proteins item').text('Белки'))
+                        .append($('<p>').addClass('triglyceride item').text('Жиры'))
+                        .append($('<p>').addClass('carbohydrate item').text('Углеводы'))
+                        .append($('<p>').addClass('calorie item').text('Ккал'))
                         .addClass('product'));
 
 

@@ -1,61 +1,69 @@
-.newProduct{
-  border: dodgerblue solid 1px;
-}
 .productsList{
 
 }
 .currentDishProducts{
   //border: green solid 1px;
-  min-width: 400px;
+  //min-width: 400px;
 }
 .table{
-  width: 100%;
+  display: inline-block;
+  margin: 10px;
+  border-radius: 5px;
+  background-color: slateblue;
+  box-shadow: 5px 5px 5px 1px rgba(0,0,0,0.75);;
+  vertical-align: top;
+}
+.allProducts{
+  left: 0;
+  float: right;
 }
 .resultDish{
-  border: green solid 1px;
+  //border: green solid 1px;
+}
+.daily{
+  //border: red solid 1px;
 }
 .item{
   //border: red solid 1px;
   display: inline-block;
-}
-.product{
-  height: 30px;
-  border-radius: 20px;
-  background-color: #46b8da;
-  box-shadow: 5px 5px 5px 1px rgba(0,0,0,0.75);;
-}
-.item:not(.description){
   width: 50px;
+  margin: 0px;
 }
-.description{
-  width: 200px;
+.item:not(button){
+  border: 2px;
+  padding: 1px;
 }
 .label{
   //border: blue solid 1px;
   display: inline-block;
-  width: 65px;
+  width: 100px;
+  margin: 5px;
+}
+.product{
+  margin: 5px;
+  border-radius: 10px;
+  background-color: #46b8da;
+  box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.75);;
+
+  display: inline-block;
+}
+.description{
+  width: 120px;
+  max-width: 200px;
 }
 
 .hiden{
   display: none;
 }
 
-td{
-  vertical-align: top;
+button{
+  vertical-align: middle;
+  border-radius: 20px;
 }
-
+input{
+  margin:0;
+}
 p{
   margin: 0;
-}
-.label{
-  //border: blue solid 1px;
-  width: 65px;
-}
-.item{
-  width: 65px;
-  margin: 0;
-}
-
-p{
   vertical-align: middle;
 }
