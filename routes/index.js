@@ -22,6 +22,16 @@ router.post('/newProduct', function(req, res, next) {
     products.save();
     res.end();
 });
+router.post('/removeProduct', function(req, res, next) {
+    var product = req.body;
+
+    products.list.map(function(obj, index){
+        if(obj.description === product.description)
+            products.list.splice(index, 1);
+    });
+    products.save();
+    res.end();
+});
 router.get('/daily', function(req, res, next) {
     var date = req.query.date;
     res.send(products.getDaily(date));
@@ -33,4 +43,6 @@ router.post('/daily', function(req, res, next) {
     products.save();
     res.end();
 });
+
+
 module.exports = router;

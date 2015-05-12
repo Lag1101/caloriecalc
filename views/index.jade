@@ -303,9 +303,26 @@ block content
             view.find('.calorie').val(product.calorie || '');
         }
 
+        function totallyRemove(view, product) {
+            removeFromCurrentDish(view, function(){
+                removeFromServer(product);
+            });
+        }
+
         function removeFromCurrentDish(view, cb){
             view.detach();
             return cb && cb();
+        }
+
+        function removeFromServer(product){
+            $.post(window.location.href +  "removeProduct", product)
+                .done(function () {
+                    console.log("Product removed");
+                    getUpdates();
+                })
+                .fail(function (error) {
+                    console.log(error.responseText);
+                });
         }
 
         function addToCurrentDish(product){
@@ -366,18 +383,20 @@ block content
 
                 var productView = $('<tr>')
                     .append($('<div>')
-                        .append($('<button></button>').addClass('item add').text('+'))
+                        .append($('<button>').addClass('item add').text('+'))
                         .append($('<p>').addClass('description item').text('Описание'))
                         .append($('<p>').addClass('proteins item').text('Белки'))
                         .append($('<p>').addClass('triglyceride item').text('Жиры'))
                         .append($('<p>').addClass('carbohydrate item').text('Углеводы'))
                         .append($('<p>').addClass('calorie item').text('Ккал'))
+                        .append($('<button>').addClass('item remove').text('-'))
                         .addClass('product'));
 
 
                 setProductP(productView, product);
 
                 productView.find('.add').click(addToCurrentDish.bind(null, product));
+                productView.find('.remove').click(totallyRemove.bind(null, productView, product));
 
 
                 productView.appendTo(productsList);
