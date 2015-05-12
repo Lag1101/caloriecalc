@@ -7,26 +7,38 @@ var fs = require('fs');
 function Products(){
     this.list = [];
 
+    this.dailyProducts = {};
+
     this.filename = 'productsList.json';
 }
+
+Products.prototype.addDaily = function(date, products) {
+    this.dailyProducts[date] = products;
+};
+
+Products.prototype.getDaily = function(date) {
+    return this.dailyProducts[date];
+};
 
 Products.prototype.load = function(cb) {
     var _this = this;
     fs.readFile(this.filename, {encoding: 'utf8'}, function (err, data) {
         if (err) throw err;
 
-        _this.list = JSON.parse(data);
+        var o = JSON.parse(data);
+        _this.list = o.list;
+        _this.dailyProducts = o.dailyProducts;
 
-        return _this.save(function(err){
-            if (err) throw err;
-
-            return cb && cb(null, _this.list);
-        });
+        return cb && cb(null, _this.list);
     });
 };
 
 Products.prototype.save = function(cb) {
-    fs.writeFile(this.filename, JSON.stringify(this.list), function(err) {
+    var data = {
+        list: this.list,
+        dailyProducts: this.dailyProducts
+    };
+    fs.writeFile(this.filename, JSON.stringify(data), function(err) {
         if(err) {
             console.log(err);
             return cb && cb(err);

@@ -22,4 +22,15 @@ router.post('/newProduct', function(req, res, next) {
     products.save();
     res.end();
 });
+router.get('/daily', function(req, res, next) {
+    var date = req.query.date;
+    res.send(products.getDaily(date));
+});
+router.post('/daily', function(req, res, next) {
+    var dailyProduct = req.body;
+
+    products.addDaily(dailyProduct.date, dailyProduct.products);
+    products.save();
+    res.end();
+});
 module.exports = router;

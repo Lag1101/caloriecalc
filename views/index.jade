@@ -5,16 +5,19 @@ block content
         div(class='resultDish table')
             div
                 div(class='product')
-                    p(class='item') Белки
-                    p(class='item') Жиры
-                    p(class='item') Углеводы
-                    p(class='item') Ккал
+                    p(class='label') Белки
+                    p(class='label') Жиры
+                    p(class='label') Углеводы
+                    p(class='label') Ккал
             div
                 div(class='product')
-                    p(class='proteins item') 0
-                    p(class='triglyceride item') 0
-                    p(class='carbohydrate item') 0
-                    p(class='calorie item') 0
+                    p(class='proteins label') 0
+                    p(class='triglyceride label') 0
+                    p(class='carbohydrate label') 0
+                    p(class='calorie label') 0
+
+        div(class='table')
+            input(type='date' class='dailyDate')
         div(class='daily table')
             div(class='result')
                 div(class='product')
@@ -24,7 +27,7 @@ block content
                     p(class='triglyceride item') Жиры
                     p(class='carbohydrate item') Углеводы
                     p(class='calorie item') Ккал
-            div(class='morning')
+            div(class='breakfast')
                 div(class='product')
                     p(class='label') Завтрак
                     input(class='description item' placeholder='Описание')
@@ -32,7 +35,7 @@ block content
                     input(class='triglyceride item' placeholder='Жиры')
                     input(class='carbohydrate item' placeholder='Углеводы')
                     input(class='calorie item' placeholder='Ккал')
-            div(class='day')
+            div(class='firstLunch')
                 div(class='product')
                     p(class='label') Ланч
                     input(class='description item' placeholder='Описание')
@@ -40,7 +43,7 @@ block content
                     input(class='triglyceride item' placeholder='Жиры')
                     input(class='carbohydrate item' placeholder='Углеводы')
                     input(class='calorie item' placeholder='Ккал')
-            div(class='evening')
+            div(class='secondLunch')
                 div(class='product')
                     p(class='label') Обед
                     input(class='description item' placeholder='Описание')
@@ -48,7 +51,7 @@ block content
                     input(class='triglyceride item' placeholder='Жиры')
                     input(class='carbohydrate item' placeholder='Углеводы')
                     input(class='calorie item' placeholder='Ккал')
-            div(class='evening')
+            div(class='thirdLunch')
                 div(class='product')
                     p(class='label') Перекус
                     input(class='description item' placeholder='Описание')
@@ -56,7 +59,7 @@ block content
                     input(class='triglyceride item' placeholder='Жиры')
                     input(class='carbohydrate item' placeholder='Углеводы')
                     input(class='calorie item' placeholder='Ккал')
-            div(class='evening')
+            div(class='dinner')
                 div(class='product')
                     p(class='label') Ужин
                     input(class='description item' placeholder='Описание')
@@ -64,7 +67,7 @@ block content
                     input(class='triglyceride item' placeholder='Жиры')
                     input(class='carbohydrate item' placeholder='Углеводы')
                     input(class='calorie item' placeholder='Ккал')
-            div(class='evening')
+            div(class='secondDinner')
                 div(class='product')
                     p(class='label') Перед сном
                     input(class='description item' placeholder='Описание')
@@ -72,7 +75,7 @@ block content
                     input(class='triglyceride item' placeholder='Жиры')
                     input(class='carbohydrate item' placeholder='Углеводы')
                     input(class='calorie item' placeholder='Ккал')
-            div(class='newItem')
+            div(class='newItem additionalProduct')
                 div(class='product')
                     button(class='label addButton') +
                     input(class='description item' placeholder='Описание')
@@ -120,8 +123,9 @@ block content
 
         var sortKey = sortBy.find('option:selected').val();
         var order = sortOrder.find('option:selected').val();
+        var daily = $('.daily');
 
-        $('.daily input').on('input propertychange paste',reCalcDaily);
+        daily.find('input').on('input paste',reCalcDaily);
         function reCalcDaily(){
             var res = {
                 proteins: 0,
@@ -129,7 +133,6 @@ block content
                 carbohydrate: 0,
                 calorie: 0
             }
-            var daily = $('.daily');
             daily.find('.proteins').each(function(){
 
                 res.proteins += +$(this).val();
@@ -149,19 +152,94 @@ block content
             resEl.find('.carbohydrate').text(res.carbohydrate + ' г');
             resEl.find('.calorie').text(res.calorie + ' Ккал');
 
+            saveDaily();
         }
         $('.addButton').click(function(){
-            var daily = $('.daily');
-            var newItem = daily.find('.newItem').clone();
+            var newItem = getNewItemClone();
+            daily.find('.newItem').find('input').val('');
+            reCalcDaily();
+        });
 
+        $('.dailyDate').on('input propertychange paste', function(){
+            var date = $(this).val();
+            responseDaily(date);
+        });
+
+        function clearDaily(){
+            setProductInput(daily.find('.breakfast'), {});
+            setProductInput(daily.find('.firstLunch'), {});
+            setProductInput(daily.find('.secondLunch'), {});
+            setProductInput(daily.find('.thirdLunch'), {});
+            setProductInput(daily.find('.dinner'), {});
+            setProductInput(daily.find('.secondDinner'), {});
+
+            daily.find('.additionalProduct:not(.newItem)').each(function(){
+                $(this).detach();
+            });
+        }
+        function getNewItemClone(){
+            var newItem = daily.find('.newItem').clone();
             newItem.find('button').text('-');
             newItem.find('button').click(removeFromCurrentDish.bind(null, newItem, reCalcDaily));
             newItem.removeClass('newItem');
-            newItem.find('input').on('input propertychange paste',reCalcDaily);
-            daily.find('.newItem').find('input').val('');
-
+            newItem.find('input').on('input paste', reCalcDaily);
             daily.find('.newItem').before(newItem);
-        });
+
+            return newItem;
+        }
+        function restoreDaily(dailyProducts){
+            setProductInput(daily.find('.breakfast'), dailyProducts.breakfast || {});
+            setProductInput(daily.find('.firstLunch'), dailyProducts.firstLunch || {});
+            setProductInput(daily.find('.secondLunch'), dailyProducts.secondLunch || {});
+            setProductInput(daily.find('.thirdLunch'), dailyProducts.thirdLunch || {});
+            setProductInput(daily.find('.dinner'), dailyProducts.dinner || {});
+            setProductInput(daily.find('.secondDinner'), dailyProducts.secondDinner || {});
+
+            if(dailyProducts.additional)
+            for(var i = 0; i < dailyProducts.additional.length; i++){
+                var additional = dailyProducts.additional[i];
+                var additionalItem = getNewItemClone();
+                setProductInput(additionalItem, additional || {});
+            }
+        }
+
+        function responseDaily(date) {
+            clearDaily();
+            $.get(window.location.href + "daily", {date: date}, function (data) {
+                restoreDaily(data);
+            });
+        }
+
+        function saveDaily(){
+            var date = $('.dailyDate').val();
+            //$('.dailyDate').val('2014-06-21')
+
+            var products = {
+                breakfast: getProductFromInput(daily.find('.breakfast')),
+                firstLunch: getProductFromInput(daily.find('.firstLunch')),
+                secondLunch: getProductFromInput(daily.find('.secondLunch')),
+                thirdLunch: getProductFromInput(daily.find('.thirdLunch')),
+                dinner: getProductFromInput(daily.find('.dinner')),
+                secondDinner: getProductFromInput(daily.find('.secondDinner')),
+                additional: []
+            }
+
+            daily.find('.additionalProduct:not(.newItem)').each(function(){
+                products.additional.push(getProductFromInput($(this)));
+            });
+
+            var data = {
+                date: date,
+                products: products
+            }
+            $.post(window.location.href +  "daily", data)
+                    .done(function () {
+                        console.log("Daily added");
+                    })
+                    .fail(function (error) {
+                        console.log(error.responseText);
+                    });
+        }
 
         sortBy.on('change', function () {
             sortKey = sortBy.find('option:selected').val();
@@ -246,13 +324,20 @@ block content
             }
         }
 
-        function setProduct(view, product) {
+        function setProductP(view, product) {
 
             view.find('.description').text(product.description);
             view.find('.proteins').text(product.proteins);
             view.find('.triglyceride').text(product.triglyceride);
             view.find('.carbohydrate').text(product.carbohydrate);
             view.find('.calorie').text(product.calorie);
+        }
+        function setProductInput(view, product) {
+            view.find('.description').val(product.description || '');
+            view.find('.proteins').val(product.proteins || '');
+            view.find('.triglyceride').val(product.triglyceride || '');
+            view.find('.carbohydrate').val(product.carbohydrate || '');
+            view.find('.calorie').val(product.calorie || '');
         }
 
         function removeFromCurrentDish(view, cb){
@@ -274,7 +359,7 @@ block content
             );
 
 
-            setProduct(productView, product);
+            setProductP(productView, product);
             productView.find('.remove').click(removeFromCurrentDish.bind(null, productView, reCalc));
 
             productView.find('input').on('input propertychange paste', reCalc);
@@ -301,10 +386,10 @@ block content
                 res.carbohydrate += +product.carbohydrate * mass;
                 res.calorie += +product.calorie * mass;
             });
-            resultDish.find('.proteins').text(res.proteins + ' г');
-            resultDish.find('.triglyceride').text(res.triglyceride + ' г');
-            resultDish.find('.carbohydrate').text(res.carbohydrate + ' г');
-            resultDish.find('.calorie').text(res.calorie + ' Ккал');
+            resultDish.find('.proteins').text(res.proteins);
+            resultDish.find('.triglyceride').text(res.triglyceride);
+            resultDish.find('.carbohydrate').text(res.carbohydrate);
+            resultDish.find('.calorie').text(res.calorie);
         }
 
         function updateList() {
@@ -327,7 +412,7 @@ block content
                         .addClass('product'));
 
 
-                setProduct(productView, product);
+                setProductP(productView, product);
 
                 productView.find('.add').click(addToCurrentDish.bind(null, product));
 
