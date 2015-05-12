@@ -22,15 +22,23 @@ Products.prototype.getDaily = function(date) {
 
 Products.prototype.load = function(cb) {
     var _this = this;
-    fs.readFile(this.filename, {encoding: 'utf8'}, function (err, data) {
-        if (err) throw err;
 
-        var o = JSON.parse(data);
-        _this.list = o.list;
-        _this.dailyProducts = o.dailyProducts;
+    fs.exists(this.filename, function(exist){
+        if(!exist)
+            return _this.save(cb);
 
-        return cb && cb(null, _this.list);
+        fs.readFile(_this.filename, {encoding: 'utf8'}, function (err, data) {
+            if (err) throw err;
+
+            var o = JSON.parse(data);
+            _this.list = o.list;
+            _this.dailyProducts = o.dailyProducts;
+
+            return cb && cb(null, _this.list);
+        });
     });
+
+
 };
 
 Products.prototype.save = function(cb) {
