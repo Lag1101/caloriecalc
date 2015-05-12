@@ -125,7 +125,10 @@ block content
         var order = sortOrder.find('option:selected').val();
         var daily = $('.daily');
 
-        daily.find('input').on('input paste',reCalcDaily);
+        daily.find('input').on('input paste',function(){
+            reCalcDaily();
+            saveDaily();
+        });
         function reCalcDaily(){
             var res = {
                 proteins: 0,
@@ -152,12 +155,12 @@ block content
             resEl.find('.carbohydrate').text(res.carbohydrate + ' г');
             resEl.find('.calorie').text(res.calorie + ' Ккал');
 
-            saveDaily();
         }
         $('.addButton').click(function(){
             var newItem = getNewItemClone();
             daily.find('.newItem').find('input').val('');
             reCalcDaily();
+            saveDaily();
         });
 
         (function(){
@@ -167,6 +170,7 @@ block content
             var dd = today.getDate().toString();
             $('.dailyDate').val(yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]));
             responseDaily($('.dailyDate').val());
+            reCalcDaily();
         })();
 
         $('.dailyDate').on('input propertychange paste', function(){
@@ -216,6 +220,7 @@ block content
             clearDaily();
             $.get(window.location.href + "daily", {date: date}, function (data) {
                 restoreDaily(data);
+                reCalcDaily();
             });
         }
 
