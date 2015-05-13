@@ -35,9 +35,10 @@
     }
 
     function totallyRemove(view, product) {
-        utils.removeFromCurrentDish(view, function(){
-            removeFromServer(product);
-        });
+        if( confirm("Вы уверены, что хотите удалить " + product.description) )
+            utils.removeFromCurrentDish(view, function(){
+                removeFromServer(product);
+            });
     }
 
 
