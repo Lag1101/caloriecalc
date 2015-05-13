@@ -15,7 +15,7 @@ var utils = (function(){
         for(var i = 0; i < fields.length; i++){
             var field = fields[i];
             var str = item.find('.' + field).text();
-            res[field] = validate(str);
+            res[field] = str;
         }
 
         return res;
@@ -26,7 +26,7 @@ var utils = (function(){
         for(var i = 0; i < fields.length; i++){
             var field = fields[i];
             var str = item.find('.' + field).val();
-            res[field] = validate(str);
+            res[field] = str;
         }
 
         return res;
@@ -39,6 +39,9 @@ var utils = (function(){
                 view.find('.'+field).text(product[field]);
             else
                 view.find('.'+field).text('');
+
+            if(field !== 'description')
+                view.find('.'+field).text( utils.validate( view.find('.'+field).text() ) );
         }
     }
     function setProductInput(view, product) {
@@ -48,6 +51,8 @@ var utils = (function(){
                 view.find('.'+field).val(product[field]);
             else
                 view.find('.'+field).val('');
+            if(field !== 'description')
+                view.find('.'+field).val( utils.validate( view.find('.'+field).val() ) );
         }
     }
 

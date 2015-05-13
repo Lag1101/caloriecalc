@@ -63,7 +63,9 @@
                 .append($('<p>').addClass('triglyceride item').text('-'))
                 .append($('<p>').addClass('carbohydrate item').text('-'))
                 .append($('<p>').addClass('calorie item').text('-'))
-                .append($('<input>').addClass('mass item').attr('placeholder', 'Вес').attr('value', '100').text('-'))
+                .append($('<input>').addClass('mass item').attr('placeholder', 'Вес').attr('value', '100').text('-').on('input paste', function(){
+                    $(this).val( utils.validate( $(this).val() ) );
+                }))
         );
 
 

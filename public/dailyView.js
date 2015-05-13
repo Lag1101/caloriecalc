@@ -4,7 +4,7 @@
 
 (function(){
 
-    var daily = $('.daily')
+    var daily = $('.daily');
     var links = {
         proteins: null,
         triglyceride: null,
