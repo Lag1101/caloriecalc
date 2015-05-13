@@ -13,10 +13,32 @@
     };
     var dailyDate = $('.dailyDate');
 
+    updateLinks();
+
     daily.find('input').on('input paste',function(){
         reCalcDaily();
         saveDaily();
     });
+
+    $('.addButton').click(function(){
+        var newItem = getNewItemClone();
+        daily.find('.newItem').find('input').val('');
+        updateLinks();
+        reCalcDaily();
+        saveDaily();
+    });
+
+    (function(){
+        dailyDate.val(utils.fromDateToString());
+        responseDaily(dailyDate.val());
+        reCalcDaily();
+    })();
+
+    dailyDate.on('input propertychange paste', function(){
+        var date = $(this).val();
+        responseDaily(date);
+    });
+
     function reCalcDaily(){
         var res = {
             proteins: 0,
@@ -43,28 +65,6 @@
         resEl.find('.calorie').text(res.calorie);
 
     }
-    $('.addButton').click(function(){
-        var newItem = getNewItemClone();
-        daily.find('.newItem').find('input').val('');
-        updateLinks();
-        reCalcDaily();
-        saveDaily();
-    });
-
-    (function(){
-        var today = new Date();
-        var yyyy = today.getFullYear().toString();
-        var mm = (today.getMonth() + 1).toString(); // getMonth() is zero-based
-        var dd = today.getDate().toString();
-        dailyDate.val(yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]));
-        responseDaily(dailyDate.val());
-        reCalcDaily();
-    })();
-
-    dailyDate.on('input propertychange paste', function(){
-        var date = $(this).val();
-        responseDaily(date);
-    });
 
     function clearDaily(){
         utils.setProductInput(daily.find('.breakfast'), {});
