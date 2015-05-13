@@ -59,10 +59,10 @@
             res.calorie += +$(this).val();
         });
         var resEl = $('.result');
-        resEl.find('.proteins').text(res.proteins);
-        resEl.find('.triglyceride').text(res.triglyceride);
-        resEl.find('.carbohydrate').text(res.carbohydrate);
-        resEl.find('.calorie').text(res.calorie);
+        resEl.find('.proteins').text(res.proteins.toFixed(2));
+        resEl.find('.triglyceride').text(res.triglyceride.toFixed(2));
+        resEl.find('.carbohydrate').text(res.carbohydrate.toFixed(2));
+        resEl.find('.calorie').text(res.calorie.toFixed(2));
 
     }
 

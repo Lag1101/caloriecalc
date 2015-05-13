@@ -94,10 +94,10 @@
             res.carbohydrate += +product.carbohydrate * mass;
             res.calorie += +product.calorie * mass;
         });
-        resultDish.find('.proteins').text(res.proteins);
-        resultDish.find('.triglyceride').text(res.triglyceride);
-        resultDish.find('.carbohydrate').text(res.carbohydrate);
-        resultDish.find('.calorie').text(res.calorie);
+        resultDish.find('.proteins').text(res.proteins.toFixed(3));
+        resultDish.find('.triglyceride').text(res.triglyceride.toFixed(3));
+        resultDish.find('.carbohydrate').text(res.carbohydrate.toFixed(3));
+        resultDish.find('.calorie').text(res.calorie.toFixed(3));
     }
 
     function updateList() {
