@@ -3,39 +3,48 @@
  */
 
 var utils = (function(){
+    var fields = ['description', 'proteins', 'triglyceride', 'carbohydrate', 'calorie'];
+
+    function validate(str){
+        return str.replace(',', '.');
+    }
+
     function getProductFromP(item) {
-        return {
-            description: item.find('.description').text(),
-            proteins: item.find('.proteins').text(),
-            triglyceride: item.find('.triglyceride').text(),
-            carbohydrate: item.find('.carbohydrate').text(),
-            calorie: item.find('.calorie').text()
+        var res = {};
+
+        for(var i = 0; i < fields.length; i++){
+            var field = fields[i];
+            var str = item.find('.' + field).text();
+            res[field] = validate(str);
         }
+
+        return res;
     }
     function getProductFromInput(item){
-        return {
-            description: item.find('.description').val(),
-            proteins: item.find('.proteins').val() ,
-            triglyceride: item.find('.triglyceride').val(),
-            carbohydrate: item.find('.carbohydrate').val(),
-            calorie: item.find('.calorie').val()
+        var res = {};
+
+        for(var i = 0; i < fields.length; i++){
+            var field = fields[i];
+            var str = item.find('.' + field).val();
+            res[field] = validate(str);
         }
+
+        return res;
     }
+
+
 
     function setProductP(view, product) {
-
-        view.find('.description').text(product.description || '');
-        view.find('.proteins').text(product.proteins || '');
-        view.find('.triglyceride').text(product.triglyceride || '');
-        view.find('.carbohydrate').text(product.carbohydrate || '');
-        view.find('.calorie').text(product.calorie || '');
+        for(var i = 0; i < fields.length; i++){
+            var field = fields[i];
+            view.find('.'+field).text(product[field] || '');
+        }
     }
     function setProductInput(view, product) {
-        view.find('.description').val(product.description || '');
-        view.find('.proteins').val(product.proteins || '');
-        view.find('.triglyceride').val(product.triglyceride || '');
-        view.find('.carbohydrate').val(product.carbohydrate || '');
-        view.find('.calorie').val(product.calorie || '');
+        for(var i = 0; i < fields.length; i++){
+            var field = fields[i];
+            view.find('.'+field).val(product[field] || '');
+        }
     }
 
     function removeFromCurrentDish(view, cb){
