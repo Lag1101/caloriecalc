@@ -3,7 +3,7 @@
  */
 
 
-module.expotrs = function(app){
+module.exports = function(app){
     app.use('/', require('./main'));
     app.use('/users', require('./users'));
     app.use('/products', require('./products'));
