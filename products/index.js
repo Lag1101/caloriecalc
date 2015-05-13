@@ -3,6 +3,7 @@
  */
 
 var fs = require('fs');
+var crypto = require('crypto');
 
 function Products(){
     this.list = [];
@@ -34,6 +35,8 @@ Products.prototype.load = function(cb) {
             _this.list = o.list;
             _this.dailyProducts = o.dailyProducts;
 
+            _this.validate();
+
             return cb && cb(null, _this.list);
         });
     });
@@ -58,9 +61,40 @@ Products.prototype.save = function(cb) {
 };
 
 Products.prototype.push = function(product) {
+    if(!product.id)
+        product.id = Products.getUniqueId();
     this.list.push(product);
 };
 
+Products.prototype.validate = function(){
+    for(var i = 0; i < this.list.length; i++) {
+        var product = this.list[i];
 
-module.exports = Products;
+        if(!product.id)
+            product.id = Products.getUniqueId();
+    }
+};
+
+Products.prototype.remove = function(id){
+    for(var i = 0; i < this.list.length; i++) {
+        var product = this.list[i];
+
+        if(id === product.id) {
+            this.list.splice(i, 1);
+            break;
+        }
+    }
+};
+
+Products.getUniqueId = function(){
+    var sid = Math.random().toString();
+
+    var id = crypto.createHash('sha1');
+    id.update(sid);
+
+    return id.digest('hex');
+};
+
+
+module.exports.Products = Products;
 module.exports.products = module.exports.products || new Products();
