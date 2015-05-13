@@ -4,15 +4,25 @@ block content
     - var items = [{label:'Белки',classId: 'proteins'},{label:'Жиры',classId: 'triglyceride'},{label:'Углеводы',classId: 'carbohydrate'},{label:'Ккал',classId: 'calorie'}];
     - var daily = [{label:'Завтрак',classId: 'breakfast'},{label:'Ланч',classId: 'firstLunch'},{label:'Обед',classId: 'secondLunch'},{label:'Перекус',classId: 'thirdLunch'},{label:'Ужин',classId: 'dinner'},{label:'Перед сном',classId: 'secondDinner'}];
     div
-        div(class='resultDish table')
-            div
-                div(class='product')
-                    each item in items
-                        p(class='label') #{item.label}
-            div
-                div(class='product')
-                    each item in items
-                        p(class='#{item.classId} label') 0
+        div(class='table')
+            div(class='resultDish')
+                    div
+                        div(class='product')
+                            each item in items
+                                p(class='label') #{item.label}
+                    div
+                        div(class='product')
+                            each item in items
+                                p(class='#{item.classId} label') 0
+            div(class='portion')
+                div
+                    div(class='product')
+                        each item in items
+                            p(class='label') #{item.label}
+                div
+                    div(class='product')
+                        each item in items
+                            p(class='#{item.classId} label') 0
 
         div(class='table')
             input(type='date' class='dailyDate')

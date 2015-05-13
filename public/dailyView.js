@@ -28,6 +28,10 @@
         saveDaily();
     });
 
+    daily.find('input:not(.description)').on('input paste', function(){
+        $(this).val( utils.validate( $(this).val() ) );
+    });
+
     (function(){
         dailyDate.val(utils.fromDateToString());
         responseDaily(dailyDate.val());
@@ -58,12 +62,13 @@
         links.calorie.each(function () {
             res.calorie += +$(this).val();
         });
-        var resEl = $('.result');
-        resEl.find('.proteins').text(res.proteins.toFixed(2));
-        resEl.find('.triglyceride').text(res.triglyceride.toFixed(2));
-        resEl.find('.carbohydrate').text(res.carbohydrate.toFixed(2));
-        resEl.find('.calorie').text(res.calorie.toFixed(2));
+        res.proteins = res.proteins.toFixed(1);
+        res.triglyceride = res.triglyceride.toFixed(1);
+        res.carbohydrate = res.carbohydrate.toFixed(1);
+        res.calorie = res.calorie.toFixed(1);
 
+        var resEl = $('.result');
+        utils.setProductP(resEl, res);
     }
 
     function clearDaily(){
@@ -92,6 +97,9 @@
         newItem.find('input').on('input paste', function(){
             reCalcDaily();
             saveDaily();
+        });
+        newItem.find('input:not(.description)').on('input paste', function(){
+            $(this).val( utils.validate( $(this).val() ) );
         });
         daily.find('.newItem').before(newItem);
 

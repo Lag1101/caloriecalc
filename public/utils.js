@@ -32,18 +32,22 @@ var utils = (function(){
         return res;
     }
 
-
-
     function setProductP(view, product) {
         for(var i = 0; i < fields.length; i++){
             var field = fields[i];
-            view.find('.'+field).text(product[field] || '');
+            if(product[field])
+                view.find('.'+field).text(product[field]);
+            else
+                view.find('.'+field).text('');
         }
     }
     function setProductInput(view, product) {
         for(var i = 0; i < fields.length; i++){
             var field = fields[i];
-            view.find('.'+field).val(product[field] || '');
+            if(product[field])
+                view.find('.'+field).val(product[field]);
+            else
+                view.find('.'+field).val('');
         }
     }
 
@@ -63,6 +67,7 @@ var utils = (function(){
     }
 
     return {
+        validate: validate,
         getProductFromP: getProductFromP,
         getProductFromInput: getProductFromInput,
         setProductP: setProductP,
