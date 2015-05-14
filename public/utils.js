@@ -14,12 +14,9 @@ var utils = (function(){
 
         for(var i = 0; i < fields.length; i++){
             var field = fields[i];
-            var str;
-            if(field !== 'description' && field !== 'details')
-                str = item.find('.' + field).text();
-            else
-                str = item.find('.' + field).val();
-            res[field] = str;
+            var v;
+            v = item.find('.' + field).text();
+            res[field] = v;
         }
 
         return res;
@@ -29,12 +26,9 @@ var utils = (function(){
 
         for(var i = 0; i < fields.length; i++){
             var field = fields[i];
-            var str;
-            if(field !== 'description' && field !== 'details')
-                str = item.find('.' + field).val();
-            else
-                str = item.find('.' + field).val();
-            res[field] = str;
+            var v;
+            v = item.find('.' + field).val();
+            res[field] = v;
         }
 
         return res;

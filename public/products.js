@@ -114,8 +114,15 @@
         //    }
         //});
 
-        if(order === 'greater') reorderProducts = reorderProducts.sort(function (p1, p2) {return p1[sortKey] > p2[sortKey];});
-        else reorderProducts = reorderProducts.sort(function (p1, p2) {return p1[sortKey] < p2[sortKey];});
+        function compText(p1, p2){
+            return (order === "greater") ^ (p1[sortKey] < p2[sortKey]);
+        }
+        function compValues(p1, p2){
+            return (order === "greater") ^ (parseFloat(p1[sortKey]) < parseFloat(p2[sortKey]));
+        }
+        var comp = (sortKey === 'description' || sortKey === 'details') ? compText : compValues;
+
+        reorderProducts = reorderProducts.sort(comp);
 
         return reorderProducts;
     }
