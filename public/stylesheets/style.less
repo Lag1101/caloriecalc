@@ -32,11 +32,13 @@
   //border: red solid 1px;
   display: inline-block;
   width: 50px;
-  margin: 0px;
+  height: 20px;
 }
 .item:not(button){
+  border: none;
+  margin: 0px;
   border: 2px;
-  padding: 1px;
+  padding: 0px;
 }
 .label{
   //border: blue solid 1px;
@@ -69,22 +71,14 @@ p{
   margin: 0;
   vertical-align: top;
 }
-textarea{
+.details{
+  width: 100px;
+  height: 20px;
+  resize: both;
+  display: inline-block;
+  min-width: 50px;
   margin:0;
   padding: 0px;
   border: none;
-}
-
-@timeToExpand: 0.5s;
-.unSelectedDetails{
-  transition: width @timeToExpand, height @timeToExpand;
-  width: 100px;
-  height: 18px;
-  resize: none;
-}
-.selectedDetails{
-  transition: width @timeToExpand, height @timeToExpand;
-  width: 300px;
-  height: 150px;
-  resize: none;
+  background-color: ivory;
 }

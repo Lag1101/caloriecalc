@@ -14,7 +14,11 @@ var utils = (function(){
 
         for(var i = 0; i < fields.length; i++){
             var field = fields[i];
-            var str = item.find('.' + field).text();
+            var str;
+            if(field !== 'description' && field !== 'details')
+                str = item.find('.' + field).text();
+            else
+                str = item.find('.' + field).val();
             res[field] = str;
         }
 
@@ -25,7 +29,11 @@ var utils = (function(){
 
         for(var i = 0; i < fields.length; i++){
             var field = fields[i];
-            var str = item.find('.' + field).val();
+            var str;
+            if(field !== 'description' && field !== 'details')
+                str = item.find('.' + field).val();
+            else
+                str = item.find('.' + field).val();
             res[field] = str;
         }
 
@@ -44,7 +52,7 @@ var utils = (function(){
                 view.find('.'+field).text( utils.validate( view.find('.'+field).text() ) );
         }
 
-        view.find('.details').val(product.details);
+        view.find('.details').text(product.details);
     }
     function setProductInput(view, product) {
         for(var i = 0; i < fields.length; i++){
@@ -56,7 +64,7 @@ var utils = (function(){
             if(field !== 'description' && field !== 'details')
                 view.find('.'+field).val( utils.validate( view.find('.'+field).val() ) );
         }
-        view.find('.details').val(product.details);
+        view.find('.details').text(product.details);
     }
 
     function removeFromCurrentDish(view, cb){

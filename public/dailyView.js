@@ -23,7 +23,6 @@
     dailyTextAreas.on('input paste',function(){
         saveDaily();
     });
-    dailyTextAreas.on('click', expandDetails);
 
     $('.addButton').click(function(){
         var newItem = getNewItemClone();
@@ -48,12 +47,6 @@
         var date = $(this).val();
         responseDaily(date);
     });
-
-    function expandDetails(){
-        var selectedDetails = $('.selectedDetails');
-        selectedDetails.removeClass('selectedDetails').addClass('unSelectedDetails');
-        $(this).removeClass('unSelectedDetails').addClass('selectedDetails');
-    }
 
     function reCalcDaily(){
         var res = {
@@ -117,7 +110,6 @@
         newItem.find('textarea').on('input paste', function(){
             saveDaily();
         });
-        newItem.find('textarea').on('click', expandDetails);
         daily.find('.newItem').before(newItem);
 
         return newItem;
@@ -131,18 +123,18 @@
     }
 
     function restoreDaily(dailyProducts){
-        utils.setProductInput(daily.find('.breakfast'), dailyProducts.breakfast || {});
-        utils.setProductInput(daily.find('.firstLunch'), dailyProducts.firstLunch || {});
-        utils.setProductInput(daily.find('.secondLunch'), dailyProducts.secondLunch || {});
-        utils.setProductInput(daily.find('.thirdLunch'), dailyProducts.thirdLunch || {});
-        utils.setProductInput(daily.find('.dinner'), dailyProducts.dinner || {});
-        utils.setProductInput(daily.find('.secondDinner'), dailyProducts.secondDinner || {});
+        restoreDailyItem(daily.find('.breakfast'), dailyProducts.breakfast || {});
+        restoreDailyItem(daily.find('.firstLunch'), dailyProducts.firstLunch || {});
+        restoreDailyItem(daily.find('.secondLunch'), dailyProducts.secondLunch || {});
+        restoreDailyItem(daily.find('.thirdLunch'), dailyProducts.thirdLunch || {});
+        restoreDailyItem(daily.find('.dinner'), dailyProducts.dinner || {});
+        restoreDailyItem(daily.find('.secondDinner'), dailyProducts.secondDinner || {});
 
         if(dailyProducts.additional)
             for(var i = 0; i < dailyProducts.additional.length; i++){
                 var additional = dailyProducts.additional[i];
                 var additionalItem = getNewItemClone();
-                utils.setProductInput(additionalItem, additional || {});
+                restoreDailyItem(additionalItem, additional || {});
             }
     }
 
@@ -155,22 +147,45 @@
         });
     }
 
+    function createDailyItem(el){
+        return {
+            details: {
+                width: el.find('.details').width(),
+                height: el.find('.details').height()
+            },
+            products: utils.getProductFromInput(el)
+        };
+    }
+
+    function restoreDailyItem(el, details){
+        if(details.details) {
+            el.find('.details').width(details.details.width);
+            el.find('.details').height( details.details.height);
+        } else {
+            el.find('.details').width(100);
+            el.find('.details').height(20);
+        }
+
+        utils.setProductInput(el, details.products || {});
+
+    }
+
     function saveDaily(){
         var date = $('.dailyDate').val();
         //$('.dailyDate').val('2014-06-21')
 
         var products = {
-            breakfast: utils.getProductFromInput(daily.find('.breakfast')),
-            firstLunch: utils.getProductFromInput(daily.find('.firstLunch')),
-            secondLunch: utils.getProductFromInput(daily.find('.secondLunch')),
-            thirdLunch: utils.getProductFromInput(daily.find('.thirdLunch')),
-            dinner: utils.getProductFromInput(daily.find('.dinner')),
-            secondDinner: utils.getProductFromInput(daily.find('.secondDinner')),
+            breakfast: createDailyItem(daily.find('.breakfast')),
+            firstLunch: createDailyItem(daily.find('.firstLunch')),
+            secondLunch: createDailyItem(daily.find('.secondLunch')),
+            thirdLunch: createDailyItem(daily.find('.thirdLunch')),
+            dinner: createDailyItem(daily.find('.dinner')),
+            secondDinner: createDailyItem(daily.find('.secondDinner')),
             additional: []
         };
 
         daily.find('.additionalProduct:not(.newItem)').each(function(){
-            products.additional.push(utils.getProductFromInput($(this)));
+            products.additional.push(createDailyItem($(this)));
         });
 
         var data = {
