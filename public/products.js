@@ -139,9 +139,15 @@
         //    }
         //});
 
-        function comp(p1, p2){
-            return (order === "greater") ^ (p1[sortKey] < p2[sortKey]);
-        }
+
+        if(sortKey==='description' || sortKey==='details')
+            function comp(p1, p2){
+                return (order === "greater") ^ (parseFloat(p1[sortKey]) < parseFloat(p2[sortKey]));
+            }
+        else
+            function comp(p1, p2){
+                return (order === "greater") ^ (p1[sortKey] < p2[sortKey]);
+            }
         reorderProducts = reorderProducts.sort(comp);
 
         return reorderProducts;
