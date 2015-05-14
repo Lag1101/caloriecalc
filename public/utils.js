@@ -61,11 +61,6 @@ var utils = (function(){
         view.find('.details').text(product.details);
     }
 
-    function removeFromCurrentDish(view, cb){
-        view.detach();
-        return cb && cb();
-    }
-
     function fromDateToString(d){
         var date = d || new Date();
 
@@ -132,7 +127,6 @@ var utils = (function(){
         getProductFromInput: getProductFromInput,
         setProductP: setProductP,
         setProductInput: setProductInput,
-        removeFromCurrentDish: removeFromCurrentDish,
         fromDateToString: fromDateToString,
         distanceBeetweenStrings: distanceBeetweenStrings
     };

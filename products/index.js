@@ -8,6 +8,8 @@ var crypto = require('crypto');
 function Products(){
     this.list = [];
 
+    this.currentDishProducts = [];
+
     this.dailyProducts = {};
 
     this.filename = 'productsList.json';
@@ -32,8 +34,9 @@ Products.prototype.load = function(cb) {
             if (err) throw err;
 
             var o = JSON.parse(data);
-            _this.list = o.list;
-            _this.dailyProducts = o.dailyProducts;
+            _this.list = o.list || [];
+            _this.dailyProducts = o.dailyProducts || [];
+            _this.currentDishProducts = o.currentDishProducts || [];
 
             _this.validate();
 
@@ -47,7 +50,8 @@ Products.prototype.load = function(cb) {
 Products.prototype.save = function(cb) {
     var data = {
         list: this.list,
-        dailyProducts: this.dailyProducts
+        dailyProducts: this.dailyProducts,
+        currentDishProducts: this.currentDishProducts
     };
     fs.writeFile(this.filename, JSON.stringify(data), function(err) {
         if(err) {

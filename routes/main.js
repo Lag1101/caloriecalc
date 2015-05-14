@@ -23,9 +23,9 @@ router.post('/newProduct', function(req, res) {
     res.end();
 });
 router.post('/removeProduct', function(req, res) {
-    var product = req.body;
+    var id = req.body.id;
 
-    products.remove(product.id);
+    products.remove(id);
     products.save();
     res.end();
 });
@@ -39,6 +39,16 @@ router.post('/daily', function(req, res) {
     products.addDaily(dailyProduct.date, dailyProduct.products);
     products.save();
     res.end();
+});
+
+router.post('/currentDishProducts', function(req, res) {
+    products.currentDishProducts = req.body.currentDishProducts;
+
+    products.save();
+    res.end();
+});
+router.get('/currentDishProducts', function(req, res) {
+    res.send(products.currentDishProducts);
 });
 
 

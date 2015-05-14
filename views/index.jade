@@ -9,20 +9,16 @@ block content
                     div
                         div(class='product')
                             each item in items
-                                p(class='label') #{item.label}
+                                input(disabled class='label' value=item.label)
                     div
                         div(class='product')
                             each item in items
-                                p(class='#{item.classId} label') 0
+                                input(disabled class='#{item.classId} label' placeholder=0)
             div(class='portion')
                 div
                     div(class='product')
                         each item in items
-                            p(class='label') #{item.label}
-                div
-                    div(class='product')
-                        each item in items
-                            p(class='#{item.classId} label') 0
+                            input(disabled class='#{item.classId} label' placeholder=0)
 
         div(class='table')
             div(class='product')
@@ -57,7 +53,7 @@ block content
 
     div(class='table allProducts')
         div(class='newProduct product')
-            button(class='addProductButton item') +
+            button(class='addProductButton') +
             input(class="description item" placeholder="Имя")
             each item in items
                 input(class='#{item.classId} item' placeholder=item.label)
@@ -73,19 +69,7 @@ block content
 
         div(class='productsList')
 
-    script.
-        var addButton = $('.addProductButton');
-        var newProduct = $('.newProduct');
-        var productsList = $('.productsList');
-        var products = [];
-        var currentDishProducts = $('.currentDishProducts');
-        var resultDish = $('.resultDish');
-        var sortBy = $('.sortBy');
-        var sortOrder = $('.sortOrder');
-
-        var sortKey = sortBy.find('option:selected').val();
-        var order = sortOrder.find('option:selected').val();
-
+    script(src='product.js')
     script(src='utils.js')
     script(src='dailyView.js')
     script(src='products.js')

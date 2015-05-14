@@ -2,6 +2,21 @@
  * Created by vasiliy.lomanov on 13.05.2015.
  */
 (function(){
+
+    var products = [];
+
+    var addButton = $('.addProductButton');
+    var newProduct = $('.newProduct');
+    var productsList = $('.productsList');
+    var currentDishProductsView = $('.currentDishProducts');
+    var resultDish = $('.resultDish');
+    var sortBy = $('.sortBy');
+    var sortOrder = $('.sortOrder');
+
+    var sortKey = sortBy.find('option:selected').val();
+    var order = sortOrder.find('option:selected').val();
+
+
     sortBy.on('change', function () {
         sortKey = sortBy.find('option:selected').val();
         updateList();
@@ -15,8 +30,9 @@
     getUpdates();
 
     addButton.click(function(){
-        var product = utils.getProductFromInput(newProduct);
-        $.post(window.location.href +  "newProduct", product)
+        var product = new Product();
+        product.readEl(newProduct);
+        $.post(window.location.href +  "newProduct", product.getRaw())
             .done(function () {
                 console.log("Product added");
                 newProduct.find('.item:not(button)').empty();
@@ -31,14 +47,20 @@
 
     function getUpdates(){
         $.get(window.location.href + "list", function (data) {
-            products = data;
+            products = [];
+            data.map(function(d){
+                products.push(new Product(d));
+            });
             updateList();
+        });
+        $.get(window.location.href + "currentDishProducts", function (data) {
+            updateCurrentDishProducts(data);
         });
     }
 
     function totallyRemove(view, product) {
-        if( confirm("Вы уверены, что хотите удалить " + product.description) )
-            utils.removeFromCurrentDish(view, function(){
+        if( confirm("Вы уверены, что хотите удалить " + product.description + " ?") )
+            removeFromCurrentDish(view, function(){
                 removeFromServer(product);
             });
     }
@@ -46,7 +68,7 @@
 
 
     function removeFromServer(product){
-        $.post(window.location.href +  "removeProduct", product)
+        $.post(window.location.href +  "removeProduct", {id: product.id})
             .done(function () {
                 console.log("Product removed");
                 getUpdates();
@@ -56,42 +78,48 @@
             });
     }
 
-    function addToCurrentDish(product){
+
+    function removeFromCurrentDish(view, id, cb){
+        view.detach();
+        saveCurrentDishProducts();
+        return cb && cb();
+    }
+    function addToCurrentDish(datum){
+        var product = new Product(datum);
         var productView = $('<tr>')
             .append($('<div>')
                 .addClass('product')
-                .append($('<button>').addClass('item remove').text('-'))
-                .append($('<p>').addClass('description item'))
-                .append($('<p>').addClass('proteins item').text('-'))
-                .append($('<p>').addClass('triglyceride item').text('-'))
-                .append($('<p>').addClass('carbohydrate item').text('-'))
-                .append($('<p>').addClass('calorie item').text('-'))
-                .append($('<input>').addClass('mass item').attr('placeholder', 'Вес').attr('value', '100').text('-').on('input paste', function(){
+                .append($('<button>').addClass('remove').text('-'))
+                .append($('<input>').addClass('description'))
+                .append($('<input>').addClass('proteins'))
+                .append($('<input>').addClass('triglyceride'))
+                .append($('<input>').addClass('carbohydrate'))
+                .append($('<input>').addClass('calorie'))
+                .append($('<input>').addClass('mass').attr('placeholder', 'Вес').on('input paste', function(){
                     $(this).val( utils.validate( $(this).val() ) );
+                    saveCurrentDishProducts();
                 }))
         );
+        productView.find('input').addClass('item');
+        productView.find('input:not(.mass)').attr('disabled', true);
 
-
-        utils.setProductP(productView, product);
-        productView.find('.remove').click(utils.removeFromCurrentDish.bind(null, productView, reCalc));
+        product.writeEl(productView);
+        productView.find('.remove').click(removeFromCurrentDish.bind(null, productView, product.id, reCalc));
 
         productView.find('input').on('input propertychange paste', reCalc);
 
-        productView.appendTo(currentDishProducts);
+        productView.appendTo(currentDishProductsView);
 
         reCalc();
+        saveCurrentDishProducts();
     }
 
     function reCalc(){
-        var res = {
-            proteins: 0,
-            triglyceride: 0,
-            carbohydrate: 0,
-            calorie: 0
-        };
-        currentDishProducts.find('.product').each(function(){
+        var res = new Product();
+        currentDishProductsView.find('.product').each(function(){
             var item = $(this);
-            var product = utils.getProductFromP(item);
+            var product = new Product();
+            product.readEl(item);
             var mass = +(item.find('.mass').val()) / 100;
 
             res.proteins += +product.proteins * mass;
@@ -99,10 +127,7 @@
             res.carbohydrate += +product.carbohydrate * mass;
             res.calorie += +product.calorie * mass;
         });
-        resultDish.find('.proteins').text(res.proteins.toFixed(3));
-        resultDish.find('.triglyceride').text(res.triglyceride.toFixed(3));
-        resultDish.find('.carbohydrate').text(res.carbohydrate.toFixed(3));
-        resultDish.find('.calorie').text(res.calorie.toFixed(3));
+        res.writeEl(resultDish);
     }
 
     function reorder(products, searchStr){
@@ -114,19 +139,32 @@
         //    }
         //});
 
-        function compText(p1, p2){
+        function comp(p1, p2){
             return (order === "greater") ^ (p1[sortKey] < p2[sortKey]);
         }
-        function compValues(p1, p2){
-            return (order === "greater") ^ (parseFloat(p1[sortKey]) < parseFloat(p2[sortKey]));
-        }
-        var comp = (sortKey === 'description' || sortKey === 'details') ? compText : compValues;
-
         reorderProducts = reorderProducts.sort(comp);
 
         return reorderProducts;
     }
-
+    function updateCurrentDishProducts(data) {
+        currentDishProducts = [];
+        data.map(addToCurrentDish);
+    }
+    function saveCurrentDishProducts() {
+        var currentDishProducts = [];
+        currentDishProductsView.find('.product').each(function(){
+            var product = new Product();
+            product.readEl($(this));
+            currentDishProducts.push(product.getRaw());
+        });
+        $.post(window.location.href +  "currentDishProducts", {currentDishProducts:currentDishProducts})
+            .done(function () {
+                console.log("currentDishProducts saved");
+            })
+            .fail(function (error) {
+                console.log(error.responseText);
+            });
+    }
     function updateList() {
 
         var reorderProducts = reorder(products, newProduct.find('.description').val());
@@ -137,17 +175,17 @@
 
             var productView = $('<tr>')
                 .append($('<div>')
-                    .append($('<button>').addClass('item add').text('+'))
-                    .append($('<p>').addClass('description item').text('Описание'))
-                    .append($('<p>').addClass('proteins item').text('Белки'))
-                    .append($('<p>').addClass('triglyceride item').text('Жиры'))
-                    .append($('<p>').addClass('carbohydrate item').text('Углеводы'))
-                    .append($('<p>').addClass('calorie item').text('Ккал'))
-                    .append($('<button>').addClass('item remove').text('-'))
+                    .append($('<button>').addClass('add').text('+'))
+                    .append($('<input>').addClass('description'))
+                    .append($('<input>').addClass('proteins'))
+                    .append($('<input>').addClass('triglyceride'))
+                    .append($('<input>').addClass('carbohydrate'))
+                    .append($('<input>').addClass('calorie'))
+                    .append($('<button>').addClass('remove').text('-'))
                     .addClass('product'));
 
-
-            utils.setProductP(productView, product);
+            productView.find('input').attr('disabled', true).addClass('item');
+            product.writeEl(productView);
 
             productView.find('.add').click(addToCurrentDish.bind(null, product));
             productView.find('.remove').click(totallyRemove.bind(null, productView, product));
