@@ -142,10 +142,15 @@
 
 
         function comp(p1, p2){
-            if(sortKey==='description' || sortKey==='details')
-                return (p1[sortKey] < p2[sortKey]);
+            var v1 = p1[sortKey];
+            var v2 = p2[sortKey];
+
+            if( (v1 < v2) ^ (order !== "greater") )
+                return -1;
+            else if( (v2 < v1) ^ (order !== "greater")  )
+                return 1;
             else
-                return (parseFloat(p1[sortKey]) < parseFloat(p2[sortKey]));
+                return 0;
         }
         reorderProducts = reorderProducts.sort(comp);
 
