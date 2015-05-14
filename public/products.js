@@ -27,6 +27,8 @@
             });
     });
 
+    newProduct.find('.description').on('input paste', updateList);
+
     function getUpdates(){
         $.get(window.location.href + "list", function (data) {
             products = data;
@@ -103,14 +105,28 @@
         resultDish.find('.calorie').text(res.calorie.toFixed(3));
     }
 
+    function reorder(products, searchStr){
+        var reorderProducts = products;
+
+        //products.map(function(product){
+        //    if(utils.distanceBeetweenStrings(product.description, searchStr) < 5){
+        //        reorderProducts.push(product);
+        //    }
+        //});
+
+        if(order === 'greater') reorderProducts = reorderProducts.sort(function (p1, p2) {return p1[sortKey] > p2[sortKey];});
+        else reorderProducts = reorderProducts.sort(function (p1, p2) {return p1[sortKey] < p2[sortKey];});
+
+        return reorderProducts;
+    }
+
     function updateList() {
+
+        var reorderProducts = reorder(products, newProduct.find('.description').val());
+
         productsList.empty();
-
-        if(order === 'greater') products = products.sort(function (p1, p2) {return p1[sortKey] > p2[sortKey];});
-        else products = products.sort(function (p1, p2) {return p1[sortKey] < p2[sortKey];});
-
-        for(var i = 0; i < products.length; i++){
-            var product = products[i];
+        for(var i = 0; i < reorderProducts.length; i++){
+            var product = reorderProducts[i];
 
             var productView = $('<tr>')
                 .append($('<div>')

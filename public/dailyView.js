@@ -19,9 +19,11 @@
         reCalcDaily();
         saveDaily();
     });
-    daily.find('textarea').on('input paste',function(){
+    var dailyTextAreas = daily.find('textarea');
+    dailyTextAreas.on('input paste',function(){
         saveDaily();
     });
+    dailyTextAreas.on('click', expandDetails);
 
     $('.addButton').click(function(){
         var newItem = getNewItemClone();
@@ -46,6 +48,12 @@
         var date = $(this).val();
         responseDaily(date);
     });
+
+    function expandDetails(){
+        var selectedDetails = $('.selectedDetails');
+        selectedDetails.removeClass('selectedDetails').addClass('unSelectedDetails');
+        $(this).removeClass('unSelectedDetails').addClass('selectedDetails');
+    }
 
     function reCalcDaily(){
         var res = {
@@ -109,6 +117,7 @@
         newItem.find('textarea').on('input paste', function(){
             saveDaily();
         });
+        newItem.find('textarea').on('click', expandDetails);
         daily.find('.newItem').before(newItem);
 
         return newItem;

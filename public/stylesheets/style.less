@@ -57,10 +57,6 @@
   max-width: 200px;
 }
 
-.hiden{
-  display: none;
-}
-
 button{
   vertical-align: top;
   border-radius: 20px;
@@ -72,4 +68,23 @@ input{
 p{
   margin: 0;
   vertical-align: top;
+}
+textarea{
+  margin:0;
+  padding: 0px;
+  border: none;
+}
+
+@timeToExpand: 0.5s;
+.unSelectedDetails{
+  transition: width @timeToExpand, height @timeToExpand;
+  width: 100px;
+  height: 18px;
+  resize: none;
+}
+.selectedDetails{
+  transition: width @timeToExpand, height @timeToExpand;
+  width: 300px;
+  height: 150px;
+  resize: none;
 }
