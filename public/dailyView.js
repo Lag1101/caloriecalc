@@ -19,10 +19,14 @@
         reCalcDaily();
         saveDaily();
     });
+    daily.find('textarea').on('input paste',function(){
+        saveDaily();
+    });
 
     $('.addButton').click(function(){
         var newItem = getNewItemClone();
         daily.find('.newItem').find('input').val('');
+        daily.find('.newItem').find('textarea').val('');
         updateLinks();
         reCalcDaily();
         saveDaily();
@@ -100,6 +104,10 @@
         });
         newItem.find('input:not(.description)').on('input paste', function(){
             $(this).val( utils.validate( $(this).val() ) );
+        });
+        newItem.find('textarea').val(daily.find('.newItem').find('textarea').val())
+        newItem.find('textarea').on('input paste', function(){
+            saveDaily();
         });
         daily.find('.newItem').before(newItem);
 

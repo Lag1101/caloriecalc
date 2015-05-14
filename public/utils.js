@@ -3,7 +3,7 @@
  */
 
 var utils = (function(){
-    var fields = ['description', 'proteins', 'triglyceride', 'carbohydrate', 'calorie'];
+    var fields = ['description', 'proteins', 'triglyceride', 'carbohydrate', 'calorie', 'details'];
 
     function validate(str){
         return str.replace(',', '.');
@@ -40,9 +40,11 @@ var utils = (function(){
             else
                 view.find('.'+field).text('');
 
-            if(field !== 'description')
+            if(field !== 'description' && field !== 'details')
                 view.find('.'+field).text( utils.validate( view.find('.'+field).text() ) );
         }
+
+        view.find('.details').val(product.details);
     }
     function setProductInput(view, product) {
         for(var i = 0; i < fields.length; i++){
@@ -51,9 +53,10 @@ var utils = (function(){
                 view.find('.'+field).val(product[field]);
             else
                 view.find('.'+field).val('');
-            if(field !== 'description')
+            if(field !== 'description' && field !== 'details')
                 view.find('.'+field).val( utils.validate( view.find('.'+field).val() ) );
         }
+        view.find('.details').val(product.details);
     }
 
     function removeFromCurrentDish(view, cb){

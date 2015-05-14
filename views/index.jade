@@ -34,6 +34,7 @@ block content
                     p(class='description item') Описание
                     each item in items
                         p(class='#{item.classId} item') #{item.label}
+                    p(class='details item') Детали
             each item in daily
                 div(class=item.classId)
                     div(class='product')
@@ -41,12 +42,14 @@ block content
                         input(class='description item' placeholder='Описание')
                         each item in items
                             input(class='#{item.classId} item' placeholder=item.label)
+                        textarea(class='details item' placeholder='Детали')
             div(class='newItem additionalProduct')
                 div(class='product')
                     button(class='label addButton') +
                     input(class='description item' placeholder='Описание')
                     each item in items
                         input(class='#{item.classId} item' placeholder=item.label)
+                    textarea(class='details item' placeholder='Детали')
 
 
     div(class='currentDishProducts table')
