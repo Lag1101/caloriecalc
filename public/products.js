@@ -72,7 +72,7 @@
     }
 
     function removeFromServer(product){
-        socket.emit('removeProduct', {id: product.id});
+        socket.emit('removeProduct', product.id);
         getUpdates();
     }
 
