@@ -35,7 +35,7 @@
         $.post(window.location.href +  "newProduct", product.getRaw())
             .done(function () {
                 console.log("Product added");
-                newProduct.find('.item:not(button)').empty();
+                Product.emptyProduct.writeEl(newProduct);
                 getUpdates();
             })
             .fail(function (error) {
@@ -60,7 +60,8 @@
 
     function totallyRemove(view, product) {
         if( confirm("Вы уверены, что хотите удалить " + product.description + " ?") )
-            removeFromCurrentDish(view, function(){
+            utils.removeFromCurrentDish(view, function(){
+                saveCurrentDishProducts();
                 removeFromServer(product);
             });
     }
@@ -79,18 +80,14 @@
     }
 
 
-    function removeFromCurrentDish(view, id, cb){
-        view.detach();
-        saveCurrentDishProducts();
-        return cb && cb();
-    }
+
     function addToCurrentDish(datum){
         var product = new Product(datum);
         var productView = $('<tr>')
             .append($('<div>')
                 .addClass('product')
                 .append($('<button>').addClass('remove').text('-'))
-                .append($('<input>').addClass('description'))
+                .append($('<div>').addClass('description item'))
                 .append($('<input>').addClass('proteins'))
                 .append($('<input>').addClass('triglyceride'))
                 .append($('<input>').addClass('carbohydrate'))
@@ -104,7 +101,10 @@
         productView.find('input:not(.mass)').attr('disabled', true);
 
         product.writeEl(productView);
-        productView.find('.remove').click(removeFromCurrentDish.bind(null, productView, product.id, reCalc));
+        productView.find('.remove').click(utils.removeFromCurrentDish.bind(null, productView, function(){
+            saveCurrentDishProducts();
+            reCalc();
+        }));
 
         productView.find('input').on('input propertychange paste', reCalc);
 
@@ -157,8 +157,9 @@
         return reorderProducts;
     }
     function updateCurrentDishProducts(data) {
-        currentDishProducts = [];
-        data.map(addToCurrentDish);
+        currentDishProductsView.empty();
+        if(data)
+            data.map(addToCurrentDish);
     }
     function saveCurrentDishProducts() {
         var currentDishProducts = [];
@@ -186,7 +187,7 @@
             var productView = $('<tr>')
                 .append($('<div>')
                     .append($('<button>').addClass('add').text('+'))
-                    .append($('<input>').addClass('description'))
+                    .append($('<div>').addClass('description item'))
                     .append($('<input>').addClass('proteins'))
                     .append($('<input>').addClass('triglyceride'))
                     .append($('<input>').addClass('carbohydrate'))

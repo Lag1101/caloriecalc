@@ -13,27 +13,22 @@
     };
     var dailyDate = $('.dailyDate');
 
+    Product.emptyProduct.writeEl(daily.find('.newItem'));
     updateLinks();
-
-    daily.find('input').on('input paste',function(){
+    daily.find('.item').on('input paste',function(){
         reCalcDaily();
-        saveDaily();
-    });
-    var dailyTextAreas = daily.find('textarea');
-    dailyTextAreas.on('input paste',function(){
         saveDaily();
     });
 
     $('.addButton').click(function(){
         var newItem = getNewItemClone();
-        daily.find('.newItem').find('input').val('');
-        daily.find('.newItem').find('textarea').val('');
+        Product.emptyProduct.writeEl(daily.find('.newItem'));
         updateLinks();
         reCalcDaily();
         saveDaily();
     });
 
-    daily.find('input:not(.description)').on('input paste', function(){
+    daily.find('input').on('input paste', function(){
         $(this).val( utils.validate( $(this).val() ) );
     });
 
@@ -49,12 +44,7 @@
     });
 
     function reCalcDaily(){
-        var res = {
-            proteins: 0,
-            triglyceride: 0,
-            carbohydrate: 0,
-            calorie: 0
-        };
+        var res = new Product();
         links.proteins.each(function(){
             res.proteins += +$(this).val();
         });
@@ -67,22 +57,18 @@
         links.calorie.each(function () {
             res.calorie += +$(this).val();
         });
-        res.proteins = res.proteins.toFixed(1);
-        res.triglyceride = res.triglyceride.toFixed(1);
-        res.carbohydrate = res.carbohydrate.toFixed(1);
-        res.calorie = res.calorie.toFixed(1);
 
         var resEl = $('.result');
-        utils.setProductP(resEl, res);
+        res.writeEl(resEl);
     }
 
     function clearDaily(){
-        utils.setProductInput(daily.find('.breakfast'), {});
-        utils.setProductInput(daily.find('.firstLunch'), {});
-        utils.setProductInput(daily.find('.secondLunch'), {});
-        utils.setProductInput(daily.find('.thirdLunch'), {});
-        utils.setProductInput(daily.find('.dinner'), {});
-        utils.setProductInput(daily.find('.secondDinner'), {});
+        Product.emptyProduct.writeEl(daily.find('.breakfast'));
+        Product.emptyProduct.writeEl(daily.find('.firstLunch'));
+        Product.emptyProduct.writeEl(daily.find('.secondLunch'));
+        Product.emptyProduct.writeEl(daily.find('.thirdLunch'));
+        Product.emptyProduct.writeEl(daily.find('.dinner'));
+        Product.emptyProduct.writeEl(daily.find('.secondDinner'));
 
         daily.find('.additionalProduct:not(.newItem)').each(function(){
             $(this).detach();
@@ -99,15 +85,15 @@
             saveDaily();
         }));
         newItem.removeClass('newItem');
-        newItem.find('input').on('input paste', function(){
+        newItem.find('.item').on('input paste', function(){
             reCalcDaily();
             saveDaily();
         });
         newItem.find('input:not(.description)').on('input paste', function(){
             $(this).val( utils.validate( $(this).val() ) );
         });
-        newItem.find('textarea').val(daily.find('.newItem').find('textarea').val())
-        newItem.find('textarea').on('input paste', function(){
+        //newItem.find('.daily').val(daily.find('.newItem').find('.daily').val())
+        newItem.find('.details').on('input paste', function(){
             saveDaily();
         });
         daily.find('.newItem').before(newItem);
@@ -116,10 +102,10 @@
     }
 
     function updateLinks(){
-        links.proteins = daily.find('.proteins');
-        links.triglyceride = daily.find('.triglyceride');
-        links.carbohydrate = daily.find('.carbohydrate');
-        links.calorie = daily.find('.calorie');
+        links.proteins = daily.find('.proteins:not(.notCalc)');
+        links.triglyceride = daily.find('.triglyceride:not(.notCalc)');
+        links.carbohydrate = daily.find('.carbohydrate:not(.notCalc)');
+        links.calorie = daily.find('.calorie:not(.notCalc)');
     }
 
     function restoreDaily(dailyProducts){
@@ -148,26 +134,16 @@
     }
 
     function createDailyItem(el){
+        var product = new Product();
+        product.readEl(el);
         return {
-            details: {
-                width: el.find('.details').width(),
-                height: el.find('.details').height()
-            },
-            products: utils.getProductFromInput(el)
+            products: product.getRaw()
         };
     }
 
     function restoreDailyItem(el, details){
-        if(details.details) {
-            el.find('.details').width(details.details.width);
-            el.find('.details').height( details.details.height);
-        } else {
-            el.find('.details').width(100);
-            el.find('.details').height(20);
-        }
-
-        utils.setProductInput(el, details.products || {});
-
+        var product = new Product(details.products);
+        product.writeEl(el);
     }
 
     function saveDaily(){

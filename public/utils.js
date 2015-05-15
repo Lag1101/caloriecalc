@@ -9,58 +9,6 @@ var utils = (function(){
         return str.replace(',', '.');
     }
 
-    function getProductFromP(item) {
-        var res = {};
-
-        for(var i = 0; i < fields.length; i++){
-            var field = fields[i];
-            var v;
-            v = item.find('.' + field).text();
-            res[field] = v;
-        }
-
-        return res;
-    }
-    function getProductFromInput(item){
-        var res = {};
-
-        for(var i = 0; i < fields.length; i++){
-            var field = fields[i];
-            var v;
-            v = item.find('.' + field).val();
-            res[field] = v;
-        }
-
-        return res;
-    }
-
-    function setProductP(view, product) {
-        for(var i = 0; i < fields.length; i++){
-            var field = fields[i];
-            if(product[field])
-                view.find('.'+field).text(product[field]);
-            else
-                view.find('.'+field).text('');
-
-            if(field !== 'description' && field !== 'details')
-                view.find('.'+field).text( utils.validate( view.find('.'+field).text() ) );
-        }
-
-        view.find('.details').text(product.details);
-    }
-    function setProductInput(view, product) {
-        for(var i = 0; i < fields.length; i++){
-            var field = fields[i];
-            if(product[field])
-                view.find('.'+field).val(product[field]);
-            else
-                view.find('.'+field).val('');
-            if(field !== 'description' && field !== 'details')
-                view.find('.'+field).val( utils.validate( view.find('.'+field).val() ) );
-        }
-        view.find('.details').text(product.details);
-    }
-
     function fromDateToString(d){
         var date = d || new Date();
 
@@ -120,13 +68,13 @@ var utils = (function(){
 
         return distance;
     }
-
+    function removeFromCurrentDish(view, cb){
+        view.detach();
+        return cb && cb();
+    }
     return {
+        removeFromCurrentDish: removeFromCurrentDish,
         validate: validate,
-        getProductFromP: getProductFromP,
-        getProductFromInput: getProductFromInput,
-        setProductP: setProductP,
-        setProductInput: setProductInput,
         fromDateToString: fromDateToString,
         distanceBeetweenStrings: distanceBeetweenStrings
     };

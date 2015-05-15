@@ -42,8 +42,8 @@ var Product = (function(){
     };
     Product.prototype.readEl = function(el){
         this.constr(el ? {
-            description:        el.find('.description').val(),
-            details:            el.find('.details').val(),
+            description:        el.find('.description').html(),
+            details:            el.find('.details').html(),
             proteins:           el.find('.proteins').val(),
             triglyceride:       el.find('.triglyceride').val(),
             carbohydrate:       el.find('.carbohydrate').val(),
@@ -53,8 +53,8 @@ var Product = (function(){
     };
 
     Product.prototype.writeEl = function(el){
-        el.find('.description')     .val(this.description);
-        el.find('.details')         .val(this.details);
+        el.find('.description')     .html(this.description);
+        el.find('.details')         .html(this.details);
         el.find('.proteins')        .val(this.proteins   .toFixed(2));
         el.find('.triglyceride')    .val(this.triglyceride   .toFixed(2));
         el.find('.carbohydrate')    .val(this.carbohydrate   .toFixed(2));
@@ -62,5 +62,6 @@ var Product = (function(){
         el.find('.mass')            .val(this.mass   .toFixed(2));
     };
 
+    Product.emptyProduct = new Product();
     return Product;
 })();
