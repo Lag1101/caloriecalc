@@ -32,9 +32,9 @@ block content
                 div(class='result')
                     div(class='product')
                         input(disabled class='item' value='Итог')
-                        input(disabled class='description item' placeholder='Описание')
+                        input(disabled class='description item' value='Описание')
                         each item in items
-                            input(disabled class='#{item.classId} item notCalc' placeholder=item.label)
+                            input(disabled class='#{item.classId} item notCalc')
                         input(disabled class='details item' value='Детали')
                 each item in daily
                     div(class=item.classId)
@@ -42,7 +42,7 @@ block content
                             input(disabled class='item' value=item.label)
                             div( contenteditable=true class='description item' placeholder='Описание')
                             each item in items
-                                input(class='#{item.classId} item' placeholder=item.label)
+                                input(class='#{item.classId} item')
                             //div(class='details' )
                             //textarea(class='details' placeholder='Детали')
                             div(contenteditable=true class='details item' placeholder='Детали')
@@ -60,7 +60,7 @@ block content
         div(class='table allProducts')
             div(class='newProduct product')
                 button(class='addProductButton') +
-                div(contenteditable=true class="description item" placeholder="Имя")
+                div(contenteditable=true class="description item" placeholder="Описание")
                 each item in items
                     input(class='#{item.classId} item' placeholder=item.label)
             div
