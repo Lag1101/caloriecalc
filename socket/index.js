@@ -43,6 +43,13 @@ module.exports = function(server){
             .on('setCurrentDishProducts', function(currentDish){
                 products.currentDish = currentDish;
                 products.save();
+            })
+            .on('getCurrentDate', function(){
+                socket.emit('getCurrentDate', products.currentDish.date);
+            })
+            .on('setCurrentDate', function(date){
+                products.currentDish.date = date;
+                products.save();
             });
     });
 };

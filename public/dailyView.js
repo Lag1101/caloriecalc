@@ -32,14 +32,16 @@
         $(this).val( utils.validate( $(this).val() ) );
     });
 
-    (function(){
-        dailyDate.val(utils.fromDateToString());
+    socket.emit('getCurrentDate');
+    socket.on('getCurrentDate', function(date){
+        dailyDate.val(date);
         responseDaily(dailyDate.val());
         reCalcDaily();
-    })();
+    });
 
     dailyDate.on('input propertychange paste', function(){
         var date = $(this).val();
+        socket.emit('setCurrentDate', date);
         responseDaily(date);
     });
 
