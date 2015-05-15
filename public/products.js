@@ -46,8 +46,6 @@
         getUpdates();
     });
 
-    newProduct.find('.description').on('input paste', updateList);
-
     socket.on('list', function (data) {
         products = [];
         data.map(function(d){
