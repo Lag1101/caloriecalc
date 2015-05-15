@@ -52,14 +52,30 @@ var Product = (function(){
         } : {});
     };
 
-    Product.prototype.writeEl = function(el){
-        el.find('.description')     .html(this.description);
-        el.find('.details')         .html(this.details);
-        el.find('.proteins')        .val(this.proteins   .toFixed(2));
-        el.find('.triglyceride')    .val(this.triglyceride   .toFixed(2));
-        el.find('.carbohydrate')    .val(this.carbohydrate   .toFixed(2));
-        el.find('.calorie')         .val(this.calorie   .toFixed(2));
-        el.find('.mass')            .val(this.mass   .toFixed(2));
+    Product.prototype.writeEl = function(el, except){
+        except = except || [];
+        if(except.indexOf('description') < 0)
+            el.find('.description')     .html(this.description);
+        if(except.indexOf('details') < 0)
+            el.find('.details')         .html(this.details);
+        if(except.indexOf('proteins') < 0)
+            el.find('.proteins')        .val(this.proteins   .toFixed(2));
+        if(except.indexOf('triglyceride') < 0)
+            el.find('.triglyceride')    .val(this.triglyceride   .toFixed(2));
+        if(except.indexOf('carbohydrate') < 0)
+            el.find('.carbohydrate')    .val(this.carbohydrate   .toFixed(2));
+        if(except.indexOf('calorie') < 0)
+            el.find('.calorie')         .val(this.calorie   .toFixed(2));
+        if(except.indexOf('mass') < 0)
+            el.find('.mass')            .val(this.mass   .toFixed(2));
+    };
+
+    Product.prototype.applyToNumerics = function(f){
+        this.proteins = f(this.proteins, 'proteins');
+        this.triglyceride = f(this.triglyceride, 'triglyceride');
+        this.carbohydrate = f(this.carbohydrate, 'carbohydrate');
+        this.calorie = f(this.calorie, 'calorie');
+        this.mass = f(this.mass, 'mass');
     };
 
     Product.emptyProduct = new Product();

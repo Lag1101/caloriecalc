@@ -19,6 +19,7 @@ body{
   background-color: slateblue;
   box-shadow: 5px 5px 5px 1px rgba(0,0,0,0.75);;
   vertical-align: top;
+  text-align: left;
 }
 .allProducts{
   left: 0;
@@ -36,22 +37,22 @@ body{
   font-size: 16px;
 }
 .item{
-  border: royalblue solid 1px;
   display: inline-block;
   width: 60px;
   min-height: 20px;
-  background-color: lightblue;
   vertical-align: top;
-  text-align: left;
 }
 .item:not(button){
-  margin: 0px;
-  border: 2px;
-  padding: 0px;
+  border: slategray solid 1px;
+  background-color: ivory;
+}
+.item:not(button):disabled,
+:disabled{
+  background-color: silver;
 }
 .label{
   min-height: 20px;
-  //border: blue solid 1px;
+  border: slategray solid 1px;
   display: inline-block;
   width: 60px;
   margin: 0px;
@@ -83,7 +84,4 @@ p{
   resize: both;
   display: inline-block;
   min-width: 50px;
-  margin:0;
-  padding: 0px;
-  border: none;
 }

@@ -42,13 +42,13 @@ router.post('/daily', function(req, res) {
 });
 
 router.post('/currentDishProducts', function(req, res) {
-    products.currentDishProducts = req.body.currentDishProducts;
+    products.currentDish = req.body;
 
     products.save();
     res.end();
 });
 router.get('/currentDishProducts', function(req, res) {
-    res.send(products.currentDishProducts);
+    res.send(products.currentDish);
 });
 
 

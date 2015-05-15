@@ -12,10 +12,19 @@
     var resultDish = $('.resultDish');
     var sortBy = $('.sortBy');
     var sortOrder = $('.sortOrder');
+    var portionView = $('.portion');
 
     var sortKey = sortBy.find('option:selected').val();
     var order = sortOrder.find('option:selected').val();
 
+    portionView.find('input').on('input paste', function(){
+        reCalc();
+        saveCurrentDishProducts();
+    });
+    resultDish.find('input').on('input paste', function(){
+        reCalc();
+        saveCurrentDishProducts();
+    });
 
     sortBy.on('change', function () {
         sortKey = sortBy.find('option:selected').val();
@@ -66,8 +75,6 @@
             });
     }
 
-
-
     function removeFromServer(product){
         $.post(window.location.href +  "removeProduct", {id: product.id})
             .done(function () {
@@ -78,8 +85,6 @@
                 console.log(error.responseText);
             });
     }
-
-
 
     function addToCurrentDish(datum){
         var product = new Product(datum);
@@ -92,7 +97,7 @@
                 .append($('<input>').addClass('triglyceride'))
                 .append($('<input>').addClass('carbohydrate'))
                 .append($('<input>').addClass('calorie'))
-                .append($('<input>').addClass('mass').attr('placeholder', 'Вес').on('input paste', function(){
+                .append($('<input>').addClass('mass').on('input paste', function(){
                     $(this).val( utils.validate( $(this).val() ) );
                     saveCurrentDishProducts();
                 }))
@@ -102,11 +107,14 @@
 
         product.writeEl(productView);
         productView.find('.remove').click(utils.removeFromCurrentDish.bind(null, productView, function(){
-            saveCurrentDishProducts();
             reCalc();
+            saveCurrentDishProducts();
         }));
 
-        productView.find('input').on('input propertychange paste', reCalc);
+        productView.find('input').on('input propertychange paste', function(){
+            reCalc();
+            saveCurrentDishProducts();
+        });
 
         productView.appendTo(currentDishProductsView);
 
@@ -114,8 +122,27 @@
         saveCurrentDishProducts();
     }
 
+    function calcPortion(){
+        var dish = new Product();
+        dish.readEl(resultDish);
+
+        var portion = new Product();
+        portion.readEl(portionView);
+
+        if( !dish.mass ) return;
+
+        var rel = portion.mass / dish.mass;
+
+        portion.applyToNumerics(function(val, name){
+            return dish[name] * rel;
+        });
+
+        portion.writeEl(portionView, ['mass']);
+    }
+
     function reCalc(){
         var res = new Product();
+
         currentDishProductsView.find('.product').each(function(){
             var item = $(this);
             var product = new Product();
@@ -127,19 +154,14 @@
             res.carbohydrate += +product.carbohydrate * mass;
             res.calorie += +product.calorie * mass;
         });
-        res.writeEl(resultDish);
+
+        res.writeEl(resultDish, ['mass']);
+
+        calcPortion();
     }
 
     function reorder(products, searchStr){
         var reorderProducts = products;
-
-        //products.map(function(product){
-        //    if(utils.distanceBeetweenStrings(product.description, searchStr) < 5){
-        //        reorderProducts.push(product);
-        //    }
-        //});
-
-
 
         function comp(p1, p2){
             var v1 = p1[sortKey];
@@ -158,8 +180,21 @@
     }
     function updateCurrentDishProducts(data) {
         currentDishProductsView.empty();
-        if(data)
-            data.map(addToCurrentDish);
+        if(data) {
+            var currentDishProductsRow = data.currentDishProducts;
+            if(data.dish) {
+                var dish = new Product(data.dish);
+                dish.writeEl(resultDish);
+            }
+            if(data.portion) {
+                var portion = new Product(data.portion);
+                portion.writeEl(portionView);
+            }
+            if(currentDishProductsRow)
+                currentDishProductsRow.map(addToCurrentDish);
+
+
+        }
     }
     function saveCurrentDishProducts() {
         var currentDishProducts = [];
@@ -168,7 +203,15 @@
             product.readEl($(this));
             currentDishProducts.push(product.getRaw());
         });
-        $.post(window.location.href +  "currentDishProducts", {currentDishProducts:currentDishProducts})
+        var dish = new Product();
+        dish.readEl(resultDish);
+        var portion = new Product();
+        portion.readEl(portionView);
+        $.post(window.location.href +  "currentDishProducts", {
+            portion: portion.getRaw(),
+            dish: dish.getRaw(),
+            currentDishProducts:currentDishProducts
+        })
             .done(function () {
                 console.log("currentDishProducts saved");
             })
