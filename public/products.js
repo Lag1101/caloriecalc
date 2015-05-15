@@ -1,7 +1,7 @@
 /**
  * Created by vasiliy.lomanov on 13.05.2015.
  */
-(function(){
+(function(socket){
 
     var products = [];
 
@@ -41,30 +41,26 @@
     addButton.click(function(){
         var product = new Product();
         product.readEl(newProduct);
-        $.post(window.location.href +  "newProduct", product.getRaw())
-            .done(function () {
-                console.log("Product added");
-                Product.emptyProduct.writeEl(newProduct);
-                getUpdates();
-            })
-            .fail(function (error) {
-                console.log(error.responseText);
-            });
+        socket.emit('newProduct', product.getRaw());
+        Product.emptyProduct.writeEl(newProduct);
+        getUpdates();
     });
 
     newProduct.find('.description').on('input paste', updateList);
 
+    socket.on('list', function (data) {
+        products = [];
+        data.map(function(d){
+            products.push(new Product(d));
+        });
+        updateList();
+    });
+    socket.on('getCurrentDishProducts', function (data) {
+        updateCurrentDishProducts(data);
+    });
     function getUpdates(){
-        $.get(window.location.href + "list", function (data) {
-            products = [];
-            data.map(function(d){
-                products.push(new Product(d));
-            });
-            updateList();
-        });
-        $.get(window.location.href + "currentDishProducts", function (data) {
-            updateCurrentDishProducts(data);
-        });
+        socket.emit('list');
+        socket.emit('getCurrentDishProducts');
     }
 
     function totallyRemove(view, product) {
@@ -76,14 +72,8 @@
     }
 
     function removeFromServer(product){
-        $.post(window.location.href +  "removeProduct", {id: product.id})
-            .done(function () {
-                console.log("Product removed");
-                getUpdates();
-            })
-            .fail(function (error) {
-                console.log(error.responseText);
-            });
+        socket.emit('removeProduct', {id: product.id});
+        getUpdates();
     }
 
     function addToCurrentDish(datum){
@@ -207,17 +197,11 @@
         dish.readEl(resultDish);
         var portion = new Product();
         portion.readEl(portionView);
-        $.post(window.location.href +  "currentDishProducts", {
+        socket.emit('setCurrentDishProducts',{
             portion: portion.getRaw(),
             dish: dish.getRaw(),
             currentDishProducts:currentDishProducts
-        })
-            .done(function () {
-                console.log("currentDishProducts saved");
-            })
-            .fail(function (error) {
-                console.log(error.responseText);
-            });
+        });
     }
     function updateList() {
 
@@ -248,4 +232,4 @@
             productView.appendTo(productsList);
         }
     }
-})();
+})(socket);

@@ -2,7 +2,7 @@
  * Created by vasiliy.lomanov on 13.05.2015.
  */
 
-(function(){
+(function(socket){
 
     var daily = $('.daily');
     var links = {
@@ -124,13 +124,16 @@
             }
     }
 
+
+    socket.on('getDaily', function (data) {
+        if(data)
+            restoreDaily(data);
+        updateLinks();
+        reCalcDaily();
+    });
     function responseDaily(date) {
         clearDaily();
-        $.get(window.location.href + "daily", {date: date}, function (data) {
-            restoreDaily(data);
-            updateLinks();
-            reCalcDaily();
-        });
+        socket.emit('getDaily', date);
     }
 
     function createDailyItem(el){
@@ -168,12 +171,6 @@
             date: date,
             products: products
         };
-        $.post(window.location.href +  "daily", data)
-            .done(function () {
-                console.log("Daily added");
-            })
-            .fail(function (error) {
-                console.log(error.responseText);
-            });
+        socket.emit('setDaily', data);
     }
-})();
+})(socket);
