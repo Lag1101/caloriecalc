@@ -21,7 +21,6 @@ module.exports = function(server){
             })
             .on('list', function(){
                 socket.emit('list', products.list);
-                socket.broadcast.emit('list', products.list);
             })
             .on('newProduct', function(newProduct){
                 products.push(newProduct);
@@ -33,7 +32,6 @@ module.exports = function(server){
             })
             .on('getDaily', function(date){
                 socket.emit('getDaily', products.getDaily(date));
-                socket.broadcast.emit('getDaily', products.getDaily(date));
             })
             .on('setDaily', function(dailyProduct){
                 products.addDaily(dailyProduct.date, dailyProduct.products);
@@ -41,7 +39,6 @@ module.exports = function(server){
             })
             .on('getCurrentDishProducts', function(){
                 socket.emit('getCurrentDishProducts', products.currentDish);
-                socket.broadcast.emit('getCurrentDishProducts', products.currentDish);
             })
             .on('setCurrentDishProducts', function(currentDish){
                 products.currentDish = currentDish;
@@ -49,7 +46,6 @@ module.exports = function(server){
             })
             .on('getCurrentDate', function(){
                 socket.emit('getCurrentDate', products.currentDish.date);
-                socket.broadcast.emit('getCurrentDate', products.currentDish.date);
             })
             .on('setCurrentDate', function(date){
                 products.currentDish.date = date;
