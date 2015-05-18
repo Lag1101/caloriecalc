@@ -70,7 +70,7 @@ block content
 
         div(class='table allProducts')
             div(class='newProduct product')
-                button(class='addProductButton') +
+                button(class='addProductButton item') +
                 div(contenteditable=true class="description item enableForInput" placeholder="Описание")
                 each item in items
                     input(class='#{item.classId} item' placeholder=item.label)
@@ -84,9 +84,14 @@ block content
                     option(value="lower") По убыванию
 
 
-            div(class='productsList')
+            ul(class='productsList fly')
 
     script.
+
+        $('.fly').on("append", function () {
+            stroll.unbind($(this));
+            stroll.bind($(this));
+        });
         var socket = io.connect('', {
             reconnect: true
         });

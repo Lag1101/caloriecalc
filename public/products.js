@@ -209,16 +209,15 @@
         for(var i = 0; i < reorderProducts.length; i++){
             var product = reorderProducts[i];
 
-            var productView = $('<tr>')
-                .append($('<div>')
-                    .append($('<button>').addClass('add').text('+'))
+            var productView = $('<li>')
+                    .append($('<button>').addClass('add item').text('+'))
                     .append($('<div>').addClass('description item disableForInput'))
                     .append($('<input>').addClass('proteins'))
                     .append($('<input>').addClass('triglyceride'))
                     .append($('<input>').addClass('carbohydrate'))
                     .append($('<input>').addClass('calorie'))
-                    .append($('<button>').addClass('remove').text('-'))
-                    .addClass('product'));
+                    .append($('<button>').addClass('remove item').text('-'))
+                    .addClass('product');
 
             productView.find('input').attr('disabled', true).addClass('item');
             product.writeEl(productView);
@@ -226,8 +225,7 @@
             productView.find('.add').click(addToCurrentDish.bind(null, product));
             productView.find('.remove').click(totallyRemove.bind(null, productView, product));
 
-
-            productView.appendTo(productsList);
+            productsList.append(productView).trigger('append');
         }
     }
 })(socket);
