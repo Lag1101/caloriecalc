@@ -95,6 +95,7 @@ block content
         var socket = io.connect('', {
             reconnect: true
         });
+        io.enable('browser client gzip');
         socket
                 .on('connect', function () {
                     console.log("connected");
