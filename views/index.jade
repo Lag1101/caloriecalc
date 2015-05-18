@@ -36,7 +36,7 @@ block content
                             input(disabled class='description item' value='Описание')
                             each item in items
                                 input(disabled class='#{item.classId} item notCalc')
-                            input(disabled class='details item' value='Детали')
+                            div(class='item notCalc disableForInput') Детали
                     each dailyDish in daily
                         div(class=dailyDish.classId)
                             div(class='product')
