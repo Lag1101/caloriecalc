@@ -4,6 +4,7 @@
 
 (function(socket){
 
+    var resultView = $('.result');
     var daily = $('.daily');
     var links = {
         proteins: null,
@@ -12,6 +13,10 @@
         calorie: null
     };
     var dailyDate = $('.dailyDate');
+    var normViews = {
+        min: $('.minimum'),
+        max: $('.maximum')
+    };
 
     Product.emptyProduct.writeEl(daily.find('.newItem'));
     updateLinks();
@@ -27,6 +32,31 @@
         reCalcDaily();
         saveDaily();
     });
+
+    function checkNorm(){
+        var norms = {
+            min: new Product(),
+            max: new Product()
+        };
+
+        norms.min.readEl(normViews.min);
+        norms.max.readEl(normViews.max);
+
+        var cur = new Product();
+        cur.readEl(resultView);
+
+        var fields = ['proteins', 'triglyceride', 'carbohydrate', 'calorie'];
+
+        for(var i = 0; i < fields.length; i++) {
+            var fieldName = fields[i];
+            var field = resultView.find('.'+fieldName).removeClass('normal underNorm overNorm');
+
+            if      (cur[fieldName] >= norms.max[fieldName]) field.addClass('overNorm');
+            else if (cur[fieldName] < norms.min[fieldName]) field.addClass('underNorm');
+            else                                            field.addClass('normal');
+
+        }
+    }
 
     daily.find('input').on('input paste', function(){
         $(this).val( utils.validate( $(this).val() ) );
@@ -60,8 +90,9 @@
             res.calorie += +$(this).val();
         });
 
-        var resEl = $('.result');
-        res.writeEl(resEl);
+        res.writeEl(resultView);
+
+        checkNorm();
     }
 
     function clearDaily(){

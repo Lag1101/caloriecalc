@@ -46,14 +46,23 @@ body{
 .item:not(button){
   border: slategray solid 1px;
 }
+.blankLabel{
+  min-height: 22px;
+  display: inline-block;
+  width:72px;
+  border: none;
+}
+
 .label{
   min-height: 20px;
   display: inline-block;
   width:70px;
 }
 .label:not(button){
+  .label;
   border: slategray solid 1px;
 }
+
 
 :enabled,
 .enableForInput{
@@ -87,6 +96,7 @@ p{
   vertical-align: top;
 }
 .description{
+  display: inline-block;
   width: 150px;
 }
 .details{
@@ -94,4 +104,13 @@ p{
   min-width: 50px;
   width: auto;
   max-width: 600px;
+}
+.normal{
+  background-color: greenyellow;
+}
+.overNorm{
+  background-color: crimson;
+}
+.underNorm{
+  background-color: lightblue;
 }
