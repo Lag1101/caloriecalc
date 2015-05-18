@@ -45,19 +45,25 @@ body{
 }
 .item:not(button){
   border: slategray solid 1px;
-  background-color: ivory;
-}
-.item:not(button):disabled,
-:disabled{
-  background-color: silver;
 }
 .label{
   min-height: 20px;
-  border: slategray solid 1px;
   display: inline-block;
-  width:50px;
-  margin: 0px;
+  width:70px;
 }
+.label:not(button){
+  border: slategray solid 1px;
+}
+
+:enabled,
+.enableForInput{
+  background-color: ivory;
+}
+:disabled,
+.disableForInput{
+  background-color: silver;
+}
+
 .product{
   margin: 5px;
   border-radius: 5px;
