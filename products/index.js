@@ -13,6 +13,8 @@ function Products(){
     this.dailyProducts = {};
 
     this.filename = 'productsList.json';
+
+    this.date = "";
 }
 
 Products.prototype.addDaily = function(date, products) {
@@ -37,6 +39,7 @@ Products.prototype.load = function(cb) {
             _this.list = o.list || [];
             _this.dailyProducts = o.dailyProducts || [];
             _this.currentDish = o.currentDish || [];
+            _this.date = o.date || "";
 
             _this.validate();
 
@@ -51,7 +54,8 @@ Products.prototype.save = function(cb) {
     var data = {
         list: this.list,
         dailyProducts: this.dailyProducts,
-        currentDish: this.currentDish
+        currentDish: this.currentDish,
+        date: this.date
     };
     fs.writeFile(this.filename, JSON.stringify(data), function(err) {
         if(err) {

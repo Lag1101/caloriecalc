@@ -45,10 +45,10 @@ module.exports = function(server){
                 products.save();
             })
             .on('getCurrentDate', function(){
-                socket.emit('getCurrentDate', products.currentDish.date);
+                socket.emit('getCurrentDate', products.date);
             })
             .on('setCurrentDate', function(date){
-                products.currentDish.date = date;
+                products.date = date;
                 products.save();
             });
     });
