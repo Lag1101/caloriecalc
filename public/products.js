@@ -5,23 +5,32 @@
 
     var products = [];
 
+    var resultDish = $('.resultDish');
+    var defaultDish = resultDish.find('.defaultDish');
+    var dishList = resultDish.find('.dishList');
+
     var addButton = $('.addProductButton');
     var newProduct = $('.newProduct');
     var productsList = $('.productsList');
     var currentDishProductsView = $('.currentDishProducts');
-    var resultDish = $('.resultDish');
     var sortBy = $('.sortBy');
     var sortOrder = $('.sortOrder');
-    var portionView = $('.portion');
+    var portionView = defaultDish.find('.portion');
+    var dishView = defaultDish.find('.dish');
 
     var sortKey = sortBy.find('option:selected').val();
     var order = sortOrder.find('option:selected').val();
 
-    portionView.find('input').on('input paste', function(){
-        reCalc();
-        saveCurrentDishProducts();
+    resultDish.find('.addButton').click(function(){
+        var dish = new Product();
+        var portion = new Product();
+
+        dish.readEl(dishView);
+        portion.readEl(portionView);
+
+        addToDishList(dish, portion, '');
     });
-    resultDish.find('input').on('input paste', function(){
+    defaultDish.find('.mass').on('input paste', function(){
         reCalc();
         saveCurrentDishProducts();
     });
@@ -35,6 +44,9 @@
         order = sortOrder.find('option:selected').val();
         updateList();
     });
+
+    socket.emit('getDishList');
+    socket.on('getDishList', restoreDishList);
 
     getUpdates();
 
@@ -67,6 +79,80 @@
                 saveCurrentDishProducts();
                 removeFromServer(product);
             });
+    }
+
+    function addToDishList(dish, portion, description){
+        var dishViewClone = $('<div>')
+            .append($('<input>').addClass('proteins'))
+            .append($('<input>').addClass('triglyceride'))
+            .append($('<input>').addClass('carbohydrate'))
+            .append($('<input>').addClass('calorie'))
+            .append($('<input>').addClass('mass'))
+            .addClass('dish inline-block');
+        dish.writeEl(dishViewClone);
+
+        var portionViewClone = $('<div>')
+            .append($('<input>').addClass('proteins'))
+            .append($('<input>').addClass('triglyceride'))
+            .append($('<input>').addClass('carbohydrate'))
+            .append($('<input>').addClass('calorie'))
+            .append($('<input>').addClass('mass'))
+            .addClass('portion inline-block');
+        portion.writeEl(portionViewClone);
+
+        var dishPortion = $('<div>')
+            .append($('<button>').addClass('remove').text('-'))
+            .append($('<div>').addClass('description item enableForInput').attr('contenteditable', true))
+            .append(dishViewClone)
+            .append(portionViewClone)
+            .addClass('product');
+
+        dishPortion.find('.remove').click(function(){
+            utils.removeFromCurrentDish(dishPortion, saveDishList);
+        });
+        dishPortion.find('input').addClass('item');
+        dishPortion.find('input:not(.mass)').attr('disabled', true);
+
+        dishPortion.find('.description').html(description).on('input change', function(){
+            saveDishList();
+        });
+        dishPortion.find('.mass').on('input change', function(){
+            calcPortion(dishPortion);
+            saveDishList();
+        });
+        dishList.append(dishPortion);
+    }
+
+    function saveDishList() {
+
+        var dishListRow = [];
+
+        dishList.find('.product').each(function(){
+            var dish = new Product();
+            var portion = new Product();
+            dish.readEl($(this).find('.dish'));
+            portion.readEl($(this).find('.portion'));
+
+            var description = $(this).find('.description').html();
+
+            dishListRow.push({
+                description: description,
+                dish: dish.getRaw(),
+                portion: portion.getRaw()
+            });
+        });
+
+        socket.emit('setDishList', dishListRow);
+    }
+
+    function restoreDishList(dishListRow){
+        dishListRow.map(function(d){
+            var dish = new Product(d.dish);
+            var portion = new Product(d.portion);
+            var description = d.description;
+
+            addToDishList(dish, portion, description);
+        });
     }
 
     function removeFromServer(product){
@@ -109,12 +195,12 @@
         saveCurrentDishProducts();
     }
 
-    function calcPortion(){
+    function calcPortion(el){
         var dish = new Product();
-        dish.readEl(resultDish);
+        dish.readEl(el.find('.dish'));
 
         var portion = new Product();
-        portion.readEl(portionView);
+        portion.readEl(el.find('.portion'));
 
         if( !dish.mass ) return;
 
@@ -124,7 +210,7 @@
             return dish[name] * rel;
         });
 
-        portion.writeEl(portionView, ['mass']);
+        portion.writeEl(el.find('.portion'), ['mass']);
     }
 
     function reCalc(){
@@ -142,9 +228,9 @@
             res.calorie += +product.calorie * mass;
         });
 
-        res.writeEl(resultDish, ['mass']);
+        res.writeEl(dishView, ['mass']);
 
-        calcPortion();
+        calcPortion(defaultDish);
     }
 
     function reorder(products, searchStr){
@@ -171,7 +257,7 @@
             var currentDishProductsRow = data.currentDishProducts;
             if(data.dish) {
                 var dish = new Product(data.dish);
-                dish.writeEl(resultDish);
+                dish.writeEl(dishView);
             }
             if(data.portion) {
                 var portion = new Product(data.portion);
@@ -191,7 +277,7 @@
             currentDishProducts.push(product.getRaw());
         });
         var dish = new Product();
-        dish.readEl(resultDish);
+        dish.readEl(dishView);
         var portion = new Product();
         portion.readEl(portionView);
         socket.emit('setCurrentDishProducts',{

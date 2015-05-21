@@ -50,6 +50,13 @@ module.exports = function(server){
             .on('setCurrentDate', function(date){
                 products.date = date;
                 products.save();
+            })
+            .on('setDishList', function(dishList){
+                products.dishList = dishList;
+                products.save();
+            })
+            .on('getDishList', function(dishList){
+                socket.emit('getDishList', products.dishList);
             });
     });
 };

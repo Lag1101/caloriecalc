@@ -25,7 +25,7 @@
         saveDaily();
     });
 
-    $('.addButton').click(function(){
+    daily.find('.addButton').click(function(){
         var newItem = getNewItemClone();
         Product.emptyProduct.writeEl(daily.find('.newItem'));
         updateLinks();
@@ -149,12 +149,14 @@
         restoreDailyItem(daily.find('.dinner'), dailyProducts.dinner || {});
         restoreDailyItem(daily.find('.secondDinner'), dailyProducts.secondDinner || {});
 
-        if(dailyProducts.additional)
-            for(var i = 0; i < dailyProducts.additional.length; i++){
+        if(dailyProducts.additional) {
+            for (var i = 0; i < dailyProducts.additional.length; i++) {
                 var additional = dailyProducts.additional[i];
                 var additionalItem = getNewItemClone();
                 restoreDailyItem(additionalItem, additional || {});
             }
+            updateLinks();
+        }
     }
 
 
@@ -183,8 +185,7 @@
     }
 
     function saveDaily(){
-        var date = $('.dailyDate').val();
-        //$('.dailyDate').val('2014-06-21')
+        var date = dailyDate.val();
 
         var products = {
             breakfast: createDailyItem(daily.find('.breakfast')),
