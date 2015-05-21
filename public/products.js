@@ -76,8 +76,7 @@
 
     function addToCurrentDish(datum){
         var product = new Product(datum);
-        var productView = $('<tr>')
-            .append($('<div>')
+        var productView = $('<div>')
                 .addClass('product')
                 .append($('<button>').addClass('remove').text('-'))
                 .append($('<div>').addClass('description item disableForInput'))
@@ -88,8 +87,8 @@
                 .append($('<input>').addClass('mass').on('input paste', function(){
                     $(this).val( utils.validate( $(this).val() ) );
                     saveCurrentDishProducts();
-                }))
-        );
+                }));
+
         productView.find('input').addClass('item');
         productView.find('input:not(.mass)').attr('disabled', true);
 

@@ -103,7 +103,7 @@
         Product.emptyProduct.writeEl(daily.find('.dinner'));
         Product.emptyProduct.writeEl(daily.find('.secondDinner'));
 
-        daily.find('.additionalProduct:not(.newItem)').each(function(){
+        daily.find('.additionalProduct').each(function(){
             $(this).detach();
         });
 
@@ -117,7 +117,7 @@
             reCalcDaily();
             saveDaily();
         }));
-        newItem.removeClass('newItem');
+        newItem.removeClass('newItem').addClass('additionalProduct');
         newItem.find('.item').on('input paste', function(){
             reCalcDaily();
             saveDaily();
@@ -196,7 +196,7 @@
             additional: []
         };
 
-        daily.find('.additionalProduct:not(.newItem)').each(function(){
+        daily.find('.additionalProduct').each(function(){
             products.additional.push(createDailyItem($(this)));
         });
 
