@@ -1,0 +1,34 @@
+//
+   Created by vasiliy.lomanov on 21.05.2015.
+
+div(class='blankLabel')
+div(class='product norm inline-block')
+   div(class='minimum')
+      input(disabled class='description item' value='Минимум')
+      each item in items
+         input(disabled class='#{item.classId} item notCalc' value=item.min)
+   div(class='maximum')
+      input(disabled class='description item' value='Максимум')
+      each item in items
+         input(disabled class='#{item.classId} item notCalc' value=item.max)
+div(class='result')
+   div(class='product')
+      input(disabled class='label' value='Итог')
+      input(disabled class='description item' value='Описание')
+      each item in items
+         input(disabled class='#{item.classId} item notCalc')
+      div(class='item notCalc disableForInput') Детали
+each dailyDish in daily
+   div(class=dailyDish.classId)
+      div(class='product')
+         div( class='label disableForInput') #{dailyDish.label}
+         div( contenteditable=true class='description item enableForInput' placeholder='Описание')
+         each item in items
+            input(class='#{item.classId} item')
+         div(contenteditable=true class='details item enableForInput' placeholder='Детали')
+div(class='newItem product')
+   button(class='label addButton') +
+   div(contenteditable=true class='item description enableForInput' placeholder='Описание')
+   each item in items
+      input(class='#{item.classId} item' placeholder=item.label)
+   div(contenteditable=true class='details item enableForInput' placeholder='Детали')

@@ -1,0 +1,21 @@
+//
+   Created by vasiliy.lomanov on 21.05.2015.
+
+div(class='resultDish')
+   div
+      div(class='product')
+         each item in items
+            input(disabled class='label' value=item.label)
+         input(disabled class='label' value='Масса')
+   div
+      div(class='product')
+         p Полное блюдо
+         each item in items
+            input(disabled class='#{item.classId} label' value=0)
+         input(class='mass label' value='0')
+div(class='portion')
+   div(class='product')
+      p Порция
+      each item in items
+         input(disabled class='#{item.classId} label' value=0)
+      input(class='mass label' value='0')
