@@ -101,16 +101,20 @@
         portion.writeEl(portionViewClone);
 
         var dishPortion = $('<div>')
-            .append($('<button>').addClass('remove').text('-'))
-            .append($('<div>').addClass('description item enableForInput').attr('contenteditable', true))
-            .append(dishViewClone)
-            .append(portionViewClone)
-            .addClass('product');
+            .addClass('product')
+            .append($('<div>')
+                .append($('<button>').addClass('remove').text('-'))
+                .append($('<div>').addClass('description item enableForInput').attr('contenteditable', true))
+                .append(dishViewClone)
+                .append(portionViewClone)
+                .addClass('inline-block'));
 
-        dishPortion.find('.remove').click(function(){
-            utils.removeFromCurrentDish(dishPortion, saveDishList);
-        });
-        dishPortion.find('input').addClass('item');
+        dishPortion.find('.remove')
+            .addClass('myLabel')
+            .click(function(){
+                utils.removeFromCurrentDish(dishPortion, saveDishList);
+            });
+        dishPortion.find('input').addClass('myLabel');
         dishPortion.find('input:not(.mass)').attr('disabled', true);
 
         dishPortion.find('.description').html(description).on('input change', function(){
@@ -120,6 +124,7 @@
             calcPortion(dishPortion);
             saveDishList();
         });
+
         dishList.append(dishPortion);
     }
 
@@ -163,7 +168,9 @@
     function addToCurrentDish(datum){
         var product = new Product(datum);
         var productView = $('<div>')
-                .addClass('product')
+            .addClass('product')
+            .append($('<div>')
+                .addClass('inline-block')
                 .append($('<button>').addClass('remove').text('-'))
                 .append($('<div>').addClass('description item disableForInput'))
                 .append($('<input>').addClass('proteins'))
@@ -173,7 +180,7 @@
                 .append($('<input>').addClass('mass').on('input paste', function(){
                     $(this).val( utils.validate( $(this).val() ) );
                     saveCurrentDishProducts();
-                }));
+                })));
 
         productView.find('input').addClass('item');
         productView.find('input:not(.mass)').attr('disabled', true);
@@ -345,8 +352,8 @@
                     .append($('<input>').addClass('triglyceride'))
                     .append($('<input>').addClass('carbohydrate'))
                     .append($('<input>').addClass('calorie'))
-                    .append($('<button>').addClass('remove item').text('-')))
-                .addClass('product');
+                    .append($('<button>').addClass('remove item').text('-')));
+
 
             productView
                 .append($('<div>')
@@ -359,15 +366,21 @@
                     .append($('<button>').addClass('cancel item hidden'))
                     .addClass('edit-menu'));
 
-            productView.find('input').addClass('item');
-            hide(productView);
-            product.writeEl(productView);
+            var root = $('<div>').append(productView);
 
-            productView.find('.edit').click(editProduct.bind(null, productView, product));
-            productView.find('.add').click(addToCurrentDish.bind(null, product));
-            productView.find('.remove').click(totallyRemove.bind(null, productView, product));
+            productView.addClass('inline-block');
+            root.addClass('product');
 
-            productsList.append(productView).trigger('append');
+
+            root.find('input').addClass('item');
+            hide(root);
+            product.writeEl(root);
+
+            root.find('.edit').click(editProduct.bind(null, root, product));
+            root.find('.add').click(addToCurrentDish.bind(null, product));
+            root.find('.remove').click(totallyRemove.bind(null, root, product));
+
+            productsList.append(root).trigger('append');
         }
     }
 })(socket);
