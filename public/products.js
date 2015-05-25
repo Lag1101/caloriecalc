@@ -294,7 +294,7 @@
         for(var i = 0; i < reorderProducts.length; i++){
             var product = reorderProducts[i];
 
-            var productView = $('<li>')
+            var productView = $('<div>')
                     .append($('<button>').addClass('add item').text('+'))
                     .append($('<div>').addClass('description item disableForInput'))
                     .append($('<input>').addClass('proteins'))
