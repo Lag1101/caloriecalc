@@ -110,11 +110,11 @@
                 .addClass('inline-block'));
 
         dishPortion.find('.remove')
-            .addClass('myLabel')
+            .addClass('item')
             .click(function(){
                 utils.removeFromCurrentDish(dishPortion, saveDishList);
             });
-        dishPortion.find('input').addClass('myLabel');
+        dishPortion.find('input').addClass('item');
         dishPortion.find('input:not(.mass)').attr('disabled', true);
 
         dishPortion.find('.description').html(description).on('input change', function(){

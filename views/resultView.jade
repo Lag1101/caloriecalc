@@ -5,22 +5,22 @@ div(class='resultDish')
     div
         div(class='product inline-block')
             each item in items
-                input(disabled class='myLabel' value=item.label)
-            input(disabled class='myLabel' value='Масса')
+                input(disabled class='item' value=item.label)
+            input(disabled class='item' value='Масса')
 
     div(class='defaultDish product inline-block')
-        button(class='addButton myLabel') Сохранить
+        button(class='addButton item') Сохранить
         div(class='blankDescription inline-block')
         div(class='dish')
             p Полное блюдо
             each item in items
-                input(disabled class='#{item.classId} myLabel' value=0)
-            input(class='mass myLabel' value='0')
+                input(disabled class='#{item.classId} item' value=0)
+            input(class='mass item' value='0')
         div(class='portion')
             p Порция
             each item in items
-                input(disabled class='#{item.classId} myLabel' value=0)
-            input(class='mass myLabel' value='0')
+                input(disabled class='#{item.classId} item' value=0)
+            input(class='mass item' value='0')
 
 
     div(class="dishList")
