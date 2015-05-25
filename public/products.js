@@ -306,6 +306,7 @@
 
         editMenu.find('.save').removeClass('hidden');
         editMenu.find('.cancel').removeClass('hidden');
+        editMenu.removeClass('hidden');
     }
     function hide(productView){
         var inputs = productView.find('input');
@@ -319,6 +320,7 @@
         var editMenu = productView.find('.edit-menu');
         editMenu.find('.save').addClass('hidden');
         editMenu.find('.cancel').addClass('hidden');
+        editMenu.addClass('hidden');
     }
     function editProduct(productView, product){
         appear(productView);
@@ -344,26 +346,33 @@
         for(var i = 0; i < reorderProducts.length; i++){
             var product = reorderProducts[i];
 
+            var b = utils.DropdownButton.clone();
+            b.find('.remove').click(function(){
+                console.log('удалить');
+            });
+
             var productView = $('<div>')
                 .append($('<div>')
-                    .append($('<button>').addClass('add item').text('+'))
+                    //.append($('<button>').addClass('add item').text('+'))
+                    .append(utils.DropdownButton.clone().addClass('label'))
                     .append($('<div>').addClass('description item'))
                     .append($('<input>').addClass('proteins'))
                     .append($('<input>').addClass('triglyceride'))
                     .append($('<input>').addClass('carbohydrate'))
                     .append($('<input>').addClass('calorie'))
-                    .append($('<button>').addClass('remove item').text('-')));
+                    //.append($('<button>').addClass('remove item').text('-'))
+            );
 
 
             productView
                 .append($('<div>')
-                    .append($('<button>').addClass('edit item'))
+                    //.append($('<button>').addClass('edit item'))
                     .append($('<div>').addClass('blankDescription blankItem'))
                     .append($('<div>').addClass('blankItem'))
                     .append($('<div>').addClass('blankItem'))
                     .append($('<div>').addClass('blankItem'))
-                    .append($('<button>').addClass('save item hidden'))
-                    .append($('<button>').addClass('cancel item hidden'))
+                    .append($('<button>').addClass('save label hidden btn btn-xs btn-success').text('Сохранить'))
+                    .append($('<button>').addClass('cancel label hidden btn btn-xs btn-primary').text('Отменить'))
                     .addClass('edit-menu'));
 
             var root = $('<div>').append(productView);
