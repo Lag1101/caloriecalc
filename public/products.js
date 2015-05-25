@@ -286,6 +286,49 @@
             currentDishProducts:currentDishProducts
         });
     }
+
+    function appear(productView){
+        var inputs = productView.find('input');
+        inputs.attr('disabled', false);
+        productView.find('.description')
+            .removeClass('disableForInput')
+            .addClass('enableForInput')
+            .attr('contenteditable', true);
+
+        var editMenu = productView.find('.edit-menu');
+
+        editMenu.find('.save').removeClass('hidden');
+        editMenu.find('.cancel').removeClass('hidden');
+    }
+    function hide(productView){
+        var inputs = productView.find('input');
+        inputs.attr('disabled', true);
+
+        productView.find('.description')
+            .addClass('disableForInput')
+            .removeClass('enableForInput')
+            .attr('contenteditable', false);
+
+        var editMenu = productView.find('.edit-menu');
+        editMenu.find('.save').addClass('hidden');
+        editMenu.find('.cancel').addClass('hidden');
+    }
+    function editProduct(productView, product){
+        appear(productView);
+        var editMenu = productView.find('.edit-menu');
+        editMenu.find('.save').click(function(){
+            var fixedProduct = new Product(product);
+            fixedProduct.readEl(productView);
+            socket.emit('fixProduct', fixedProduct);
+            hide(productView);
+        });
+
+        editMenu.find('.cancel').click(function(){
+            hide(productView);
+        });
+        //hide(productView);
+    }
+
     function updateList() {
 
         var reorderProducts = reorder(products, newProduct.find('.description').val());
@@ -295,18 +338,32 @@
             var product = reorderProducts[i];
 
             var productView = $('<div>')
+                .append($('<div>')
                     .append($('<button>').addClass('add item').text('+'))
-                    .append($('<div>').addClass('description item disableForInput'))
+                    .append($('<div>').addClass('description item'))
                     .append($('<input>').addClass('proteins'))
                     .append($('<input>').addClass('triglyceride'))
                     .append($('<input>').addClass('carbohydrate'))
                     .append($('<input>').addClass('calorie'))
-                    .append($('<button>').addClass('remove item').text('-'))
-                    .addClass('product');
+                    .append($('<button>').addClass('remove item').text('-')))
+                .addClass('product');
 
-            productView.find('input').attr('disabled', true).addClass('item');
+            productView
+                .append($('<div>')
+                    .append($('<button>').addClass('edit item').text('Редактировать'))
+                    .append($('<div>').addClass('blankDescription blankItem'))
+                    .append($('<div>').addClass('blankItem'))
+                    .append($('<div>').addClass('blankItem'))
+                    .append($('<div>').addClass('blankItem'))
+                    .append($('<button>').addClass('save item hidden').text('Сохранить'))
+                    .append($('<button>').addClass('cancel item hidden').text('Отменить'))
+                    .addClass('edit-menu'));
+
+            productView.find('input').addClass('item');
+            hide(productView);
             product.writeEl(productView);
 
+            productView.find('.edit').click(editProduct.bind(null, productView, product));
             productView.find('.add').click(addToCurrentDish.bind(null, product));
             productView.find('.remove').click(totallyRemove.bind(null, productView, product));
 

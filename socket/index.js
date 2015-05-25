@@ -57,6 +57,16 @@ module.exports = function(server){
             })
             .on('getDishList', function(dishList){
                 socket.emit('getDishList', products.dishList);
+            })
+            .on('fixProduct', function(fixedProduct){
+                if(!fixedProduct) return;
+                for(var i = 0; i < products.list.length; i++){
+                    if( products.list[i].id == fixedProduct.id ){
+                        products.list[i] = fixedProduct;
+                        break;
+                    }
+                }
+                products.save();
             });
     });
 };
