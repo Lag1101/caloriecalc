@@ -350,13 +350,13 @@
 
             productView
                 .append($('<div>')
-                    .append($('<button>').addClass('edit item').text('Редактировать'))
+                    .append($('<button>').addClass('edit item'))
                     .append($('<div>').addClass('blankDescription blankItem'))
                     .append($('<div>').addClass('blankItem'))
                     .append($('<div>').addClass('blankItem'))
                     .append($('<div>').addClass('blankItem'))
-                    .append($('<button>').addClass('save item hidden').text('Сохранить'))
-                    .append($('<button>').addClass('cancel item hidden').text('Отменить'))
+                    .append($('<button>').addClass('save item hidden'))
+                    .append($('<button>').addClass('cancel item hidden'))
                     .addClass('edit-menu'));
 
             productView.find('input').addClass('item');
