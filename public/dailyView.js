@@ -49,11 +49,9 @@
 
         for(var i = 0; i < fields.length; i++) {
             var fieldName = fields[i];
-            var field = resultView.find('.'+fieldName).removeClass('normal underNorm overNorm');
+            var field = resultView.find('.'+fieldName).removeClass('label-danger');
 
-            if      (cur[fieldName] >= norms.max[fieldName]) field.addClass('overNorm');
-            else if (cur[fieldName] < norms.min[fieldName]) field.addClass('underNorm');
-            else                                            field.addClass('normal');
+            if (cur[fieldName] >= norms.max[fieldName]) field.addClass('label-danger');
 
         }
     }
