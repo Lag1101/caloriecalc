@@ -110,14 +110,26 @@
         updateLinks();
     }
     function getNewItemClone(){
-        var newItem = daily.find('.newItem').clone();
-        newItem.find('button').text('-');
-        newItem.find('button').click(utils.removeFromCurrentDish.bind(null, newItem, function(){
+        var newItem = $('<div>')
+            .append($('<div>')
+                //.append($('<button>').addClass('add item').text('+'))
+                .append($('<button>').addClass('remove btn myLabel btn-xs btn-primary').append(utils.icons.remove.clone()))
+                .append($('<div>').attr('contenteditable', true).addClass('description item enableForInput'))
+                .append($('<input>').addClass('proteins'))
+                .append($('<input>').addClass('triglyceride'))
+                .append($('<input>').addClass('carbohydrate'))
+                .append($('<input>').addClass('calorie'))
+                .append($('<div>').attr('contenteditable', true).addClass('details item enableForInput'))
+                .addClass('additionalProduct product'));
+            //.append($('<button>').addClass('remove item').text('-')));
+
+        newItem.find('input').addClass('item');
+
+        newItem.find('.remove').click(utils.removeFromCurrentDish.bind(null, newItem, function(){
             updateLinks();
             reCalcDaily();
             saveDaily();
         }));
-        newItem.removeClass('newItem').addClass('additionalProduct');
         newItem.find('.item').on('input paste', function(){
             reCalcDaily();
             saveDaily();

@@ -21,7 +21,7 @@
     var sortKey = sortBy.find('option:selected').val();
     var order = sortOrder.find('option:selected').val();
 
-    resultDish.find('.addButton').click(function(){
+    resultDish.find('.save').click(function(){
         var dish = new Product();
         var portion = new Product();
 
@@ -103,7 +103,7 @@
         var dishPortion = $('<div>')
             .addClass('product')
             .append($('<div>')
-                .append($('<button>').addClass('remove').text('-'))
+                .append($('<button>').addClass('remove btn item btn-xs btn-primary').append(utils.icons.remove.clone()))
                 .append($('<div>').addClass('description item enableForInput').attr('contenteditable', true))
                 .append(dishViewClone)
                 .append(portionViewClone)
@@ -171,7 +171,7 @@
             .addClass('product')
             .append($('<div>')
                 .addClass('inline-block')
-                .append($('<button>').addClass('remove').text('-'))
+                .append($('<button>').addClass('remove btn item btn-xs btn-primary').append(utils.icons.remove.clone()))
                 .append($('<div>').addClass('description item disableForInput'))
                 .append($('<input>').addClass('proteins'))
                 .append($('<input>').addClass('triglyceride'))
@@ -354,15 +354,15 @@
             var productView = $('<div>')
                 .append($('<div>')
                     //.append($('<button>').addClass('add item').text('+'))
-                    .append($('<button>').addClass('add btn myLabel btn-xs btn-primary').text('+'))
+                    .append($('<button>').addClass('add btn item btn-xs btn-primary').append(utils.icons.add.clone()))
                     .append(utils.DropdownButton.clone())
-                    .append($('<div>').addClass('description item'))
+                    .append($('<div>').addClass('description item disableForInput'))
                     .append($('<input>').addClass('proteins'))
                     .append($('<input>').addClass('triglyceride'))
                     .append($('<input>').addClass('carbohydrate'))
                     .append($('<input>').addClass('calorie'))
                     //.append($('<button>').addClass('remove item').text('-'))
-            );
+            ).addClass('inline-block');
 
 
             productView
@@ -372,13 +372,12 @@
                     .append($('<div>').addClass('blankItem'))
                     .append($('<div>').addClass('blankItem'))
                     .append($('<div>').addClass('blankItem'))
-                    .append($('<button>').addClass('save hidden btn btn-xs btn-success').text('Сохранить'))
-                    .append($('<button>').addClass('cancel hidden btn btn-xs btn-primary').text('Отменить'))
+                    .append($('<button>').addClass('save item hidden btn btn-xs btn-success').append(utils.icons.confirm.clone()))
+                    .append($('<button>').addClass('cancel item hidden btn btn-xs btn-primary').append(utils.icons.cancel.clone()))
                     .addClass('edit-menu'));
 
             var root = $('<div>').append(productView);
 
-            productView.addClass('inline-block');
             root.addClass('product');
 
 

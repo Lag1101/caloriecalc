@@ -73,7 +73,13 @@ var utils = (function(){
         return cb && cb();
     }
 
-
+    var icons = {
+        save:           $('<i>').addClass('glyphicon glyphicon-floppy-disk'),
+        cancel:     $('<i>').addClass('glyphicon glyphicon-remove'),
+        confirm:    $('<i>').addClass('glyphicon glyphicon-ok'),
+        remove:     $('<i>').addClass('glyphicon glyphicon-trash'),
+        add:     $('<i>').addClass('glyphicon glyphicon-plus')
+    };
 
     var DropdownButton =
             $('<div>')
@@ -100,6 +106,7 @@ var utils = (function(){
                                 .text('Удалить')))));
 
     return {
+        icons: icons,
         DropdownButton: DropdownButton,
         removeFromCurrentDish: removeFromCurrentDish,
         validate: validate,

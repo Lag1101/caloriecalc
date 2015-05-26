@@ -14,7 +14,7 @@ div(class='daily ')
          each item in items
             input(disabled class='#{item.classId} item notCalc' value=item.max)
    div(class='result')
-      div(class='product inline-block')
+      div(class='product')
          input(disabled class='myLabel' value='Итог')
          input(disabled class='description item' value='Описание')
          each item in items
@@ -22,16 +22,16 @@ div(class='daily ')
          div(class='item notCalc disableForInput') Детали
    each dailyDish in daily
       div(class=dailyDish.classId)
-         div(class='product inline-block')
+         div(class='product')
             div( class='myLabel disableForInput') #{dailyDish.label}
             div( contenteditable=true class='description item enableForInput' placeholder='Описание')
             each item in items
-               input(class='#{item.classId} item')
+               input(class='#{item.classId} enableForInput item')
             div(contenteditable=true class='details item enableForInput' placeholder='Детали')
    div(class='newItem product')
-      div( class='inline-block')
-         button(class='myLabel addButton') +
-         div(contenteditable=true class='item description enableForInput' placeholder='Описание')
-         each item in items
-            input(class='#{item.classId} item' placeholder=item.label)
-         div(contenteditable=true class='details item enableForInput' placeholder='Детали')
+      button(class='addButton myLabel btn btn-xs btn-primary')
+         i(class='glyphicon glyphicon-plus')
+      div(contenteditable=true class='item description enableForInput' placeholder='Описание')
+      each item in items
+         input(class='#{item.classId} enableForInput item' placeholder=item.label)
+      div(contenteditable=true class='details item enableForInput' placeholder='Детали')
