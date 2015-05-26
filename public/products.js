@@ -362,7 +362,7 @@
                     .append($('<input>').addClass('carbohydrate'))
                     .append($('<input>').addClass('calorie'))
                     //.append($('<button>').addClass('remove item').text('-'))
-            ).addClass('inline-block');
+            );
 
 
             productView
@@ -378,7 +378,9 @@
 
             var root = $('<div>').append(productView);
 
-            root.addClass('product');
+            productView.addClass('product inline-block');
+            //root.addClass('product');
+            //root.addClass('product');
 
 
             root.find('input').addClass('item');
