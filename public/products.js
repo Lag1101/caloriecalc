@@ -103,7 +103,7 @@
         var dishPortion = $('<div>')
             .addClass('product')
             .append($('<div>')
-                .append($('<button>').addClass('remove btn item btn-xs btn-primary').append(utils.icons.remove.clone()))
+                .append($('<button>').addClass('remove btn item btn-xs btn-info').append(utils.icons.remove.clone()))
                 .append($('<div>').addClass('description item enableForInput').attr('contenteditable', true))
                 .append(dishViewClone)
                 .append(portionViewClone)
@@ -171,7 +171,7 @@
             .addClass('product')
             .append($('<div>')
                 .addClass('inline-block')
-                .append($('<button>').addClass('remove btn item btn-xs btn-primary').append(utils.icons.remove.clone()))
+                .append($('<button>').addClass('remove btn item btn-xs btn-info').append(utils.icons.remove.clone()))
                 .append($('<div>').addClass('description item disableForInput'))
                 .append($('<input>').addClass('proteins'))
                 .append($('<input>').addClass('triglyceride'))
@@ -355,7 +355,7 @@
                 .append($('<div>')
                     //.append($('<button>').addClass('add item').text('+'))
                     //
-                    .append($('<button>').addClass('add btn item btn-xs btn-primary').append(utils.icons.add.clone()))
+                    .append($('<button>').addClass('add btn item btn-xs btn-info').append(utils.icons.add.clone()))
                     .append(utils.DropdownButton.clone())
                     .append($('<div>').addClass('description item disableForInput'))
                     .append($('<input>').addClass('proteins'))
@@ -373,8 +373,8 @@
                     .append($('<div>').addClass('blankItem'))
                     .append($('<div>').addClass('blankItem'))
                     .append($('<div>').addClass('blankItem'))
-                    .append($('<button>').addClass('save item hidden btn btn-xs btn-primary').append(utils.icons.confirm.clone()))
-                    .append($('<button>').addClass('cancel item hidden btn btn-xs btn-primary').append(utils.icons.cancel.clone()))
+                    .append($('<button>').addClass('save item hidden btn btn-xs btn-info').append(utils.icons.confirm.clone()))
+                    .append($('<button>').addClass('cancel item hidden btn btn-xs btn-info').append(utils.icons.cancel.clone()))
                     .addClass('edit-menu'));
 
             var root = $('<div>').append(productView);

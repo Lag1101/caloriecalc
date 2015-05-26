@@ -111,7 +111,7 @@
         var newItem = $('<div>')
             .append($('<div>')
                 //.append($('<button>').addClass('add item').text('+'))
-                .append($('<button>').addClass('remove btn myLabel btn-xs btn-primary').append(utils.icons.remove.clone()))
+                .append($('<button>').addClass('remove btn myLabel btn-xs btn-info').append(utils.icons.remove.clone()))
                 .append($('<div>').attr('contenteditable', true).addClass('description item enableForInput'))
                 .append($('<input>').addClass('proteins'))
                 .append($('<input>').addClass('triglyceride'))
