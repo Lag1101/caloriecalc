@@ -5,7 +5,7 @@ div(class='currentDishProducts myTable')
 
 div(class='myTable allProducts inline-block')
    div(class='newProduct product inline-block')
-      button(class='addProductButton item') +
+      button(class='addProductButton myLabel btn btn-xs btn-primary') +
       div(contenteditable=true class="description item enableForInput" placeholder="Описание")
       each item in items
          input(class='#{item.classId} item' placeholder=item.label)
