@@ -77,8 +77,8 @@ var utils = (function(){
         save:           $('<i>').addClass('glyphicon glyphicon-floppy-disk'),
         cancel:     $('<i>').addClass('glyphicon glyphicon-remove'),
         confirm:    $('<i>').addClass('glyphicon glyphicon-ok'),
-        remove:     $('<i>').addClass('glyphicon glyphicon-trash'),
-        add:     $('<i>').addClass('glyphicon glyphicon-plus')
+        remove:     $('<i>').text('-'),//.addClass('glyphicon glyphicon-trash'),
+        add:     $('<i>').text('+')//.addClass('glyphicon glyphicon-plus')
     };
 
     var DropdownButton =
