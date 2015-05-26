@@ -75,8 +75,8 @@ var utils = (function(){
 
     var icons = {
         save:           $('<i>').addClass('glyphicon glyphicon-floppy-disk'),
-        cancel:     $('<i>').addClass('glyphicon glyphicon-remove'),
-        confirm:    $('<i>').addClass('glyphicon glyphicon-ok'),
+        cancel:     $('<i>').text('Отмена'),//.addClass('glyphicon glyphicon-remove'),
+        confirm:    $('<i>').text('Ok'),//.addClass('glyphicon glyphicon-ok'),
         remove:     $('<i>').text('-'),//.addClass('glyphicon glyphicon-trash'),
         add:     $('<i>').text('+')//.addClass('glyphicon glyphicon-plus')
     };
