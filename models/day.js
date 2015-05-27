@@ -35,6 +35,10 @@ var schema = new Schema({
     secondDinner: {
         type: Schema.Types.ObjectId,
         default: null
+    },
+    additional: {
+        type: [Schema.Types.ObjectId],
+        default: []
     }
 });
 

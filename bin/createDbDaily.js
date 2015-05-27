@@ -62,14 +62,21 @@ function createDaily(callback) {
             var day = daily[date];
 
             var dayData = {
-                date: date
+                date: date,
+                additional: []
             };
 
             for(var i = 0; i < timesCount; i++){
-                var t = new mongoose.models.DailyProduct(day[times[i]]);
+                var t = new mongoose.models.DailyProduct(day[times[i]].products);
                 dayData[times[i]] = t._id;
                 t.save();
             }
+
+            day['additional'].map(function(additional){
+                var t = new mongoose.models.DailyProduct(additional.products);
+                dayData.additional.push(t._id);
+                t.save();
+            });
 
             var d = new mongoose.models.Day(dayData);
             d.save(cb)
