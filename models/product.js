@@ -9,43 +9,61 @@ var mongoose = require('../lib/mongoose'),
 
 var schema = new Schema({
     id: {
-        type: String,
+        type: Schema.Types.String,
         unique: true,
         required: true
     },
     description: {
-        type: String,
+        type: Schema.Types.String,
         required: true
     },
     details: {
-        type: String,
+        type: Schema.Types.String,
         default: ""
     },
     proteins: {
-        type: Number,
+        type: Schema.Types.Number,
         required: true,
-        default: ""
+        default: 0.0
     },
     triglyceride: {
-        type: Number,
+        type: Schema.Types.Number,
         required: true,
-        default: ""
+        default: 0.0
     },
     carbohydrate: {
-        type: Number,
+        type: Schema.Types.Number,
         required: true,
-        default: ""
+        default: 0.0
     },
     calorie: {
-        type: Number,
+        type: Schema.Types.Number,
         required: true,
-        default: ""
+        default: 0.0
     },
     mass: {
-        type: Number,
+        type: Schema.Types.Number,
         required: true,
-        default: ""
+        default: 0.0
     }
 });
+
+schema.statics.get = function(id, callback) {
+    var Product = this;
+    Product.findOne({id: id}, callback);
+};
+
+schema.methods.getRaw = function() {
+    return {
+        id:             this.id,
+        description:    this.description,
+        details:        this.details,
+        proteins:       this.proteins,
+        triglyceride:   this.triglyceride,
+        carbohydrate:   this.carbohydrate,
+        calorie:        this.calorie,
+        mass:           this.mass
+    };
+};
 
 exports.Product = mongoose.model('Product', schema);

@@ -42,6 +42,7 @@ function requireModels(callback) {
 function createUsers(callback) {
     var users = [
         {username: 'luckybug', password: '123'},
+        {username: 'nastya', password: '123'},
     ];
 
     async.waterfall([

@@ -7,24 +7,24 @@ var mongoose = require('../lib/mongoose'),
 
 var schema = new Schema({
     username: {
-        type: String,
+        type: Schema.Types.String,
         unique: true,
         required: true
     },
     hashedPassword: {
-        type: String,
+        type: Schema.Types.String,
         required: true
     },
     salt: {
-        type: String,
+        type: Schema.Types.String,
         required: true
     },
     created: {
-        type: Date,
+        type: Schema.Types.Date,
         default: Date.now
     },
     products: {
-        type: Array,
+        type: [Schema.Types.String],
         required: true,
         default: []
     }
