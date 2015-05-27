@@ -74,11 +74,15 @@
     }
 
     function totallyRemove(view, product) {
-        if( confirm("Вы уверены, что хотите удалить " + product.description + " ?") )
-            utils.removeFromCurrentDish(view, function(){
-                saveCurrentDishProducts();
-                removeFromServer(product);
-            });
+        utils.confirmDialog(
+            "Вы уверены, что хотите удалить " + product.description + " ?",
+            function(){
+                utils.removeFromCurrentDish(view, function(){
+                    saveCurrentDishProducts();
+                    removeFromServer(product);
+                });
+            }
+        );
     }
 
     function addToDishList(dish, portion, description){
@@ -112,7 +116,12 @@
         dishPortion.find('.remove')
             .addClass('item')
             .click(function(){
-                utils.removeFromCurrentDish(dishPortion, saveDishList);
+                utils.confirmDialog(
+                    "Вы уверены, что хотите удалить " + dishPortion.find('.description').html() + " ?",
+                    function(){
+                        utils.removeFromCurrentDish(dishPortion, saveDishList);
+                    }
+                );
             });
         dishPortion.find('input').addClass('item');
         dishPortion.find('input:not(.mass)').attr('disabled', true);

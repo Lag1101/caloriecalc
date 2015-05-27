@@ -105,7 +105,13 @@ var utils = (function(){
                                 .addClass('icon-trash')
                                 .text('Удалить')))));
 
+    function confirmDialog(message, cb){
+        if(confirm(message))
+            return cb && cb();
+    }
+
     return {
+        confirmDialog: confirmDialog,
         icons: icons,
         DropdownButton: DropdownButton,
         removeFromCurrentDish: removeFromCurrentDish,
