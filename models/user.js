@@ -24,8 +24,11 @@ var schema = new Schema({
         default: Date.now
     },
     products: {
-        type: [Schema.Types.String],
-        required: true,
+        type: [Schema.Types.ObjectId],
+        default: []
+    },
+    daily: {
+        type: [Schema.Types.ObjectId],
         default: []
     }
 });

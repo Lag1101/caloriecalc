@@ -35,7 +35,8 @@ Products.prototype.load = function(cb) {
             return _this.save(cb);
 
         fs.readFile(_this.filename, {encoding: 'utf8'}, function (err, data) {
-            if (err) throw err;
+            if (err)
+                return cb && cb(err);
 
             var o = JSON.parse(data);
             _this.list = o.list || [];
@@ -46,7 +47,7 @@ Products.prototype.load = function(cb) {
 
             _this.validate();
 
-            return cb && cb(null, _this.list);
+            return cb && cb(null, _this.list, _this.dailyProducts);
         });
     });
 

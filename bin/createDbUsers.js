@@ -4,6 +4,7 @@
 var mongoose = require('../lib/mongoose');
 var async = require('async');
 var logger = require('../lib/logger');
+var products = require('../products').products;
 
 async.series([
     open,
@@ -33,6 +34,7 @@ function dropDatabase(callback) {
 function requireModels(callback) {
     require('../models/product');
     require('../models/user');
+    require('../models/day');
 
     async.each(Object.keys(mongoose.models), function(modelName, callback) {
         mongoose.models[modelName].ensureIndexes(callback);
@@ -47,23 +49,51 @@ function createUsers(callback) {
 
     async.waterfall([
         function(cb){
-            mongoose.models.Product.find(function(err, products){
-                return cb(null, products);
-            });
+            async.parallel({
+                products: function(cb){
+                    mongoose.models.Product.find(function (err, products) {
+                        return cb(null, products);
+                    });
+                },
+                days: function (cb) {
+                    mongoose.models.Day.find(function (err, days) {
+                        return cb(null, days);
+                    });
+                }
+            },
+            function(err, res){
+                cb(err, res)
+            })
         },
-        function(products, cb) {
-            async.map(products, function (product, cb) {
-                cb(null, product.id);
-            }, function(err, ids){
-                cb(null, ids);
-            });
+        function(res, cb){
+            async.parallel({
+                    products: function(cb){
+                        async.map(res.products, function (product, cb) {
+                            cb(null, product._id);
+                        }, function(err, ids){
+                            cb(null, ids);
+                        })
+                    },
+                    days: function (cb) {
+                        async.map(res.days, function (day, cb) {
+                            cb(null, day._id);
+                        }, function(err, ids){
+                            cb(null, ids);
+                        })
+                    }
+                },
+                function(err, res){
+                    cb(err, res)
+                })
         },
-        function(ids, cb){
+        function(resultIds, cb){
             async.each(users, function(userData){
                 var user = new mongoose.models.User({
                     username: userData.username,
                     password: userData.password,
-                    products: ids});
+                    products: resultIds.products,
+                    daily: resultIds.days
+                });
                 user.save(cb);
             }, cb);
         }
