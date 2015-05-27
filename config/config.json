@@ -1,0 +1,16 @@
+{
+  "PORT": 3001,
+  "title": "Balda",
+  "session": {
+    "secret": "KillerIsJim",
+    "key": "connect.sid",
+    "cookie": {
+      "path": "/",
+      "httpOnly": true,
+      "maxAge": null
+    }
+  },
+  "mongoose": {
+    "uri": "mongodb://127.0.0.1/caloriecalc"
+  }
+}
