@@ -180,7 +180,7 @@
             .addClass('product')
             .append($('<div>')
                 .addClass('inline-block')
-                .append($('<button>').addClass('remove btn item btn-xs btn-info').append(utils.icons.remove.clone()))
+                .append($('<button>').addClass('remove btn item btn-xs btn-default').append(utils.icons.remove.clone()))
                 .append($('<div>').addClass('description item disableForInput'))
                 .append($('<input>').addClass('proteins'))
                 .append($('<input>').addClass('triglyceride'))
