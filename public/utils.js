@@ -85,7 +85,7 @@ var utils = (function(){
             $('<div>')
                 .addClass('btn-group btn-group-xs')
                 .append($('<a>')
-                    .addClass('btn btn-block btn-info dropdown-toggle')
+                    .addClass('btn btn-block btn-default dropdown-toggle')
                     .attr('data-toggle', 'dropdown')
                     .append($('<span>')
                         .addClass('caret')))
