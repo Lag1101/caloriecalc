@@ -3,6 +3,7 @@
   "dependencies": {
     "bootstrap": "*",
     "jquery": "*",
-    "socket.io-client": "*"
+    "socket.io-client": "*",
+    "bootstrap-dialog": "*"
   }
 }
