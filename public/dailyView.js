@@ -121,6 +121,10 @@
                 .addClass('additionalProduct product'));
             //.append($('<button>').addClass('remove item').text('-')));
 
+        var p = new Product();
+        p.readEl( daily.find('.newItem'));
+        p.writeEl( newItem);
+
         newItem.find('input').addClass('item');
 
         newItem.find('.remove').click(utils.removeFromCurrentDish.bind(null, newItem, function(){
