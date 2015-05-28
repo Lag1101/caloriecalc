@@ -50,6 +50,7 @@ schema.methods.getRaw = function(callback) {
     };
     async.parallel([
         function(cb){
+            if(day.main.length > 0)
             async.forEachOf(Day.fields, function(field, index, cb){
                 var product = day.main[index];
                 raw[field] = product.getRaw();

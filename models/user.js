@@ -61,6 +61,15 @@ schema.methods.getDailyByDate = function(date, callback){
             return callback(null, daily);
         }
     }
+    var d = new Day({
+        date: date
+    });
+
+    user.daily.push(d);
+
+    return user.save(function(err){
+        return callback(err, d);
+    });
 };
 schema.methods.getRawDailyByDate = function(date, callback){
     var user = this;
