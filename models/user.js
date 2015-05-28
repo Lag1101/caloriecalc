@@ -2,9 +2,15 @@ var crypto = require('crypto');
 var async = require('async');
 var util = require('util');
 
+
+
+var Dish = require('./dish').Dish;
+var DishSchema = require('./dish').DishSchema;
 var Product = require('./product').Product;
-var DaySchema = require('./day').DaySchema;
+var DishProduct = require('./product').DishProduct;
+var ProductSchema = require('./product').ProductSchema;
 var Day = require('./day').Day;
+var DaySchema = require('./day').DaySchema;
 
 var mongoose = require('../lib/mongoose'),
     Schema = mongoose.Schema;
@@ -38,8 +44,53 @@ var schema = new Schema({
     date:{
         type: Schema.Types.String,
         default: ""
+    },
+    currentDishProducts:{
+        type: [Schema.Types.String],
+        default: []
     }
 });
+
+schema.methods.getCurrentDishProducts = function(callback){
+    var user = this;
+    async.map(user.currentDishProducts, function(product, cb){
+        return cb(null, product.getRaw());
+    }, callback);
+};
+
+schema.methods.setCurrentDishProducts = function(currentDishProducts, callback){
+    var user = this;
+
+
+    async.each(user.currentDishProducts, function(productId, cb){
+        var index = user.currentDishProducts.indexOf(productId);
+        async.waterfall([
+            function(cb){
+                DishProduct.findById(productId, cb);
+            },
+            function(product, cb){
+                product.remove(cb);
+            },
+            function(product, cb){
+                user.currentDishProducts.splice(index, 1);
+                cb();
+            }
+        ], cb);
+    },function(err){
+        if(err)
+            return callback(err);
+
+        async.each(currentDishProducts, function(p, cb){
+            var product = new DishProduct(p);
+            user.currentDishProducts.push(product);
+            product.save(cb);
+        }, function(err){
+            if(err) return callback(err);
+            return callback(null, user);
+        });
+    });
+
+};
 
 schema.methods.gerRawProductList = function(callback){
     var user = this;
@@ -105,7 +156,7 @@ schema.methods.addProduct = function(newProduct, callback){
 schema.methods.removeProduct = function(productId, callback){
     var user = this;
 
-    var index = user.products.indexOf(productId)
+    var index = user.products.indexOf(productId);
     if(index < 0)
         return callback(new Error(user.username + " doesn't have such product " + productId));
     else{

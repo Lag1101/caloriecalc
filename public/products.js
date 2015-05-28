@@ -270,19 +270,9 @@
     function updateCurrentDishProducts(data) {
         currentDishProductsView.empty();
         if(data) {
-            var currentDishProductsRow = data.currentDishProducts;
-            if(data.dish) {
-                var dish = new Product(data.dish);
-                dish.writeEl(dishView);
-            }
-            if(data.portion) {
-                var portion = new Product(data.portion);
-                portion.writeEl(portionView);
-            }
+            var currentDishProductsRow = data;
             if(currentDishProductsRow)
                 currentDishProductsRow.map(addToCurrentDish);
-
-
         }
     }
     function saveCurrentDishProducts() {
@@ -292,15 +282,7 @@
             product.readEl($(this));
             currentDishProducts.push(product.getRaw());
         });
-        var dish = new Product();
-        dish.readEl(dishView);
-        var portion = new Product();
-        portion.readEl(portionView);
-        socket.emit('setCurrentDishProducts',{
-            portion: portion.getRaw(),
-            dish: dish.getRaw(),
-            currentDishProducts:currentDishProducts
-        });
+        socket.emit('setCurrentDishProducts',currentDishProducts);
     }
 
     function appear(productView){

@@ -95,9 +95,7 @@ module.exports = function(server){
                         User.findOne({username: username}, cb);
                     },
                     function(user, cb){
-                        user.setDaily(daily, function(err, d){
-                            cb(err, user);
-                        });
+                        user.setDaily(daily, cb);
                     },
                     function(user, cb){
                         user.save(cb);
@@ -109,11 +107,37 @@ module.exports = function(server){
                 //products.save();
             })
             .on('getCurrentDishProducts', function(){
-                socket.emit('getCurrentDishProducts', products.currentDish);
+                async.waterfall([
+                    function(cb){
+                        User.findOne({username: username}, cb);
+                    },
+                    function(user, cb){
+                        user.getCurrentDishProducts(cb);
+                    },
+                    function(products, cb){
+                        socket.emit('getCurrentDishProducts', products);
+                        return cb();
+                    }
+                ], function(err){
+                    if(err) logger.error(err);
+                });
             })
-            .on('setCurrentDishProducts', function(currentDish){
-                products.currentDish = currentDish;
-                products.save();
+            .on('setCurrentDishProducts', function(currentDishProducts){
+                async.waterfall([
+                    function(cb){
+                        User.findOne({username: username}, cb);
+                    },
+                    function(user, cb){
+                        user.setCurrentDishProducts(currentDishProducts, function(err, products){
+                            return cb(err, user);
+                        });
+                    },
+                    function(user, cb){
+                        user.save(cb);
+                    }
+                ], function(err){
+                    if(err) logger.error(err);
+                });
             })
             .on('getCurrentDate', function(){
                 User.findOne({username: username}, function(err, user){

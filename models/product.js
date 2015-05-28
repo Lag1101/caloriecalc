@@ -52,4 +52,5 @@ schema.methods.getRaw = function() {
 };
 
 exports.Product = mongoose.model('Product', schema);
+exports.DishProduct = mongoose.model('DishProduct', schema);
 exports.ProductSchema = schema;

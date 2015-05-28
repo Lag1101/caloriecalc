@@ -92,7 +92,8 @@ function createUsers(callback) {
                     password: userData.password,
                     products: resultIds.products,
                     daily: resultIds.days,
-                    date: products.date
+                    date: products.date,
+                    currentDish: products.currentDish
                 });
                 user.save(cb);
             }, cb);
