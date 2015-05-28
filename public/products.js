@@ -32,7 +32,7 @@
     });
     defaultDish.find('.mass').on('input paste', function(){
         reCalc();
-        saveCurrentDishProducts();
+        //saveCurrentDishProducts();
     });
 
     sortBy.on('change', function () {
@@ -188,7 +188,7 @@
                 .append($('<input>').addClass('calorie'))
                 .append($('<input>').addClass('mass').on('input paste', function(){
                     $(this).val( utils.validate( $(this).val() ) );
-                    saveCurrentDishProducts();
+                    //saveCurrentDishProducts();
                 })));
 
         productView.find('input').addClass('item');
@@ -197,18 +197,18 @@
         product.writeEl(productView);
         productView.find('.remove').click(utils.removeFromCurrentDish.bind(null, productView, function(){
             reCalc();
-            saveCurrentDishProducts();
+            socket.emit('removeDishProduct', product.id);
         }));
 
         productView.find('input').on('input propertychange paste', function(){
             reCalc();
-            saveCurrentDishProducts();
+            //saveCurrentDishProducts();
         });
 
         productView.appendTo(currentDishProductsView);
 
         reCalc();
-        saveCurrentDishProducts();
+        //saveCurrentDishProducts();
     }
 
     function calcPortion(el){

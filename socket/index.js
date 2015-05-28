@@ -122,15 +122,28 @@ module.exports = function(server){
                     if(err) logger.error(err);
                 });
             })
-            .on('setCurrentDishProducts', function(currentDishProducts){
+            .on('newDishProduct', function(newDishProduct){
                 async.waterfall([
                     function(cb){
                         User.findOne({username: username}, cb);
                     },
                     function(user, cb){
-                        user.setCurrentDishProducts(currentDishProducts, function(err, products){
-                            return cb(err, user);
-                        });
+                        user.addDishProduct(newDishProduct, cb);
+                    },
+                    function(user, cb){
+                        user.save(cb);
+                    }
+                ], function(err){
+                    if(err) logger.error(err);
+                });
+            })
+            .on('removeDishProduct', function(id){
+                async.waterfall([
+                    function(cb){
+                        User.findOne({username: username}, cb);
+                    },
+                    function(user, cb){
+                        user.removeDishProduct(id, cb);
                     },
                     function(user, cb){
                         user.save(cb);

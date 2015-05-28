@@ -53,20 +53,40 @@ var schema = new Schema({
 
 schema.methods.getCurrentDishProducts = function(callback){
     var user = this;
-    async.map(user.currentDishProducts, function(product, cb){
-        return cb(null, product.getRaw());
-    }, callback);
+    async.waterfall([
+        function(cb){
+            async.map(user.currentDishProducts, function(productId, cb){
+                DishProduct.findById(productId, cb);
+            }, cb);
+        },
+        function(products, cb){
+            async.map(products, function(product, cb){
+                cb(null, product.getRaw());
+            }, cb);
+        }
+    ], callback);
 };
 
-schema.methods.setCurrentDishProducts = function(currentDishProducts, callback){
+schema.methods.addDishProduct = function(dishProduct, callback){
+    if(!dishProduct) return;
+
+    var user = this;
+    var product = new DishProduct(dishProduct);
+    return product.save(function(err){
+        user.currentDishProducts.push(product._id);
+        return callback(err, user);
+    });
+};
+schema.methods.removeDishProduct = function(dishProductId, callback){
     var user = this;
 
-
-    async.each(user.currentDishProducts, function(productId, cb){
-        var index = user.currentDishProducts.indexOf(productId);
+    var index = user.currentDishProducts.indexOf(dishProductId);
+    if(index < 0)
+        return callback(new Error(user.username + " doesn't have such product " + dishProductId));
+    else{
         async.waterfall([
             function(cb){
-                DishProduct.findById(productId, cb);
+                DishProduct.findById(dishProductId, cb);
             },
             function(product, cb){
                 product.remove(cb);
@@ -75,23 +95,12 @@ schema.methods.setCurrentDishProducts = function(currentDishProducts, callback){
                 user.currentDishProducts.splice(index, 1);
                 cb();
             }
-        ], cb);
-    },function(err){
-        if(err)
-            return callback(err);
-
-        async.each(currentDishProducts, function(p, cb){
-            var product = new DishProduct(p);
-            user.currentDishProducts.push(product);
-            product.save(cb);
-        }, function(err){
+        ], function(err){
             if(err) return callback(err);
             return callback(null, user);
         });
-    });
-
+    }
 };
-
 schema.methods.gerRawProductList = function(callback){
     var user = this;
     async.map(user.products, function(productId, cb){
