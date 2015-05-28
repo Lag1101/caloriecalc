@@ -116,11 +116,19 @@ module.exports = function(server){
                 products.save();
             })
             .on('getCurrentDate', function(){
-                socket.emit('getCurrentDate', products.date);
+                User.findOne({username: username}, function(err, user){
+                    if(err) logger.error(err);
+
+                    socket.emit('getCurrentDate', user.date);
+                });
             })
             .on('setCurrentDate', function(date){
-                products.date = date;
-                products.save();
+                User.findOne({username: username}, function(err, user){
+                    if(err) logger.error(err);
+
+                    user.date = date;
+                    user.save();
+                });
             })
             .on('setDishList', function(dishList){
                 products.dishList = dishList;
