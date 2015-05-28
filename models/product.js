@@ -40,7 +40,7 @@ var schema = new Schema({
 
 schema.methods.getRaw = function() {
     return {
-        id:             this._id,
+        id:             this._id.toString(),
         description:    this.description,
         details:        this.details,
         proteins:       this.proteins,
@@ -50,5 +50,6 @@ schema.methods.getRaw = function() {
         mass:           this.mass
     };
 };
+
 exports.Product = mongoose.model('Product', schema);
-exports.DailyProduct = mongoose.model('DailyProduct', schema);
+exports.ProductSchema = schema;

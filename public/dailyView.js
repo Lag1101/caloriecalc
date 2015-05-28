@@ -188,13 +188,11 @@
     function createDailyItem(el){
         var product = new Product();
         product.readEl(el);
-        return {
-            products: product.getRaw()
-        };
+        return product.getRaw();
     }
 
     function restoreDailyItem(el, details){
-        var product = new Product(details.products);
+        var product = new Product(details);
         product.writeEl(el);
     }
 
@@ -202,6 +200,7 @@
         var date = dailyDate.val();
 
         var products = {
+            date: date,
             breakfast: createDailyItem(daily.find('.breakfast')),
             firstLunch: createDailyItem(daily.find('.firstLunch')),
             secondLunch: createDailyItem(daily.find('.secondLunch')),
@@ -215,10 +214,6 @@
             products.additional.push(createDailyItem($(this)));
         });
 
-        var data = {
-            date: date,
-            products: products
-        };
-        socket.emit('setDaily', data);
+        socket.emit('setDaily', products);
     }
 })(socket);

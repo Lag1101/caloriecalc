@@ -5,6 +5,8 @@ var mongoose = require('../lib/mongoose');
 var async = require('async');
 var products = require('../products').products;
 var logger = require('../lib/logger');
+var Product = require('../models/product').Product;
+var Day = require('../models/day').Day;
 
 async.series([
     open,
@@ -33,9 +35,6 @@ function dropDatabase(callback) {
 }
 
 function requireModels(callback) {
-    require('../models/product');
-    require('../models/day');
-
     async.each(Object.keys(mongoose.models), function(modelName, callback) {
         mongoose.models[modelName].ensureIndexes(callback);
     }, callback);
@@ -46,16 +45,6 @@ function createDaily(callback) {
         if(err)
             callback(err);
 
-        var times = [
-            'breakfast',
-            'firstLunch',
-            'secondLunch',
-            'thirdLunch',
-            'dinner',
-            'secondDinner'
-        ];
-        var timesCount = times.length;
-
         async.each(Object.getOwnPropertyNames(daily), function (date, cb) {
             if(!date) return cb();
 
@@ -63,22 +52,21 @@ function createDaily(callback) {
 
             var dayData = {
                 date: date,
-                additional: []
+                additional: [],
+                main: []
             };
 
-            for(var i = 0; i < timesCount; i++){
-                var t = new mongoose.models.DailyProduct(day[times[i]].products);
-                dayData[times[i]] = t._id;
-                t.save();
+            for(var i = 0; i < Day.fields.length; i++){
+                var t = new Product(day[Day.fields[i]].products);
+                dayData.main.push(t);
             }
 
             day['additional'].map(function(additional){
-                var t = new mongoose.models.DailyProduct(additional.products);
-                dayData.additional.push(t._id);
-                t.save();
+                var t = new Product(additional.products);
+                dayData.additional.push(t);
             });
 
-            var d = new mongoose.models.Day(dayData);
+            var d = new Day(dayData);
             d.save(cb)
         }, callback);
     });

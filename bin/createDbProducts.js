@@ -5,6 +5,7 @@ var mongoose = require('../lib/mongoose');
 var async = require('async');
 var products = require('../products').products;
 var logger = require('../lib/logger');
+var Product = require('../models/product').Product;
 
 async.series([
     open,
@@ -33,8 +34,6 @@ function dropDatabase(callback) {
 }
 
 function requireModels(callback) {
-    require('../models/product');
-
     async.each(Object.keys(mongoose.models), function(modelName, callback) {
         mongoose.models[modelName].ensureIndexes(callback);
     }, callback);
@@ -46,7 +45,8 @@ function createUsers(callback) {
             console.error(err);
 
         async.each(list, function (productData, cb) {
-            var product = new mongoose.models.Product(productData);
+
+            var product = new Product(productData);
             product.save(cb);
         }, callback);
     });

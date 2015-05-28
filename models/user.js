@@ -2,6 +2,10 @@ var crypto = require('crypto');
 var async = require('async');
 var util = require('util');
 
+var Product = require('./product').Product;
+var DaySchema = require('./day').DaySchema;
+var Day = require('./day').Day;
+
 var mongoose = require('../lib/mongoose'),
     Schema = mongoose.Schema;
 
@@ -24,14 +28,95 @@ var schema = new Schema({
         default: Date.now
     },
     products: {
-        type: [Schema.Types.ObjectId],
+        type: [Schema.Types.String],
         default: []
     },
     daily: {
-        type: [Schema.Types.ObjectId],
+        type: [DaySchema],
         default: []
+    },
+    date:{
+        type: Schema.Types.String,
+        default: ""
     }
 });
+
+schema.methods.gerRawProductList = function(callback){
+    var user = this;
+    async.map(user.products, function(productId, cb){
+        Product.findById(productId, function(err, product){
+            if(err)
+                return cb(err);
+            else
+                return cb(null, product.getRaw());
+        });
+    }, callback);
+};
+schema.methods.getDailyByDate = function(date, callback){
+    var user = this;
+
+    for(var i = 0; i < user.daily.length; i++){
+        var daily = user.daily[i];
+        if(daily.date === date) {
+            return callback(null, daily);
+        }
+    }
+};
+schema.methods.getRawDailyByDate = function(date, callback){
+    var user = this;
+
+    user.getDailyByDate(date, function(err, daily){
+        return daily.getRaw(callback);
+    });
+};
+
+schema.methods.setDaily = function(newDaily, callback){
+    var user = this;
+
+    user.getDailyByDate(newDaily.date, function(err, daily){
+        if(err) return callback(err);
+
+        var d = Day.createFromRaw(newDaily);
+
+        daily.update(d);
+
+        callback(null, daily);
+    });
+};
+
+schema.methods.addProduct = function(newProduct, callback){
+    var user = this;
+    var product = new Product(newProduct);
+    return product.save(function(err){
+        user.products.push(product._id);
+        return callback(err, user);
+    });
+};
+
+schema.methods.removeProduct = function(productId, callback){
+    var user = this;
+
+    var index = user.products.indexOf(productId)
+    if(index < 0)
+        return callback(new Error(user.username + " doesn't have such product " + productId));
+    else{
+        async.waterfall([
+            function(cb){
+                Product.findById(productId, cb);
+            },
+            function(product, cb){
+                product.remove(cb);
+            },
+            function(product, cb){
+                user.products.splice(index, 1);
+                cb();
+            }
+        ], function(err){
+            if(err) return callback(err);
+            return callback(null, user);
+        });
+    }
+};
 
 schema.methods.encryptPassword = function(password) {
     return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
@@ -44,7 +129,6 @@ schema.virtual('password')
         this.hashedPassword = this.encryptPassword(password);
     })
     .get(function() { return this._plainPassword; });
-
 
 schema.methods.checkPassword = function(password) {
     return this.encryptPassword(password) === this.hashedPassword;

@@ -43,8 +43,7 @@ function requireModels(callback) {
 
 function createUsers(callback) {
     var users = [
-        {username: 'luckybug', password: '123'},
-        {username: 'nastya', password: '123'},
+        {username: 'luckybug', password: '123'}
     ];
 
     async.waterfall([
@@ -76,7 +75,7 @@ function createUsers(callback) {
                     },
                     days: function (cb) {
                         async.map(res.days, function (day, cb) {
-                            cb(null, day._id);
+                            cb(null, day);
                         }, function(err, ids){
                             cb(null, ids);
                         })
