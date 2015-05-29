@@ -32,7 +32,6 @@
     });
     defaultDish.find('.mass').on('input paste', function(){
         reCalc();
-        //saveCurrentDishProducts();
     });
 
     sortBy.on('change', function () {
@@ -78,7 +77,6 @@
             "Вы уверены, что хотите удалить " + product.description + " ?",
             function(){
                 utils.removeFromCurrentDish(view, function(){
-                    saveCurrentDishProducts();
                     removeFromServer(product);
                 });
             }
@@ -174,6 +172,10 @@
         getUpdates();
     }
 
+    function copyToDishProducts(product){
+        socket.emit('newDishProduct', product.id);
+    }
+
     function addToCurrentDish(datum){
         var product = new Product(datum);
         var productView = $('<div>')
@@ -188,7 +190,6 @@
                 .append($('<input>').addClass('calorie'))
                 .append($('<input>').addClass('mass').on('input paste', function(){
                     $(this).val( utils.validate( $(this).val() ) );
-                    //saveCurrentDishProducts();
                 })));
 
         productView.find('input').addClass('item');
@@ -202,13 +203,11 @@
 
         productView.find('input').on('input propertychange paste', function(){
             reCalc();
-            //saveCurrentDishProducts();
         });
 
         productView.appendTo(currentDishProductsView);
 
         reCalc();
-        //saveCurrentDishProducts();
     }
 
     function calcPortion(el){
@@ -274,15 +273,6 @@
             if(currentDishProductsRow)
                 currentDishProductsRow.map(addToCurrentDish);
         }
-    }
-    function saveCurrentDishProducts() {
-        var currentDishProducts = [];
-        currentDishProductsView.find('.product').each(function(){
-            var product = new Product();
-            product.readEl($(this));
-            currentDishProducts.push(product.getRaw());
-        });
-        socket.emit('setCurrentDishProducts',currentDishProducts);
     }
 
     function appear(productView){
@@ -380,7 +370,7 @@
             product.writeEl(root);
 
             root.find('.edit').click(editProduct.bind(null, root, product));
-            root.find('.add').click(addToCurrentDish.bind(null, product));
+            root.find('.add').click(copyToDishProducts.bind(null, product));
             root.find('.remove').click(totallyRemove.bind(null, root, product));
 
             productsList.append(root).trigger('append');

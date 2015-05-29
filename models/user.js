@@ -61,20 +61,35 @@ schema.methods.getCurrentDishProducts = function(callback){
         },
         function(products, cb){
             async.map(products, function(product, cb){
-                cb(null, product.getRaw());
+                if(!product)
+                    return cb(new Error("Such product doesn't exist"));
+                else
+                    return cb(null, product.getRaw());
             }, cb);
         }
     ], callback);
 };
 
-schema.methods.addDishProduct = function(dishProduct, callback){
-    if(!dishProduct) return;
+schema.methods.addDishProduct = function(newDishProductId, callback){
+    if(!newDishProductId) return;
 
     var user = this;
-    var product = new DishProduct(dishProduct);
-    return product.save(function(err){
-        user.currentDishProducts.push(product._id);
-        return callback(err, user);
+
+    async.waterfall([
+        function(cb){
+            Product.findById(newDishProductId, cb);
+        },
+        function(product, cb){
+            return cb(null, product.getRaw());
+        }
+    ],function(err, rawNewProduct){
+        if(err) return callback(err);
+
+        var product = new DishProduct(rawNewProduct);
+        return product.save(function(err){
+            user.currentDishProducts.push(product._id);
+            return callback(err, user);
+        });
     });
 };
 schema.methods.removeDishProduct = function(dishProductId, callback){
@@ -105,7 +120,7 @@ schema.methods.gerRawProductList = function(callback){
     var user = this;
     async.map(user.products, function(productId, cb){
         Product.findById(productId, function(err, product){
-            if(err)
+            if(err || !product)
                 return cb(err);
             else
                 return cb(null, product.getRaw());
