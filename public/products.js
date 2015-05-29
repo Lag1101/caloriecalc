@@ -190,6 +190,7 @@
                 .append($('<input>').addClass('calorie'))
                 .append($('<input>').addClass('mass').on('input paste', function(){
                     $(this).val( utils.validate( $(this).val() ) );
+                    fixDishProduct(productView, product);
                 })));
 
         productView.find('input').addClass('item');
@@ -203,11 +204,18 @@
 
         productView.find('input').on('input propertychange paste', function(){
             reCalc();
+            fixDishProduct(productView, product);
         });
 
         productView.appendTo(currentDishProductsView);
 
         reCalc();
+    }
+
+    function fixDishProduct(productView, product){
+        var fixedProduct = new Product(product);
+        fixedProduct.readEl(productView);
+        socket.emit('fixDishProduct', fixedProduct);
     }
 
     function calcPortion(el){

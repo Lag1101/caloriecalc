@@ -4,6 +4,7 @@
 
 var User = require('../models/user').User;
 var Product = require('../models/product').Product;
+var DishProduct = require('../models/product').DishProduct;
 var products = require('../products').products;
 var async = require('async');
 var logger = require('../lib/logger');
@@ -97,12 +98,12 @@ function getDishList(socket, username, dishList){
     socket.emit('getDishList', products.dishList);
 }
 
-function fixProduct(socket, username, fixedProduct){
+function fixProduct(socket, username, model, fixedProduct){
     if(!fixedProduct) return;
 
     async.waterfall([
         function(cb){
-            Product.findById(fixedProduct.id, cb);
+            model.findById(fixedProduct.id, cb);
         },
         function(product, cb){
             product.setFromRaw(fixedProduct);
@@ -223,6 +224,7 @@ module.exports = function(server){
             .on('setCurrentDate',           setCurrentDate.bind(null, socket, username))
             .on('setDishList',              setDishList.bind(null, socket, username))
             .on('getDishList',              getDishList.bind(null, socket, username))
-            .on('fixProduct',               fixProduct.bind(null, socket, username))
+            .on('fixProduct',               fixProduct.bind(null, socket, username, Product))
+            .on('fixDishProduct',           fixProduct.bind(null, socket,  username, DishProduct))
     });
 };
