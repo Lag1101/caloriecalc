@@ -16,19 +16,22 @@
     var sortBy = $('.sortBy');
     var sortOrder = $('.sortOrder');
     var portionView = defaultDish.find('.portion');
-    var dishView = defaultDish.find('.dish');
+    var fullView = defaultDish.find('.dish');
 
     var sortKey = sortBy.find('option:selected').val();
     var order = sortOrder.find('option:selected').val();
 
     resultDish.find('.save').click(function(){
-        var dish = new Product();
+        var full = new Product();
         var portion = new Product();
 
-        dish.readEl(dishView);
+        full.readEl(fullView);
         portion.readEl(portionView);
 
-        addToDishList(dish, portion, '');
+        socket.emit('addDish', {
+            full: full,
+            portion: portion
+        });
     });
     defaultDish.find('.mass').on('input paste', function(){
         reCalc();
@@ -64,6 +67,14 @@
         });
         updateList();
     });
+
+    socket.on('getCurrentDishes', function (data) {
+        dishList.empty();
+        data.map(function(dish){
+            addToDishList(dish);
+        })
+    });
+
     socket.on('getCurrentDishProducts', function (data) {
         updateCurrentDishProducts(data);
     });
@@ -83,15 +94,16 @@
         );
     }
 
-    function addToDishList(dish, portion, description){
-        var dishViewClone = $('<div>')
+    function addToDishList(dish, description){
+        var fullViewClone = $('<div>')
             .append($('<input>').addClass('proteins'))
             .append($('<input>').addClass('triglyceride'))
             .append($('<input>').addClass('carbohydrate'))
             .append($('<input>').addClass('calorie'))
             .append($('<input>').addClass('mass'))
             .addClass('dish inline-block');
-        dish.writeEl(dishViewClone);
+
+        new Product(dish.full).writeEl(fullViewClone);
 
         var portionViewClone = $('<div>')
             .append($('<input>').addClass('proteins'))
@@ -100,61 +112,40 @@
             .append($('<input>').addClass('calorie'))
             .append($('<input>').addClass('mass'))
             .addClass('portion inline-block');
-        portion.writeEl(portionViewClone);
 
-        var dishPortion = $('<div>')
+        new Product(dish.portion).writeEl(portionViewClone);
+
+        var dishView = $('<div>')
             .addClass('product')
             .append($('<div>')
                 .append($('<button>').addClass('remove btn item btn-xs btn-default').append(utils.icons.remove.clone()))
                 .append($('<div>').addClass('description item enableForInput').attr('contenteditable', true))
-                .append(dishViewClone)
+                .append(fullViewClone)
                 .append(portionViewClone)
                 .addClass('inline-block'));
 
-        dishPortion.find('.remove')
+        dishView.find('.remove')
             .addClass('item')
             .click(function(){
                 utils.confirmDialog(
-                    "Вы уверены, что хотите удалить " + dishPortion.find('.description').html() + " ?",
+                    "Вы уверены, что хотите удалить " + dishView.find('.description').html() + " ?",
                     function(){
-                        utils.removeFromCurrentDish(dishPortion, saveDishList);
+                        utils.removeFromCurrentDish(dishView, saveDishList);
                     }
                 );
             });
-        dishPortion.find('input').addClass('item');
-        dishPortion.find('input:not(.mass)').attr('disabled', true);
+        dishView.find('input').addClass('item');
+        dishView.find('input:not(.mass)').attr('disabled', true);
 
-        dishPortion.find('.description').html(description).on('input change', function(){
+        dishView.find('.description').html(description).on('input change', function(){
             saveDishList();
         });
-        dishPortion.find('.mass').on('input change', function(){
-            calcPortion(dishPortion);
+        dishView.find('.mass').on('input change', function(){
+            calcPortion(dishView);
             saveDishList();
         });
 
-        dishList.append(dishPortion);
-    }
-
-    function saveDishList() {
-
-        var dishListRow = [];
-
-        dishList.find('.product').each(function(){
-            var dish = new Product();
-            var portion = new Product();
-            dish.readEl($(this).find('.dish'));
-            portion.readEl($(this).find('.portion'));
-
-            var description = $(this).find('.description').html();
-
-            dishListRow.push({
-                description: description,
-                dish: dish.getRaw(),
-                portion: portion.getRaw()
-            });
-        });
-
-        socket.emit('setDishList', dishListRow);
+        dishList.append(dishView);
     }
 
     function restoreDishList(dishListRow){
@@ -251,7 +242,7 @@
             res.calorie += +product.calorie * mass;
         });
 
-        res.writeEl(dishView, ['mass']);
+        res.writeEl(fullView, ['mass']);
 
         calcPortion(defaultDish);
     }

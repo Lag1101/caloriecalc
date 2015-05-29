@@ -5,10 +5,8 @@ var util = require('util');
 
 
 var Dish = require('./dish').Dish;
-var DishSchema = require('./dish').DishSchema;
 var Product = require('./product').Product;
 var DishProduct = require('./product').DishProduct;
-var ProductSchema = require('./product').ProductSchema;
 var Day = require('./day').Day;
 var DaySchema = require('./day').DaySchema;
 
@@ -45,11 +43,74 @@ var schema = new Schema({
         type: Schema.Types.String,
         default: ""
     },
+    dishes:{
+        type: [Schema.Types.String],
+        default: []
+    },
     currentDishProducts:{
         type: [Schema.Types.String],
         default: []
     }
 });
+
+schema.methods.getCurrentDishes = function(callback){
+    var user = this;
+    async.waterfall([
+        function(cb){
+            async.map(user.dishes, function(dishId, cb){
+                Dish.findById(dishId, cb);
+            }, cb);
+        },
+        function(dishes, cb){
+            async.map(dishes, function(dish, cb){
+                if(!dish)
+                    return cb(new Error("Such product doesn't exist"));
+                else
+                    return dish.getRaw(cb)
+            }, cb);
+        }
+    ], function(err, rawDishes){
+        if(err)
+            return callback(err);
+
+        return callback(null, rawDishes);
+    });
+};
+
+schema.methods.addDish = function(newDish, callback){
+    if(!newDish) return;
+
+    var user = this;
+
+    Dish.addDish(newDish, function(err, d){
+        user.dishes.push(d._id);
+        return callback(err, user);
+    });
+};
+schema.methods.removeDish = function(dishId, callback){
+    var user = this;
+
+    var index = user.dishes.indexOf(dishId);
+    if(index < 0)
+        return callback(new Error(user.username + " doesn't have such dish " + dishId));
+    else{
+        async.waterfall([
+            function(cb){
+                Dish.findById(dishId, cb);
+            },
+            function(dish, cb){
+                dish.remove(cb);
+            },
+            function(product, cb){
+                user.dishes.splice(index, 1);
+                cb();
+            }
+        ], function(err){
+            if(err) return callback(err);
+            return callback(null, user);
+        });
+    }
+};
 
 schema.methods.getCurrentDishProducts = function(callback){
     var user = this;

@@ -5,9 +5,65 @@
 var User = require('../models/user').User;
 var Product = require('../models/product').Product;
 var DishProduct = require('../models/product').DishProduct;
-var products = require('../products').products;
 var async = require('async');
 var logger = require('../lib/logger');
+
+function getCurrentDishes(socket, username){
+    async.waterfall([
+        function(cb){
+            User.findOne({username: username}, cb);
+        },
+        function(user, cb){
+            user.getCurrentDishes(cb);
+        },
+        function(dishes, cb){
+            socket.emit('getCurrentDishes', dishes);
+            return cb();
+        }
+    ], function(err){
+        if(err) logger.error(err);
+    });
+}
+
+function addDish(socket, username, newDish){
+    if(!newDish) return;
+    async.waterfall([
+        function(cb){
+            User.findOne({username: username}, cb);
+        },
+        function(user, cb){
+            user.addDish(newDish, cb);
+        },
+        function(user, cb){
+            user.save(cb);
+        }
+    ], function(err){
+        if(err)
+            logger.error(err);
+        else
+            getCurrentDishes(socket, username);
+    });
+
+}
+
+function removeDish(socket, username, id){
+    async.waterfall([
+        function(cb){
+            User.findOne({username: username}, cb);
+        },
+        function(user, cb){
+            user.removeDish(id, cb);
+        },
+        function(user, cb){
+            user.save(cb);
+        }
+    ], function(err){
+        if(err)
+            logger.error(err);
+        else
+            getCurrentDishes(socket, username);
+    });
+}
 
 function getCurrentDishProducts(socket, username){
     async.waterfall([
@@ -80,15 +136,6 @@ function setCurrentDate(socket, username, date){
         user.date = date;
         user.save();
     });
-}
-
-function setDishList(socket, username, dishList){
-    products.dishList = dishList;
-    products.save();
-}
-
-function getDishList(socket, username, dishList){
-    socket.emit('getDishList', products.dishList);
 }
 
 function fixProduct(socket, username, model, fixedProduct){
@@ -201,6 +248,9 @@ module.exports = function(server){
 
     io.on('connection', function(socket){
         console.info(socket.id, 'socket connected');
+
+        getCurrentDishes(socket, username);
+
         socket
             .on('disconnect', function () {
                 console.info('disconnected');
@@ -208,16 +258,22 @@ module.exports = function(server){
             .on('list',                     list.bind(null, socket, username))
             .on('newProduct',               newProduct.bind(null, socket, username))
             .on('removeProduct',            removeProduct.bind(null, socket, username))
+
             .on('getDaily',                 getDaily.bind(null, socket, username))
             .on('setDaily',                 setDaily.bind(null, socket, username))
+
             .on('getCurrentDishProducts',   getCurrentDishProducts.bind(null, socket, username))
             .on('newDishProduct',           newDishProduct.bind(null, socket, username))
             .on('removeDishProduct',        removeDishProduct.bind(null, socket, username))
+
             .on('getCurrentDate',           getCurrentDate.bind(null, socket, username))
             .on('setCurrentDate',           setCurrentDate.bind(null, socket, username))
-            .on('setDishList',              setDishList.bind(null, socket, username))
-            .on('getDishList',              getDishList.bind(null, socket, username))
+
             .on('fixProduct',               fixProduct.bind(null, socket, username, Product))
             .on('fixDishProduct',           fixProduct.bind(null, socket,  username, DishProduct))
+
+            .on('getCurrentDishes',         getCurrentDishes.bind(null, socket, username))
+            .on('addDish',                  addDish.bind(null, socket, username))
+            .on('removeDish',               removeDish.bind(null, socket, username))
     });
 };
