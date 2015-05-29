@@ -51,6 +51,17 @@ schema.methods.getRaw = function() {
     };
 };
 
+
+schema.methods.setFromRaw = function(raw) {
+    this.description = raw.description;
+    this.details = raw.details;
+    this.proteins = raw.proteins;
+    this.triglyceride = raw.triglyceride;
+    this.carbohydrate = raw.carbohydrate;
+    this.calorie = raw.calorie;
+    this.mass  = raw.mass;
+};
+
 exports.Product = mongoose.model('Product', schema);
 exports.DishProduct = mongoose.model('DishProduct', schema);
 exports.ProductSchema = schema;

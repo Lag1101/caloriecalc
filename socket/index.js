@@ -99,13 +99,19 @@ function getDishList(socket, username, dishList){
 
 function fixProduct(socket, username, fixedProduct){
     if(!fixedProduct) return;
-    for(var i = 0; i < products.list.length; i++){
-        if( products.list[i].id == fixedProduct.id ){
-            products.list[i] = fixedProduct;
-            break;
+
+    async.waterfall([
+        function(cb){
+            Product.findById(fixedProduct.id, cb);
+        },
+        function(product, cb){
+            product.setFromRaw(fixedProduct);
+            return product.save(cb);
         }
-    }
-    products.save();
+    ],
+    function(err){
+        if(err) logger.error(err);
+    });
 }
 
 function list(socket, username){
