@@ -164,7 +164,7 @@ schema.methods.setDaily = function(newDaily, callback){
 
         daily.update(d);
 
-        callback(null, daily);
+        callback(null, user);
     });
 };
 

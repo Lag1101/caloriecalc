@@ -9,13 +9,6 @@ var products = require('../products').products;
 var async = require('async');
 var logger = require('../lib/logger');
 
-products.load(function(err, list){
-    if(err)
-        console.error(err);
-    else
-        console.log(list);
-});
-
 function getCurrentDishProducts(socket, username){
     async.waterfall([
         function(cb){
