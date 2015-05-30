@@ -8,6 +8,7 @@
     var timeOutToSendChanges = null;
     var resultView = $('.result');
     var daily = $('.daily');
+    var state = daily.find('.state');
     var links = {
         proteins: null,
         triglyceride: null,
@@ -34,6 +35,13 @@
         reCalcDaily();
         saveDaily();
     });
+
+    function changeBusyState(busy){
+        if(busy)
+            state.text('Обновление...');
+        else
+            state.text('Готово');
+    }
 
     function checkNorm(){
         var norms = {
@@ -179,12 +187,16 @@
     socket.on('getDaily', function (data) {
         if(data)
             restoreDaily(data);
+
+        changeBusyState(false);
         updateLinks();
         reCalcDaily();
     });
     function responseDaily(date) {
         clearDaily();
         socket.emit('getDaily', date);
+
+        changeBusyState(true);
     }
 
     function createDailyItem(el){
@@ -216,13 +228,11 @@
             products.additional.push(createDailyItem($(this)));
         });
 
-        if(timeOutToSendChanges){
-            clearTimeout(timeOutToSendChanges);
-            timeOutToSendChanges = null;
-        } else {
-            timeOutToSendChanges = setTimeout(function(){
-                socket.emit('setDaily', products);
-            }, msToSendChanges);
-        }
+        clearTimeout(timeOutToSendChanges);
+        changeBusyState(true);
+        timeOutToSendChanges = setTimeout(function(){
+            socket.emit('setDaily', products);
+            changeBusyState(false);
+        }, msToSendChanges);
     }
 })(socket);
