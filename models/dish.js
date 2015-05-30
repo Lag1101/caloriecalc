@@ -9,6 +9,10 @@ var mongoose = require('../lib/mongoose'),
 var EndDishProduct = require('../models/product').EndDishProduct;
 
 var schema = new Schema({
+    description: {
+        type: Schema.Types.String,
+        default: ""
+    },
     full: Schema.Types.String,
     portion: Schema.Types.String
 });
@@ -30,6 +34,7 @@ schema.methods.getRaw = function(cb) {
         function(fullAndPortion, cb){
             return cb(null, {
                 id:     dish._id.toString(),
+                description: dish.description,
                 full:   fullAndPortion.full.getRaw(),
                 portion:   fullAndPortion.portion.getRaw()
             });
@@ -38,8 +43,6 @@ schema.methods.getRaw = function(cb) {
 };
 
 schema.statics.addDish = function(rawDish, cb) {
-
-
     async.parallel({
         full: function (cb) {
             var product = new EndDishProduct(rawDish.full);
@@ -63,6 +66,37 @@ schema.statics.addDish = function(rawDish, cb) {
         });
         return dish.save(cb);
     });
+};
+
+schema.methods.setFromRaw = function(newDish, cb) {
+    var dish = this;
+
+    dish.description = newDish.description;
+    async.waterfall([
+        function(cb){
+            async.parallel({
+                full: function (cb) {
+                    EndDishProduct.findById(dish.full, function(err, p){
+                        if(err)
+                            return cb(err);
+                        p.setFromRaw(newDish.full);
+                        return p.save(cb);
+                    });
+                },
+                portion: function(cb){
+                    EndDishProduct.findById(dish.portion, function(err, p){
+                        if(err)
+                            return cb(err);
+                        p.setFromRaw(newDish.portion);
+                        return p.save(cb);
+                    });
+                }
+            }, cb)
+        },
+        function(fullAndPortion, cb){
+            dish.save(cb);
+        }
+    ], cb);
 };
 
 var Dish = mongoose.model('Dish', schema);

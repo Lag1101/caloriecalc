@@ -94,7 +94,11 @@
         );
     }
 
-    function addToDishList(dish, description){
+    function fixDish(dish){
+        socket.emit('fixDish', dish);
+    }
+
+    function addToDishList(dish){
         var fullViewClone = $('<div>')
             .append($('<input>').addClass('proteins'))
             .append($('<input>').addClass('triglyceride'))
@@ -130,19 +134,27 @@
                 utils.confirmDialog(
                     "Вы уверены, что хотите удалить " + dishView.find('.description').html() + " ?",
                     function(){
-                        utils.removeFromCurrentDish(dishView, saveDishList);
+                        socket.emit('removeDish', dish.id);
+                        //utils.removeFromCurrentDish(dishView, saveDishList);
                     }
                 );
             });
         dishView.find('input').addClass('item');
         dishView.find('input:not(.mass)').attr('disabled', true);
 
-        dishView.find('.description').html(description).on('input change', function(){
-            saveDishList();
+        dishView.find('.description').html(dish.description).on('input change', function(){
+            dish.description = $(this).html();
+            fixDish(dish);
         });
-        dishView.find('.mass').on('input change', function(){
+        portionViewClone.find('.mass').on('input change', function(){
             calcPortion(dishView);
-            saveDishList();
+            dish.portion.mass = $(this).val();
+            fixDish(dish);
+        });
+        fullViewClone.find('.mass').on('input change', function(){
+            calcPortion(dishView);
+            dish.full.mass = $(this).val();
+            fixDish(dish);
         });
 
         dishList.append(dishView);

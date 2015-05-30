@@ -4,9 +4,11 @@
 
 var User = require('../models/user').User;
 var Product = require('../models/product').Product;
+var Dish = require('../models/dish').Dish;
 var DishProduct = require('../models/product').DishProduct;
 var async = require('async');
 var logger = require('../lib/logger');
+var EndDishProduct = require('../models/product').EndDishProduct;
 
 function getCurrentDishes(socket, username){
     async.waterfall([
@@ -45,6 +47,7 @@ function addDish(socket, username, newDish){
     });
 
 }
+
 
 function removeDish(socket, username, id){
     async.waterfall([
@@ -275,5 +278,6 @@ module.exports = function(server){
             .on('getCurrentDishes',         getCurrentDishes.bind(null, socket, username))
             .on('addDish',                  addDish.bind(null, socket, username))
             .on('removeDish',               removeDish.bind(null, socket, username))
+            .on('fixDish',                  fixProduct.bind(null, socket, username, Dish))
     });
 };
