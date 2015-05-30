@@ -154,7 +154,10 @@ function fixProduct(socket, username, model, fixedProduct){
         }
     ],
     function(err){
-        if(err) logger.error(err);
+        if(err)
+            logger.error('Some problem with saving', fixedProduct, err);
+        else
+            logger.info('Saved', fixedProduct, err);
     });
 }
 
