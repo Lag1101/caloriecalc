@@ -4,6 +4,8 @@
 
 (function(socket){
 
+    var msToSendChanges = 15 * 1000;
+    var timeOutToSendChanges = null;
     var resultView = $('.result');
     var daily = $('.daily');
     var links = {
@@ -214,6 +216,13 @@
             products.additional.push(createDailyItem($(this)));
         });
 
-        socket.emit('setDaily', products);
+        if(timeOutToSendChanges){
+            clearTimeout(timeOutToSendChanges);
+            timeOutToSendChanges = null;
+        } else {
+            timeOutToSendChanges = setTimeout(function(){
+                socket.emit('setDaily', products);
+            }, msToSendChanges);
+        }
     }
 })(socket);
