@@ -46,6 +46,7 @@ function createUsers(callback) {
 
         async.each(list, function (productData, cb) {
 
+            Product.prepareProduct(productData);
             var product = new Product(productData);
             product.save(cb);
         }, callback);

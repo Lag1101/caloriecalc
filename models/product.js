@@ -51,6 +51,25 @@ schema.methods.getRaw = function() {
     };
 };
 
+schema.statics.numericFields = [
+    'proteins',
+    'triglyceride',
+    'carbohydrate',
+    'calorie',
+    'mass'
+];
+
+schema.statics.prepareProduct = function(product){
+    var Product = this;
+
+    Product.numericFields.map(function(field){
+        var val = product[field];
+        if( typeof val == "string" ){
+            product[field] = parseFloat(val
+                .replace(',','.'));
+        }
+    });
+};
 
 schema.methods.setFromRaw = function(raw) {
     this.description = raw.description;

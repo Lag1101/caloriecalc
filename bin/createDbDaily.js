@@ -61,10 +61,11 @@ function createDaily(callback) {
                 dayData.main.push(t);
             }
 
-            day['additional'].map(function(additional){
-                var t = new Product(additional.products);
-                dayData.additional.push(t);
-            });
+            if(day['additional'])
+                day['additional'].map(function(additional){
+                    var t = new Product(additional.products);
+                    dayData.additional.push(t);
+                });
 
             var d = new Day(dayData);
             d.save(cb)
