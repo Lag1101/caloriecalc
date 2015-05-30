@@ -45,12 +45,14 @@ schema.methods.getRaw = function(cb) {
 schema.statics.addDish = function(rawDish, cb) {
     async.parallel({
         full: function (cb) {
+            EndDishProduct.prepareProduct(rawDish.full);
             var product = new EndDishProduct(rawDish.full);
             product.save(function(err){
                 return cb(err, product._id)
             });
         },
         portion: function(cb){
+            EndDishProduct.prepareProduct(rawDish.portion);
             var product = new EndDishProduct(rawDish.portion);
             product.save(function(err){
                 return cb(err, product._id)

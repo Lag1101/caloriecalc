@@ -41,14 +41,14 @@ function requireModels(callback) {
 }
 
 function createDaily(callback) {
-    products.load(function(err, list, daily){
+    products.load(function(err, allProducts){
         if(err)
             callback(err);
 
-        async.each(Object.getOwnPropertyNames(daily), function (date, cb) {
+        async.each(Object.getOwnPropertyNames(allProducts.dailyProducts), function (date, cb) {
             if(!date) return cb();
 
-            var day = daily[date];
+            var day = allProducts.dailyProducts[date];
 
             var dayData = {
                 date: date,

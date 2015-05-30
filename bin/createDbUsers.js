@@ -4,7 +4,6 @@
 var mongoose = require('../lib/mongoose');
 var async = require('async');
 var logger = require('../lib/logger');
-var products = require('../products').products;
 
 async.series([
     open,
@@ -50,13 +49,23 @@ function createUsers(callback) {
         function(cb){
             async.parallel({
                 products: function(cb){
-                    mongoose.models.Product.find(function (err, products) {
-                        return cb(null, products);
+                    mongoose.models.Product.find(function (err, product) {
+                        return cb(null, product);
                     });
                 },
                 days: function (cb) {
-                    mongoose.models.Day.find(function (err, days) {
-                        return cb(null, days);
+                    mongoose.models.Day.find(function (err, day) {
+                        return cb(null, day);
+                    });
+                },
+                dishProducts: function (cb) {
+                    mongoose.models.DishProduct.find(function (err, product) {
+                        return cb(null, product);
+                    });
+                },
+                dishes: function (cb) {
+                    mongoose.models.Dish.find(function (err, dish) {
+                        return cb(null, dish);
                     });
                 }
             },
@@ -79,6 +88,20 @@ function createUsers(callback) {
                         }, function(err, ids){
                             cb(null, ids);
                         })
+                    },
+                    dishProducts: function(cb){
+                        async.map(res.dishProducts, function (product, cb) {
+                            cb(null, product._id);
+                        }, function(err, ids){
+                            cb(null, ids);
+                        })
+                    },
+                    dishes: function(cb){
+                        async.map(res.dishes, function (dish, cb) {
+                            cb(null, dish._id);
+                        }, function(err, ids){
+                            cb(null, ids);
+                        })
                     }
                 },
                 function(err, res){
@@ -92,8 +115,8 @@ function createUsers(callback) {
                     password: userData.password,
                     products: resultIds.products,
                     daily: resultIds.days,
-                    date: products.date,
-                    currentDish: products.currentDish
+                    currentDishProducts: resultIds.dishProducts,
+                    dishes: resultIds.dishes
                 });
                 user.save(cb);
             }, cb);

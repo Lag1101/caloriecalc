@@ -5,7 +5,7 @@ var mongoose = require('../lib/mongoose');
 var async = require('async');
 var products = require('../products').products;
 var logger = require('../lib/logger');
-var Product = require('../models/product').Product;
+var DishProduct = require('../models/product').DishProduct;
 
 async.series([
     open,
@@ -16,7 +16,7 @@ async.series([
     if(err)
         logger.error(err);
     else
-        logger.log('db created')
+        logger.log('db created');
     mongoose.disconnect();
     process.exit(err ? 255 : 0);
 });
@@ -28,7 +28,7 @@ function open(callback) {
 function dropDatabase(callback) {
     //var db = mongoose.connection.db;
     //db.dropDatabase(callback);
-    Product.remove({},callback);
+    DishProduct.remove({},callback);
     //var db = mongoose.connection.db;
     //db.dropDatabase(callback);
 }
@@ -44,9 +44,9 @@ function createUsers(callback) {
         if(err)
             console.error(err);
 
-        async.each(allProducts.list, function (productData, cb) {
+        async.each(allProducts.currentDish.currentDishProducts, function (productData, cb) {
 
-            Product.prepareProduct(productData);
+            DishProduct.prepareProduct(productData);
             var product = new Product(productData);
             product.save(cb);
         }, callback);

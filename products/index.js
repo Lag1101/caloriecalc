@@ -47,7 +47,7 @@ Products.prototype.load = function(cb) {
 
             _this.validate();
 
-            return cb && cb(null, _this.list, _this.dailyProducts);
+            return cb && cb(null, _this);
         });
     });
 
