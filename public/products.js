@@ -148,12 +148,16 @@
         });
         portionViewClone.find('.mass').on('input change', function(){
             calcPortion(dishView);
-            dish.portion.mass = $(this).val();
+            var p = new Product();
+            p.readEl(portionViewClone);
+            dish.portion = p;
             fixDish(dish);
         });
         fullViewClone.find('.mass').on('input change', function(){
             calcPortion(dishView);
-            dish.full.mass = $(this).val();
+            var p = new Product();
+            p.readEl(fullViewClone);
+            dish.full = p;
             fixDish(dish);
         });
 
