@@ -64,7 +64,8 @@ schema.statics.addDish = function(rawDish, cb) {
 
         var dish = new Dish({
             full: ids.full,
-            portion: ids.portion
+            portion: ids.portion,
+            description: rawDish.description
         });
         return dish.save(cb);
     });
