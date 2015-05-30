@@ -243,7 +243,10 @@ function setDaily(socket, username, daily){
             user.save(cb);
         }
     ], function(err){
-        if(err) logger.error(err);
+        if(err)
+            logger.error(err);
+        else
+            logger.info('Saved', daily, err);
     });
 }
 
