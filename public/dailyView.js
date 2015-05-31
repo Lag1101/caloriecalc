@@ -4,7 +4,7 @@
 
 (function(socket){
 
-    var msToSendChanges = 15 * 1000;
+    var msToSendChanges = 10 * 1000;
     var timeOutToSendChanges = null;
     var resultView = $('.result');
     var daily = $('.daily');

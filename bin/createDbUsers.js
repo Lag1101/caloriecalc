@@ -77,7 +77,7 @@ function createUsers(callback) {
             async.parallel({
                     products: function(cb){
                         async.map(res.products, function (product, cb) {
-                            cb(null, product._id);
+                            cb(null, product.id);
                         }, function(err, ids){
                             cb(null, ids);
                         })
@@ -91,14 +91,14 @@ function createUsers(callback) {
                     },
                     dishProducts: function(cb){
                         async.map(res.dishProducts, function (product, cb) {
-                            cb(null, product._id);
+                            cb(null, product.id);
                         }, function(err, ids){
                             cb(null, ids);
                         })
                     },
                     dishes: function(cb){
                         async.map(res.dishes, function (dish, cb) {
-                            cb(null, dish._id);
+                            cb(null, dish.id);
                         }, function(err, ids){
                             cb(null, ids);
                         })

@@ -8,6 +8,13 @@ var mongoose = require('../lib/mongoose'),
 var ProductSchema = require('../models/product').ProductSchema;
 
 var schema = new Schema({
+    id:{
+        type: Schema.Types.String,
+        default: function(){
+            var oId = new mongoose.Types.ObjectId();
+            return oId.toString();
+        }
+    },
     date: {
         type: Schema.Types.String,
         unique: true,
@@ -46,7 +53,8 @@ schema.methods.getRaw = function(callback) {
 
     var raw = {
         date: day.date,
-        additional: []
+        additional: [],
+        id: day.id
     };
     async.parallel([
         function(cb){
@@ -82,7 +90,9 @@ schema.statics.createFromRaw = function(raw){
         date: raw.date,
         additional: [],
         main: []
+        //id : raw.id ? raw.id : new Schema.Types.ObjectId()
     };
+
 
     for(var i = 0; i < Day.fields.length; i++){
         var t = new mongoose.models.Product(raw[Day.fields[i]]);

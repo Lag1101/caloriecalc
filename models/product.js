@@ -8,6 +8,13 @@ var mongoose = require('../lib/mongoose'),
     Schema = mongoose.Schema;
 
 var schema = new Schema({
+    id:{
+        type: Schema.Types.String,
+        default: function(){
+            var oId = new mongoose.Types.ObjectId();
+            return oId.toString();
+        }
+    },
     description: {
         type: Schema.Types.String,
         default: ""
@@ -40,7 +47,7 @@ var schema = new Schema({
 
 schema.methods.getRaw = function() {
     return {
-        id:             this._id.toString(),
+        id:             this.id,
         description:    this.description,
         details:        this.details,
         proteins:       this.proteins,
@@ -72,6 +79,8 @@ schema.statics.prepareProduct = function(product){
 };
 
 schema.methods.setFromRaw = function(raw) {
+
+    //this.id = raw.id ? raw.id : new Schema.Types.ObjectId();
     this.description = raw.description;
     this.details = raw.details;
     this.proteins = raw.proteins;
