@@ -47,7 +47,7 @@ function createUsers(callback) {
         async.each(allProducts.currentDish.currentDishProducts, function (productData, cb) {
 
             DishProduct.prepareProduct(productData);
-            var product = new Product(productData);
+            var product = new DishProduct(productData);
             product.save(cb);
         }, callback);
     });
