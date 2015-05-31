@@ -82,6 +82,8 @@ schema.methods.addDish = function(newDish, callback){
 
     var user = this;
 
+    delete newDish.id;
+
     Dish.addDish(newDish, function(err, d){
         user.dishes.push(d.id);
         return callback(err, user);
@@ -145,6 +147,8 @@ schema.methods.addDishProduct = function(newDishProductId, callback){
         }
     ],function(err, rawNewProduct){
         if(err) return callback(err);
+
+        delete rawNewProduct.id;
 
         var product = new DishProduct(rawNewProduct);
         return product.save(function(err){
@@ -231,9 +235,11 @@ schema.methods.setDaily = function(newDaily, callback){
 
 schema.methods.addProduct = function(newProduct, callback){
     var user = this;
+    delete newProduct.id;
     var product = new Product(newProduct);
     return product.save(function(err){
-        user.products.push(product.id);
+        if(!err)
+            user.products.push(product.id);
         return callback(err, user);
     });
 };
