@@ -51,6 +51,18 @@ schema.methods.getRaw = function() {
     };
 };
 
+schema.statics.getRawById = function(id, cb) {
+
+    var Product = this;
+
+    Product.findById(id, function(err, p){
+        if(err)
+            return cb(err);
+        else
+            return cb(null, p.getRaw());
+    });
+};
+
 schema.statics.numericFields = [
     'proteins',
     'triglyceride',
@@ -84,6 +96,8 @@ schema.methods.setFromRaw = function(raw) {
 };
 
 exports.Product = mongoose.model('Product', schema);
+exports.DailyProduct = mongoose.model('DailyProduct', schema);
 exports.DishProduct = mongoose.model('DishProduct', schema);
 exports.EndDishProduct = mongoose.model('EndDishProduct', schema);
+
 exports.ProductSchema = schema;

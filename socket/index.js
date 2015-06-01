@@ -9,6 +9,7 @@ var DishProduct = require('../models/product').DishProduct;
 var async = require('async');
 var logger = require('../lib/logger');
 var EndDishProduct = require('../models/product').EndDishProduct;
+var DailyProduct = require('../models/product').DailyProduct;
 
 function getCurrentDishes(socket, username){
     async.waterfall([
@@ -137,7 +138,9 @@ function setCurrentDate(socket, username, date){
         if(err) logger.error(err);
 
         user.date = date;
-        user.save();
+        user.save(function(){
+            getDaily(socket, username);
+        });
     });
 }
 
@@ -220,7 +223,7 @@ function getDaily(socket, username, date){
             User.findOne({username: username}, cb);
         },
         function(user, cb){
-            user.getRawDailyByDate(date, cb);
+            user.getRawDailyByDate(user.date, cb);
         },
         function(rawDaily, cb){
             socket.emit('getDaily', rawDaily);
@@ -231,13 +234,31 @@ function getDaily(socket, username, date){
     });
 
 }
-function setDaily(socket, username, daily){
+function removeDailyProduct(socket, username, dailyItemId){
     async.waterfall([
         function(cb){
             User.findOne({username: username}, cb);
         },
         function(user, cb){
-            user.setDaily(daily, cb);
+            user.removeDailyItem(user.date, dailyItemId, cb);
+        },
+        function(user, cb){
+            user.save(cb);
+        }
+    ], function(err, user){
+        if(err)
+            logger.error(err);
+        else
+            return getDaily(socket, username, user.date);
+    });
+}
+function addDailyProduct(socket, username, newDailyItem){
+    async.waterfall([
+        function(cb){
+            User.findOne({username: username}, cb);
+        },
+        function(user, cb){
+            user.newDailyItem(user.date, newDailyItem, cb);
         },
         function(user, cb){
             user.save(cb);
@@ -246,10 +267,9 @@ function setDaily(socket, username, daily){
         if(err)
             logger.error(err);
         else
-            logger.info('Saved', daily, err);
+            return getDaily(socket, username);
     });
 }
-
 module.exports = function(server){
     var io = require('socket.io').listen(server);
 
@@ -269,7 +289,9 @@ module.exports = function(server){
             .on('removeProduct',            removeProduct.bind(null, socket, username))
 
             .on('getDaily',                 getDaily.bind(null, socket, username))
-            .on('setDaily',                 setDaily.bind(null, socket, username))
+            .on('fixDailyProduct',          fixProduct.bind(null, socket, username, DailyProduct))
+            .on('removeDailyProduct',       removeDailyProduct.bind(null, socket, username))
+            .on('addDailyProduct',          addDailyProduct.bind(null, socket, username))
 
             .on('getCurrentDishProducts',   getCurrentDishProducts.bind(null, socket, username))
             .on('newDishProduct',           newDishProduct.bind(null, socket, username))

@@ -5,7 +5,7 @@ var mongoose = require('../lib/mongoose');
 var async = require('async');
 var products = require('../products').products;
 var logger = require('../lib/logger');
-var Product = require('../models/product').Product;
+var DailyProduct = require('../models/product').DailyProduct;
 var Day = require('../models/day').Day;
 
 async.series([
@@ -17,9 +17,8 @@ async.series([
     if(err)
         logger.error(err);
     else
-        logger.log('db created')
+        logger.log('db created');
     mongoose.disconnect();
-    process.exit(err ? 255 : 0);
 });
 
 function open(callback) {
@@ -29,7 +28,8 @@ function open(callback) {
 function dropDatabase(callback) {
     //var db = mongoose.connection.db;
     //db.dropDatabase(callback);
-    mongoose.models.Day.remove({},callback);
+    Day.remove({},callback);
+    DailyProduct.remove({},callback);
     //var db = mongoose.connection.db;
     //db.dropDatabase(callback);
 }
@@ -43,32 +43,48 @@ function requireModels(callback) {
 function createDaily(callback) {
     products.load(function(err, allProducts){
         if(err)
-            callback(err);
+            return callback(err);
 
         async.each(Object.getOwnPropertyNames(allProducts.dailyProducts), function (date, cb) {
-            if(!date) return cb();
+            if(!date) return cb(new Error('Date field is required!'));
 
             var day = allProducts.dailyProducts[date];
 
             var dayData = {
-                date: date,
-                additional: [],
-                main: []
+                date: date
             };
 
-            for(var i = 0; i < Day.fields.length; i++){
-                var t = new Product(day[Day.fields[i]].products);
-                dayData.main.push(t);
-            }
+            async.series([
+                function(cb){
+                    async.each(Day.fields, function(field, cb){
+                        var t = new DailyProduct(day[field].products);
+                        return t.save(function(err, product){
+                            if(err)
+                                return cb(err);
 
-            if(day['additional'])
-                day['additional'].map(function(additional){
-                    var t = new Product(additional.products);
-                    dayData.additional.push(t);
-                });
+                            dayData[field] = product.id;
+                            return cb();
+                        });
+                    }, cb)
+                },
+                function(cb){
+                    async.each(day['additional'], function(additional, cb){
+                        var t = new DailyProduct(day[field].products);
+                        return t.save(function(err, product){
+                            if(err)
+                                return cb(err);
 
-            var d = new Day(dayData);
-            d.save(cb)
+                            dayData.additional.push(product.id);
+                            return cb();
+                        });
+                    }, cb);
+                }
+            ], function(err){
+                if(err)
+                    return cb(err);
+                var d = new Day(dayData);
+                d.save(cb)
+            });
         }, callback);
     });
 }

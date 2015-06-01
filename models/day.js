@@ -5,27 +5,40 @@ var async = require('async');
 
 var mongoose = require('../lib/mongoose'),
     Schema = mongoose.Schema;;
+var DailyProduct = require('../models/product').DailyProduct;
 var ProductSchema = require('../models/product').ProductSchema;
 
 var schema = new Schema({
-    id:{
-        type: Schema.Types.String,
-        default: function(){
-            var oId = new mongoose.Types.ObjectId();
-            return oId.toString();
-        }
-    },
     date: {
         type: Schema.Types.String,
-        unique: true,
         required: true
     },
-    main:{
-        type: [ProductSchema],
-        default: []
+    breakfast:{
+        type: Schema.Types.String,
+        default: ''
+    },
+    firstLunch:{
+        type: Schema.Types.String,
+        default: ''
+    },
+    secondLunch:{
+        type: Schema.Types.String,
+        default: ''
+    },
+    thirdLunch:{
+        type: Schema.Types.String,
+        default: ''
+    },
+    dinner:{
+        type: Schema.Types.String,
+        default: ''
+    },
+    secondDinner:{
+        type: Schema.Types.String,
+        default: ''
     },
     additional: {
-        type: [ProductSchema],
+        type: [Schema.Types.String],
         default: []
     }
 });
@@ -58,17 +71,19 @@ schema.methods.getRaw = function(callback) {
     };
     async.parallel([
         function(cb){
-            if(day.main.length > 0)
-            async.forEachOf(Day.fields, function(field, index, cb){
-                var product = day.main[index];
-                raw[field] = product.getRaw();
-                cb();
+            async.map(Day.fields, function(field, cb){
+                return DailyProduct.getRawById(day[field], function(err, p){
+                    raw[field] = p;
+                    return cb();
+                });
             },cb);
         },
         function(cb){
             async.map(day.additional, function(product, cb){
-                raw.additional.push(product.getRaw());
-                cb();
+                return DailyProduct.getRawById(product, function(err, p){
+                    raw.additional.push(p);
+                    return cb();
+                });
             },cb);
         }
     ], function(err){
@@ -79,32 +94,36 @@ schema.methods.getRaw = function(callback) {
 
 };
 
-schema.methods.update = function(newDaily) {
-    this.date = newDaily.date;
-    this.main = newDaily.main;
-    this.additional = newDaily.additional;
+schema.methods.addProduct = function(newProduct, cb){
+    var day = this;
+    delete newProduct.id;
+    var product = new DailyProduct(newProduct);
+    return product.save(function(err){
+        if(!err)
+            day.additional.push(product.id);
+        return cb(err, day);
+    });
 };
 
-schema.statics.createFromRaw = function(raw){
-    var dayData = {
-        date: raw.date,
-        additional: [],
-        main: []
-        //id : raw.id ? raw.id : new Schema.Types.ObjectId()
-    };
-
-    var d = new Day(dayData);
-
-
-    for(var i = 0; i < Day.fields.length; i++){
-        d.main.push(raw[Day.fields[i]]);
-    }
-
-    raw['additional'].map(function(additional){
-        d.additional.push(additional);
+schema.statics.createClear = function(date, callback){
+    var Day = this;
+    var day = new Day({date:date, additional:[]});
+    async.map(Day.fields, function(field, cb){
+        var product = new DailyProduct();
+        product.save(function(err, p){
+            if(err)
+                return cb(err);
+            else {
+                day[field] = p.id;
+                return cb(null);
+            }
+        });
+    }, function (err){
+        if(err)
+            return callback(err);
+        else
+            return day.save(callback);
     });
-
-    return d;
 };
 
 var Day = mongoose.model('Day', schema);

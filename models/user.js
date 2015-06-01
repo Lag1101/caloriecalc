@@ -9,6 +9,7 @@ var Product = require('./product').Product;
 var DishProduct = require('./product').DishProduct;
 var Day = require('./day').Day;
 var DaySchema = require('./day').DaySchema;
+var DailyProduct = require('../models/product').DailyProduct;
 
 var mongoose = require('../lib/mongoose'),
     Schema = mongoose.Schema;
@@ -35,8 +36,12 @@ var schema = new Schema({
         type: [Schema.Types.String],
         default: []
     },
+    dailyDates:{
+        type: [Schema.Types.String],
+        default: []
+    },
     daily: {
-        type: [DaySchema],
+        type: [Schema.Types.String],
         default: []
     },
     date:{
@@ -192,40 +197,93 @@ schema.methods.getDailyByDate = function(date, callback){
     var user = this;
 
     for(var i = 0; i < user.daily.length; i++){
-        var daily = user.daily[i];
-        if(daily.date === date) {
-            return callback(null, daily);
+        var dailyDate = user.dailyDates[i];
+
+        if(dailyDate === user.date) {
+            return Day.findById(user.daily[i], callback);
         }
     }
-    var d = new Day({
-        date: date
-    });
 
-    user.daily.push(d);
-
-    return user.save(function(err){
-        return callback(err, d);
-    });
+    async.waterfall([
+        function(cb){
+            return Day.createClear(user.date, cb);
+        },
+        function(daily, _,  cb){
+            user.daily.push(daily._id);
+            user.dailyDates.push(user.date);
+            user.save(function(err){
+                return cb(err, daily);
+            })
+        }
+    ], callback);
 };
 schema.methods.getRawDailyByDate = function(date, callback){
     var user = this;
 
-    user.getDailyByDate(date, function(err, daily){
-        return daily.getRaw(callback);
+    async.waterfall([
+        function(cb){
+            return user.getDailyByDate(user.date, cb);
+        },
+        //function(daily, cb){
+        //    return Day.findById(dailyId, cb);
+        //},
+        function(daily, cb){
+            return daily.getRaw(cb);
+        }
+    ], callback);
+};
+
+schema.methods.newDailyItem = function(date, newDailyItem, callback){
+    var user = this;
+    delete newDailyItem.id;
+    async.waterfall([
+        function(cb){
+            user.getDailyByDate(user.date, cb);
+        },
+        function(daily, cb){
+            daily.addProduct(newDailyItem, cb);
+        },
+        function(daily, cb){
+            return daily.save(cb);
+        }
+    ], function(err, daily){
+        if(err)
+            return callback(err);
+
+        return callback(err, user);
     });
 };
 
-schema.methods.setDaily = function(newDaily, callback){
+schema.methods.removeDailyItem = function(date, dailyItemId, callback){
     var user = this;
+    async.waterfall([
+        function(cb){
+            user.getDailyByDate(user.date, cb);
+        },
+        function(daily, cb){
+            var index = daily.additional.indexOf(dailyItemId);
+            if(index < 0)
+                return callback(new Error(user.username + " doesn't have such product in daily " + dailyItemId));
+            else{
+                async.waterfall([
+                    function(cb){
+                        DailyProduct.findById(dailyItemId, cb);
+                    },
+                    function(product, cb){
+                        product.remove(cb);
+                    },
+                    function(product, cb){
+                        daily.additional.splice(index, 1);
+                        daily.save(cb);
+                    }
+                ], cb);
+            }
+        }
+    ], function(err, daily){
+        if(err)
+            return callback(err);
 
-    user.getDailyByDate(newDaily.date, function(err, daily){
-        if(err) return callback(err);
-
-        var d = Day.createFromRaw(newDaily);
-
-        daily.update(d);
-
-        callback(null, user);
+        return callback(err, user);
     });
 };
 

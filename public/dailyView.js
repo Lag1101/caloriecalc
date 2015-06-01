@@ -4,11 +4,12 @@
 
 (function(socket){
 
-    var msToSendChanges = 10 * 1000;
+    var msToSendChanges = 1 * 1000;
     var timeOutToSendChanges = null;
     var resultView = $('.result');
     var daily = $('.daily');
     var state = daily.find('.state');
+    var newItem = daily.find('.newItem');
     var links = {
         proteins: null,
         triglyceride: null,
@@ -23,17 +24,15 @@
 
     Product.emptyProduct.writeEl(daily.find('.newItem'));
     updateLinks();
-    daily.find('.item').on('input paste',function(){
-        reCalcDaily();
-        saveDaily();
-    });
 
     daily.find('.addButton').click(function(){
-        var newItem = getNewItemClone();
-        Product.emptyProduct.writeEl(daily.find('.newItem'));
-        updateLinks();
-        reCalcDaily();
-        saveDaily();
+
+        var p = new Product();
+        p.readEl(newItem);
+        socket.emit('addDailyProduct', p);
+
+        Product.emptyProduct.writeEl(newItem);
+        //saveDaily();
     });
 
     function changeBusyState(busy){
@@ -74,13 +73,13 @@
     socket.on('getCurrentDate', function(date){
         dailyDate.val(date);
         responseDaily(dailyDate.val());
+        updateLinks();
         reCalcDaily();
     });
 
     dailyDate.on('input propertychange paste', function(){
         var date = $(this).val();
         socket.emit('setCurrentDate', date);
-        responseDaily(date);
     });
 
     function reCalcDaily(){
@@ -112,51 +111,13 @@
         Product.emptyProduct.writeEl(daily.find('.secondDinner'));
 
         daily.find('.additionalProduct').each(function(){
+            $(this).empty();
             $(this).detach();
         });
 
         updateLinks();
     }
-    function getNewItemClone(){
-        var newItem = $('<div>')
-            .append($('<div>')
-                //.append($('<button>').addClass('add item').text('+'))
-                .append($('<button>').addClass('remove btn myLabel btn-xs btn-default').append(utils.icons.remove.clone()))
-                .append($('<div>').attr('contenteditable', true).addClass('description item enableForInput'))
-                .append($('<input>').addClass('proteins'))
-                .append($('<input>').addClass('triglyceride'))
-                .append($('<input>').addClass('carbohydrate'))
-                .append($('<input>').addClass('calorie'))
-                .append($('<div>').attr('contenteditable', true).addClass('details item enableForInput'))
-                .addClass('additionalProduct product'));
-            //.append($('<button>').addClass('remove item').text('-')));
 
-        var p = new Product();
-        p.readEl( daily.find('.newItem'));
-        p.writeEl( newItem);
-
-        newItem.find('input').addClass('item');
-
-        newItem.find('.remove').click(utils.removeFromCurrentDish.bind(null, newItem, function(){
-            updateLinks();
-            reCalcDaily();
-            saveDaily();
-        }));
-        newItem.find('.item').on('input paste', function(){
-            reCalcDaily();
-            saveDaily();
-        });
-        newItem.find('input:not(.description)').on('input paste', function(){
-            $(this).val( utils.validate( $(this).val() ) );
-        });
-        //newItem.find('.daily').val(daily.find('.newItem').find('.daily').val())
-        newItem.find('.details').on('input paste', function(){
-            saveDaily();
-        });
-        daily.find('.newItem').before(newItem);
-
-        return newItem;
-    }
 
     function updateLinks(){
         links.proteins = daily.find('.proteins:not(.notCalc)');
@@ -166,18 +127,26 @@
     }
 
     function restoreDaily(dailyProducts){
-        restoreDailyItem(daily.find('.breakfast'), dailyProducts.breakfast || {});
-        restoreDailyItem(daily.find('.firstLunch'), dailyProducts.firstLunch || {});
-        restoreDailyItem(daily.find('.secondLunch'), dailyProducts.secondLunch || {});
-        restoreDailyItem(daily.find('.thirdLunch'), dailyProducts.thirdLunch || {});
-        restoreDailyItem(daily.find('.dinner'), dailyProducts.dinner || {});
-        restoreDailyItem(daily.find('.secondDinner'), dailyProducts.secondDinner || {});
+        restoreDailyItem(daily.find('.breakfast'), dailyProducts.breakfast);
+        restoreDailyItem(daily.find('.firstLunch'), dailyProducts.firstLunch);
+        restoreDailyItem(daily.find('.secondLunch'), dailyProducts.secondLunch);
+        restoreDailyItem(daily.find('.thirdLunch'), dailyProducts.thirdLunch);
+        restoreDailyItem(daily.find('.dinner'), dailyProducts.dinner);
+        restoreDailyItem(daily.find('.secondDinner'), dailyProducts.secondDinner);
 
         if(dailyProducts.additional) {
             for (var i = 0; i < dailyProducts.additional.length; i++) {
                 var additional = dailyProducts.additional[i];
-                var additionalItem = getNewItemClone();
-                restoreDailyItem(additionalItem, additional || {});
+
+                var clone = newItem.clone();
+                clone.removeClass('newItem').addClass('additionalProduct');
+                clone.find('.addButton')
+                    .off('click')
+                    .removeClass('addButton')
+                    .addClass('remove')
+                    .text('-');
+                newItem.before(clone);
+                restoreDailyItem(clone, additional);
             }
             updateLinks();
         }
@@ -187,15 +156,14 @@
     socket.on('getDaily', function (data) {
         if(data){
             changeBusyState(false);
+            clearDaily();
             restoreDaily(data);
             updateLinks();
             reCalcDaily();
         }
     });
     function responseDaily(date) {
-        clearDaily();
         socket.emit('getDaily', date);
-
     }
 
     function createDailyItem(el){
@@ -204,9 +172,32 @@
         return product.getRaw();
     }
 
+    function fixProduct(el, product){
+        var fixedProduct = new Product();
+        fixedProduct.readEl(el);
+        fixedProduct.id = product.id;
+        socket.emit('fixDailyProduct', fixedProduct);
+    }
+
     function restoreDailyItem(el, details){
         var product = new Product(details);
         product.writeEl(el);
+
+        el.find('.remove').off('click').click(utils.removeFromCurrentDish.bind(null, el, function(){
+            socket.emit('removeDailyProduct', product.id);
+            //saveDaily();
+        }));
+
+        el.find('input').off('input paste').on('input paste', function(){
+            $(this).val( utils.validate( $(this).val() ) );
+            reCalcDaily();
+            fixProduct(el, product);
+        });
+        el.find('.item').off('input paste').on('input paste', function(){
+            reCalcDaily();
+            fixProduct(el, product);
+        });
+        //newItem.find('.daily').val(daily.find('.newItem').find('.daily').val())
     }
 
     function saveDaily(){
@@ -227,10 +218,11 @@
             products.additional.push(createDailyItem($(this)));
         });
 
-        clearTimeout(timeOutToSendChanges);
-        timeOutToSendChanges = setTimeout(function(){
-            socket.emit('setDaily', products);
-            changeBusyState(false);
-        }, msToSendChanges);
+        //clearTimeout(timeOutToSendChanges);
+        //changeBusyState(false);
+        //timeOutToSendChanges = setTimeout(function(){
+        //    socket.emit('setDaily', products);
+        //    changeBusyState(false);
+        //}, msToSendChanges);
     }
 })(socket);
