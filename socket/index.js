@@ -146,7 +146,7 @@ function fixProduct(socket, username, model, fixedProduct){
 
     async.waterfall([
         function(cb){
-            model.findOne({id:fixedProduct.id}, cb);
+            model.findById(fixedProduct.id, cb);
         },
         function(product, cb){
             product.setFromRaw(fixedProduct);

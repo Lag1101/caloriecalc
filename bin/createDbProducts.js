@@ -9,8 +9,8 @@ var Product = require('../models/product').Product;
 
 async.series([
     open,
-    requireModels,
     dropDatabase,
+    requireModels,
     createUsers
 ], function(err) {
     if(err)

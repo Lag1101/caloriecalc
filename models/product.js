@@ -8,13 +8,6 @@ var mongoose = require('../lib/mongoose'),
     Schema = mongoose.Schema;
 
 var schema = new Schema({
-    id:{
-        type: Schema.Types.String,
-        default: function(){
-            var oId = new mongoose.Types.ObjectId();
-            return oId.toString();
-        }
-    },
     description: {
         type: Schema.Types.String,
         default: ""
@@ -47,7 +40,7 @@ var schema = new Schema({
 
 schema.methods.getRaw = function() {
     return {
-        id:             this.id,
+        id:             this._id.toString(),
         description:    this.description,
         details:        this.details,
         proteins:       this.proteins,

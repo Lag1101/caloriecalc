@@ -10,8 +10,8 @@ var Dish = require('../models/dish').Dish;
 
 async.series([
     open,
-    requireModels,
     dropDatabase,
+    requireModels,
     createUsers
 ], function(err) {
     if(err)

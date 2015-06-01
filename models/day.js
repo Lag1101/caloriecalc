@@ -54,7 +54,7 @@ schema.methods.getRaw = function(callback) {
     var raw = {
         date: day.date,
         additional: [],
-        id: day.id
+        id: day._id.toString()
     };
     async.parallel([
         function(cb){
@@ -79,7 +79,7 @@ schema.methods.getRaw = function(callback) {
 
 };
 
-schema.methods.update = function(newDaily, callback) {
+schema.methods.update = function(newDaily) {
     this.date = newDaily.date;
     this.main = newDaily.main;
     this.additional = newDaily.additional;
@@ -93,18 +93,17 @@ schema.statics.createFromRaw = function(raw){
         //id : raw.id ? raw.id : new Schema.Types.ObjectId()
     };
 
+    var d = new Day(dayData);
+
 
     for(var i = 0; i < Day.fields.length; i++){
-        var t = new mongoose.models.Product(raw[Day.fields[i]]);
-        dayData.main.push(t);
+        d.main.push(raw[Day.fields[i]]);
     }
 
     raw['additional'].map(function(additional){
-        var t = new mongoose.models.Product(additional);
-        dayData.additional.push(t);
+        d.additional.push(additional);
     });
 
-    var d = new Day(dayData);
     return d;
 };
 

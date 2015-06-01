@@ -10,8 +10,8 @@ var Day = require('../models/day').Day;
 
 async.series([
     open,
-    requireModels,
     dropDatabase,
+    requireModels,
     createDaily
 ], function(err) {
     if(err)

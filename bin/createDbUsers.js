@@ -4,11 +4,16 @@
 var mongoose = require('../lib/mongoose');
 var async = require('async');
 var logger = require('../lib/logger');
+var User  = require('../models/user').User;
+var Product  = require('../models/product').Product;
+var Day  = require('../models/day').Day;
+var DishProduct  = require('../models/product').DishProduct;
+var Dish  = require('../models/dish').Dish;
 
 async.series([
     open,
-    requireModels,
     dropDatabase,
+    requireModels,
     createUsers
 ], function(err) {
     if(err)
@@ -27,14 +32,10 @@ function dropDatabase(callback) {
     //var db = mongoose.connection.db;
     //db.dropDatabase(callback);
 
-    mongoose.models.User.remove({},callback);
+    User.remove({},callback);
 }
 
 function requireModels(callback) {
-    require('../models/product');
-    require('../models/user');
-    require('../models/day');
-
     async.each(Object.keys(mongoose.models), function(modelName, callback) {
         mongoose.models[modelName].ensureIndexes(callback);
     }, callback);
@@ -49,22 +50,22 @@ function createUsers(callback) {
         function(cb){
             async.parallel({
                 products: function(cb){
-                    mongoose.models.Product.find(function (err, product) {
+                    Product.find(function (err, product) {
                         return cb(null, product);
                     });
                 },
                 days: function (cb) {
-                    mongoose.models.Day.find(function (err, day) {
+                    Day.find(function (err, day) {
                         return cb(null, day);
                     });
                 },
                 dishProducts: function (cb) {
-                    mongoose.models.DishProduct.find(function (err, product) {
+                    DishProduct.find(function (err, product) {
                         return cb(null, product);
                     });
                 },
                 dishes: function (cb) {
-                    mongoose.models.Dish.find(function (err, dish) {
+                    Dish.find(function (err, dish) {
                         return cb(null, dish);
                     });
                 }

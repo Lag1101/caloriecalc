@@ -185,18 +185,17 @@
 
 
     socket.on('getDaily', function (data) {
-        if(data)
+        if(data){
+            changeBusyState(false);
             restoreDaily(data);
-
-        changeBusyState(false);
-        updateLinks();
-        reCalcDaily();
+            updateLinks();
+            reCalcDaily();
+        }
     });
     function responseDaily(date) {
         clearDaily();
         socket.emit('getDaily', date);
 
-        changeBusyState(true);
     }
 
     function createDailyItem(el){
@@ -229,7 +228,6 @@
         });
 
         clearTimeout(timeOutToSendChanges);
-        changeBusyState(true);
         timeOutToSendChanges = setTimeout(function(){
             socket.emit('setDaily', products);
             changeBusyState(false);

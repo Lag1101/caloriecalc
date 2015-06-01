@@ -58,7 +58,7 @@ schema.methods.getCurrentDishes = function(callback){
     async.waterfall([
         function(cb){
             async.map(user.dishes, function(dishId, cb){
-                Dish.findOne({id: dishId}, cb);
+                Dish.findById(dishId, cb);
             }, cb);
         },
         function(dishes, cb){
@@ -82,8 +82,6 @@ schema.methods.addDish = function(newDish, callback){
 
     var user = this;
 
-    delete newDish.id;
-
     Dish.addDish(newDish, function(err, d){
         user.dishes.push(d.id);
         return callback(err, user);
@@ -98,7 +96,7 @@ schema.methods.removeDish = function(dishId, callback){
     else{
         async.waterfall([
             function(cb){
-                Dish.findOne({id:dishId}, cb);
+                Dish.findById(dishId, cb);
             },
             function(dish, cb){
                 dish.remove(cb);
@@ -119,7 +117,7 @@ schema.methods.getCurrentDishProducts = function(callback){
     async.waterfall([
         function(cb){
             async.map(user.currentDishProducts, function(productId, cb){
-                DishProduct.findOne({id:productId}, cb);
+                DishProduct.findById(productId, cb);
             }, cb);
         },
         function(products, cb){
@@ -140,15 +138,13 @@ schema.methods.addDishProduct = function(newDishProductId, callback){
 
     async.waterfall([
         function(cb){
-            Product.findOne({id:newDishProductId}, cb);
+            Product.findById(newDishProductId, cb);
         },
         function(product, cb){
             return cb(null, product.getRaw());
         }
     ],function(err, rawNewProduct){
         if(err) return callback(err);
-
-        delete rawNewProduct.id;
 
         var product = new DishProduct(rawNewProduct);
         return product.save(function(err){
@@ -166,7 +162,7 @@ schema.methods.removeDishProduct = function(dishProductId, callback){
     else{
         async.waterfall([
             function(cb){
-                DishProduct.findOne({id:dishProductId}, cb);
+                DishProduct.findById(dishProductId, cb);
             },
             function(product, cb){
                 product.remove(cb);
@@ -184,7 +180,7 @@ schema.methods.removeDishProduct = function(dishProductId, callback){
 schema.methods.gerRawProductList = function(callback){
     var user = this;
     async.map(user.products, function(productId, cb){
-        Product.findOne({id:productId}, function(err, product){
+        Product.findById(productId, function(err, product){
             if(err || !product)
                 return cb(err);
             else
@@ -253,7 +249,7 @@ schema.methods.removeProduct = function(productId, callback){
     else{
         async.waterfall([
             function(cb){
-                Product.findOne({id:productId}, cb);
+                Product.findById(productId, cb);
             },
             function(product, cb){
                 product.remove(cb);
