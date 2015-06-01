@@ -152,6 +152,8 @@ function fixProduct(socket, username, model, fixedProduct){
             model.findById(fixedProduct.id, cb);
         },
         function(product, cb){
+            if(!product)
+                return cb(new Error("Product doesn't exist"));
             product.setFromRaw(fixedProduct);
             return product.save(cb);
         }

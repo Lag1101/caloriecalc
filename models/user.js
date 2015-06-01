@@ -104,6 +104,8 @@ schema.methods.removeDish = function(dishId, callback){
                 Dish.findById(dishId, cb);
             },
             function(dish, cb){
+                if(!dish)
+                    return cb(new Error("Dish doesn't exist"));
                 dish.remove(cb);
             },
             function(product, cb){
@@ -146,6 +148,8 @@ schema.methods.addDishProduct = function(newDishProductId, callback){
             Product.findById(newDishProductId, cb);
         },
         function(product, cb){
+            if(!product)
+                return cb(new Error("Product doesn't exist"));
             return cb(null, product.getRaw());
         }
     ],function(err, rawNewProduct){
@@ -170,6 +174,8 @@ schema.methods.removeDishProduct = function(dishProductId, callback){
                 DishProduct.findById(dishProductId, cb);
             },
             function(product, cb){
+                if(!product)
+                    return cb(new Error("Product doesn't exist"));
                 product.remove(cb);
             },
             function(product, cb){
@@ -186,8 +192,10 @@ schema.methods.gerRawProductList = function(callback){
     var user = this;
     async.map(user.products, function(productId, cb){
         Product.findById(productId, function(err, product){
-            if(err || !product)
+            if(err)
                 return cb(err);
+            else if(!product)
+                    return cb(new Error("Product doesn't exist"));
             else
                 return cb(null, product.getRaw());
         });
@@ -200,7 +208,12 @@ schema.methods.getDailyByDate = function(date, callback){
         var dailyDate = user.dailyDates[i];
 
         if(dailyDate === user.date) {
-            return Day.findById(user.daily[i], callback);
+            return Day.findById(user.daily[i], function(err, daily){
+                if(!daily)
+                    return callback(new Error("Daily doesn't exist"));
+                return callback(err, daily);
+
+            });
         }
     }
 
@@ -312,6 +325,8 @@ schema.methods.removeProduct = function(productId, callback){
                 Product.findById(productId, cb);
             },
             function(product, cb){
+                if(!product)
+                    return cb(new Error("pRoduct doesn't exist"));
                 product.remove(cb);
             },
             function(product, cb){

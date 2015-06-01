@@ -32,6 +32,9 @@ schema.methods.getRaw = function(cb) {
             }, cb)
         },
         function(fullAndPortion, cb){
+            if(!fullAndPortion.full || !fullAndPortion.portion)
+                return cb(new Error("Product doesn't exist"));
+
             return cb(null, {
                 id:     dish._id.toString(),
                 description: dish.description,
@@ -83,6 +86,8 @@ schema.methods.setFromRaw = function(newDish, cb) {
                     EndDishProduct.findById(dish.full, function(err, p){
                         if(err)
                             return cb(err);
+                        else if(!p)
+                            return callback(new Error("Product doesn't exist"));
                         p.setFromRaw(newDish.full);
                         return p.save(cb);
                     });
@@ -91,6 +96,8 @@ schema.methods.setFromRaw = function(newDish, cb) {
                     EndDishProduct.findById(dish.portion, function(err, p){
                         if(err)
                             return cb(err);
+                        else if(!p)
+                            return callback(new Error("Product doesn't exist"));
                         p.setFromRaw(newDish.portion);
                         return p.save(cb);
                     });
