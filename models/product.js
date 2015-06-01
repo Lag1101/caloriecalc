@@ -58,6 +58,8 @@ schema.statics.getRawById = function(id, cb) {
     Product.findById(id, function(err, p){
         if(err)
             return cb(err);
+        else if(!p)
+            return cb(new Error("pRoduct doesn't exist"));
         else
             return cb(null, p.getRaw());
     });
