@@ -270,6 +270,8 @@ schema.methods.removeDailyItem = function(date, dailyItemId, callback){
                         DailyProduct.findById(dailyItemId, cb);
                     },
                     function(product, cb){
+                        if(!product)
+                            return cb(new Error("Item already doesn't exit"));
                         product.remove(cb);
                     },
                     function(product, cb){
