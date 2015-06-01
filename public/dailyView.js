@@ -184,6 +184,7 @@
         product.writeEl(el);
 
         el.find('.remove').off('click').click(utils.removeFromCurrentDish.bind(null, el, function(){
+            $(this).attr('disabled', true);
             socket.emit('removeDailyProduct', product.id);
             //saveDaily();
         }));

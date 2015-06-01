@@ -205,6 +205,7 @@
 
         product.writeEl(productView);
         productView.find('.remove').click(utils.removeFromCurrentDish.bind(null, productView, function(){
+            $(this).attr('disabled', true);
             reCalc();
             socket.emit('removeDishProduct', product.id);
         }));
