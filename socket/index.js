@@ -64,8 +64,10 @@ function removeDish(socket, username, id){
     ], function(err){
         if(err)
             logger.error(err);
-        else
-            getCurrentDishes(socket, username);
+        else {
+            logger.info('Removed dish', id);
+            return getCurrentDishes(socket, username);
+        }
     });
 }
 
@@ -100,8 +102,10 @@ function newDishProduct(socket, username, newDishProductId){
     ], function(err){
         if(err)
             logger.error(err);
-        else
+        else {
+            logger.info('Copied dishProduct', newDishProductId);
             getCurrentDishProducts(socket, username);
+        }
     });
 
 }
@@ -120,8 +124,10 @@ function removeDishProduct(socket, username, id){
     ], function(err){
         if(err)
             logger.error(err);
-        else
-            getCurrentDishProducts(socket, username);
+        else {
+            logger.info('Removed product', id);
+            return getCurrentDishProducts(socket, username);
+        }
     });
 }
 
@@ -176,6 +182,7 @@ function list(socket, username){
         },
         function(rawProducts, cb){
             socket.emit('list', rawProducts);
+            logger.info('Response list');
             cb();
         }
     ],function(err){
@@ -197,8 +204,10 @@ function newProduct(socket, username, newProduct){
     ], function(err){
         if(err)
             logger.error(err);
-        else
+        else {
+            logger.info('Added product', newProduct);
             return list(socket, username);
+        }
     });
 }
 function removeProduct(socket, username, id){
@@ -215,8 +224,10 @@ function removeProduct(socket, username, id){
     ], function(err){
         if(err)
             logger.error(err);
-        else
+        else {
+            logger.info('Removed product', id);
             return list(socket, username);
+        }
     });
 }
 function getDaily(socket, username, date){
@@ -250,8 +261,10 @@ function removeDailyProduct(socket, username, dailyItemId){
     ], function(err, user){
         if(err)
             logger.error(err);
-        else
+        else {
+            logger.info('Removed daily product', dailyItemId);
             return getDaily(socket, username, user.date);
+        }
     });
 }
 function addDailyProduct(socket, username, newDailyItem){
@@ -268,8 +281,10 @@ function addDailyProduct(socket, username, newDailyItem){
     ], function(err){
         if(err)
             logger.error(err);
-        else
+        else {
+            logger.info('Added daily product', newDailyItem);
             return getDaily(socket, username);
+        }
     });
 }
 module.exports = function(server){

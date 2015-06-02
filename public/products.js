@@ -21,6 +21,7 @@
     var sortKey = sortBy.find('option:selected').val();
     var order = sortOrder.find('option:selected').val();
 
+
     resultDish.find('.save').click(function(){
         var full = new Product();
         var portion = new Product();
@@ -34,7 +35,7 @@
         });
     });
     defaultDish.find('.mass').on('input paste', function(){
-        reCalc();
+        calcPortion(defaultDish);
     });
 
     sortBy.on('change', function () {
@@ -47,17 +48,14 @@
         updateList();
     });
 
-    socket.emit('getDishList');
     socket.on('getDishList', restoreDishList);
 
-    getUpdates();
 
     addButton.click(function(){
         var product = new Product();
         product.readEl(newProduct);
         socket.emit('newProduct', product.getRaw());
         Product.emptyProduct.writeEl(newProduct);
-        getUpdates();
     });
 
     socket.on('list', function (data) {
@@ -76,20 +74,37 @@
     });
 
     socket.on('getCurrentDishProducts', function (data) {
-        updateCurrentDishProducts(data);
+        currentDishProductsView.empty();
+        if(data) {
+            var currentDishProductsRow = data;
+            if(currentDishProductsRow)
+                currentDishProductsRow.map(addToCurrentDish);
+        }
+        reCalc();
     });
-    function getUpdates(){
-        socket.emit('list');
+
+    responseProductList();
+    responseDishProductList();
+    responseDishList();
+
+    function responseDishList(){
+        socket.emit('getDishList');
+    }
+    function responseDishProductList(){
         socket.emit('getCurrentDishProducts');
     }
+    function responseProductList(){
+        socket.emit('list');
+    }
 
-    function totallyRemove(view, product) {
+    function removeProduct(view, product) {
         utils.confirmDialog(
             "Вы уверены, что хотите удалить " + product.description + " ?",
             function(){
-                utils.removeFromCurrentDish(view, function(){
-                    removeFromServer(product);
-                });
+                view.detach();
+
+                socket.emit('removeProduct', product.id);
+                socket.emit('removeProduct', product.id);
             }
         );
     }
@@ -135,7 +150,6 @@
                     "Вы уверены, что хотите удалить " + dishView.find('.description').html() + " ?",
                     function(){
                         socket.emit('removeDish', dish.id);
-                        //utils.removeFromCurrentDish(dishView, saveDishList);
                     }
                 );
             });
@@ -174,11 +188,6 @@
         });
     }
 
-    function removeFromServer(product){
-        socket.emit('removeProduct', product.id);
-        getUpdates();
-    }
-
     function copyToDishProducts(product){
         socket.emit('newDishProduct', product.id);
     }
@@ -198,26 +207,20 @@
                 .append($('<input>').addClass('mass').on('input paste', function(){
                     $(this).val( utils.validate( $(this).val() ) );
                     fixDishProduct(productView, product);
+                    reCalc();
                 })));
 
         productView.find('input').addClass('item');
         productView.find('input:not(.mass)').attr('disabled', true);
 
         product.writeEl(productView);
-        productView.find('.remove').click(utils.removeFromCurrentDish.bind(null, productView, function(){
-            $(this).attr('disabled', true);
+        productView.find('.remove').click(function(){
+            productView.detach();
             reCalc();
             socket.emit('removeDishProduct', product.id);
-        }));
-
-        productView.find('input').on('input propertychange paste', function(){
-            reCalc();
-            fixDishProduct(productView, product);
         });
 
         productView.appendTo(currentDishProductsView);
-
-        reCalc();
     }
 
     function fixDishProduct(productView, product){
@@ -242,6 +245,8 @@
         });
 
         portion.writeEl(el.find('.portion'), ['mass']);
+
+        console.log('Calculated portion');
     }
 
     function reCalc(){
@@ -262,6 +267,8 @@
         res.writeEl(fullView, ['mass']);
 
         calcPortion(defaultDish);
+
+        console.log('calculated  dish products');
     }
 
     function reorder(products, searchStr){
@@ -281,14 +288,6 @@
         reorderProducts = reorderProducts.sort(comp);
 
         return reorderProducts;
-    }
-    function updateCurrentDishProducts(data) {
-        currentDishProductsView.empty();
-        if(data) {
-            var currentDishProductsRow = data;
-            if(currentDishProductsRow)
-                currentDishProductsRow.map(addToCurrentDish);
-        }
     }
 
     function appear(productView){
@@ -377,9 +376,6 @@
             var root = $('<div>').append(productView);
 
             productView.addClass('product inline-block');
-            //root.addClass('product');
-            //root.addClass('product');
-
 
             root.find('input').addClass('item');
             hide(root);
@@ -387,7 +383,7 @@
 
             root.find('.edit').click(editProduct.bind(null, root, product));
             root.find('.add').click(copyToDishProducts.bind(null, product));
-            root.find('.remove').click(totallyRemove.bind(null, root, product));
+            root.find('.remove').click(removeProduct.bind(null, root, product));
 
             productsList.append(root).trigger('append');
         }

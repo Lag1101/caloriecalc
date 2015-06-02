@@ -68,10 +68,6 @@ var utils = (function(){
 
         return distance;
     }
-    function removeFromCurrentDish(view, cb){
-        view.detach();
-        return cb && cb();
-    }
 
     var icons = {
         save:           $('<i>').addClass('glyphicon glyphicon-floppy-disk'),
@@ -128,7 +124,6 @@ var utils = (function(){
         confirmDialog: confirmDialog,
         icons: icons,
         DropdownButton: DropdownButton,
-        removeFromCurrentDish: removeFromCurrentDish,
         validate: validate,
         fromDateToString: fromDateToString,
         distanceBeetweenStrings: distanceBeetweenStrings

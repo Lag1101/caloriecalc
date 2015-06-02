@@ -183,11 +183,11 @@
         var product = new Product(details);
         product.writeEl(el);
 
-        el.find('.remove').off('click').click(utils.removeFromCurrentDish.bind(null, el, function(){
-            $(this).attr('disabled', true);
+        el.find('.remove').off('click').click(function(){
+            el.detach();
             socket.emit('removeDailyProduct', product.id);
             //saveDaily();
-        }));
+        });
 
         el.find('input').off('input paste').on('input paste', function(){
             $(this).val( utils.validate( $(this).val() ) );
