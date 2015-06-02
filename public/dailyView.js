@@ -147,7 +147,7 @@
                 return cb();
             },
             function(cb){
-                async.each(dailyProducts.additional, function(additional, cb){
+                async.eachSeries(dailyProducts.additional, function(additional, cb){
                     var clone = newItem.clone();
                     clone.removeClass('newItem').addClass('additionalProduct');
                     clone.find('.addButton')

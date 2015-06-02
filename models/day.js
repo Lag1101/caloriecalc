@@ -79,7 +79,7 @@ schema.methods.getRaw = function(callback) {
             },cb);
         },
         function(cb){
-            async.map(day.additional, function(product, cb){
+            async.mapSeries(day.additional, function(product, cb){
                 return DailyProduct.getRawById(product, function(err, p){
                     raw.additional.push(p);
                     return cb();
