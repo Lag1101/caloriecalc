@@ -344,23 +344,12 @@
         });
     }
 
-    function reorder(products, searchStr){
-        var reorderProducts = products;
+    function reorder(products, cb){
+        var mult = (order === "greater") ? 1 : -1;
 
-        function comp(p1, p2){
-            var v1 = p1[sortKey];
-            var v2 = p2[sortKey];
-
-            if( (v1 < v2) ^ (order !== "greater") )
-                return -1;
-            else if( (v2 < v1) ^ (order !== "greater")  )
-                return 1;
-            else
-                return 0;
-        }
-        reorderProducts = reorderProducts.sort(comp);
-
-        return reorderProducts;
+        async.sortBy(products, function(product, cb){
+            return cb(null, mult*product[sortKey])
+        }, cb);
     }
 
     function appear(productView){
@@ -407,58 +396,60 @@
         //hide(productView);
     }
 
-    function updateList() {
 
-        var reorderProducts = reorder(products, newProduct.find('.description').val());
+    var productViewTemp = $('<div>')
+        .append($('<div>')
+            .append($('<button>').addClass('add btn item btn-xs btn-default').append(utils.icons.add.clone()))
+            .append(utils.DropdownButton.clone())
+            .append($('<div>').addClass('description item disableForInput'))
+            .append($('<input>').addClass('proteins'))
+            .append($('<input>').addClass('triglyceride'))
+            .append($('<input>').addClass('carbohydrate'))
+            .append($('<input>').addClass('calorie')))
+        .append($('<div>')
+            //.append($('<button>').addClass('edit item'))
+            .append($('<div>').addClass('blankDescription blankItem'))
+            .append($('<div>').addClass('blankItem'))
+            .append($('<div>').addClass('blankItem'))
+            .append($('<div>').addClass('blankItem'))
+            .append($('<button>').addClass('save item hidden btn btn-xs btn-default').append(utils.icons.confirm.clone()))
+            .append($('<button>').addClass('cancel item hidden btn btn-xs btn-default').append(utils.icons.cancel.clone()))
+            .addClass('edit-menu'));
 
-        productsList.empty();
-        for(var i = 0; i < reorderProducts.length; i++){
-            var product = reorderProducts[i];
+    function updateList(callback) {
+        async.waterfall([
+            function(cb){
+                reorder(products, cb)
+            },
+            function(reorderProducts, cb){
+                productsList.empty();
+                async.eachSeries(reorderProducts, function(product, cb){
+                    var productView = productViewTemp.clone();
 
-            var b = utils.DropdownButton.clone();
-            b.find('.remove').click(function(){
-                console.log('удалить');
-            });
+                    var root = $('<div>').append(productView);
 
-            var productView = $('<div>')
-                .append($('<div>')
-                    //.append($('<button>').addClass('add item').text('+'))
-                    //
-                    .append($('<button>').addClass('add btn item btn-xs btn-default').append(utils.icons.add.clone()))
-                    .append(utils.DropdownButton.clone())
-                    .append($('<div>').addClass('description item disableForInput'))
-                    .append($('<input>').addClass('proteins'))
-                    .append($('<input>').addClass('triglyceride'))
-                    .append($('<input>').addClass('carbohydrate'))
-                    .append($('<input>').addClass('calorie'))
-                    //.append($('<button>').addClass('remove item').text('-'))
-            );
+                    productView.addClass('product inline-block');
 
+                    root.find('input').addClass('item');
+                    hide(root);
+                    product.writeEl(root);
 
-            productView
-                .append($('<div>')
-                    //.append($('<button>').addClass('edit item'))
-                    .append($('<div>').addClass('blankDescription blankItem'))
-                    .append($('<div>').addClass('blankItem'))
-                    .append($('<div>').addClass('blankItem'))
-                    .append($('<div>').addClass('blankItem'))
-                    .append($('<button>').addClass('save item hidden btn btn-xs btn-default').append(utils.icons.confirm.clone()))
-                    .append($('<button>').addClass('cancel item hidden btn btn-xs btn-default').append(utils.icons.cancel.clone()))
-                    .addClass('edit-menu'));
+                    root.find('.edit').click(editProduct.bind(null, root, product));
+                    root.find('.add').click(copyToDishProducts.bind(null, product));
+                    root.find('.remove').click(removeProduct.bind(null, root, product));
 
-            var root = $('<div>').append(productView);
+                    productsList.append(root).trigger('append');
 
-            productView.addClass('product inline-block');
+                    return cb();
+                }, cb);
+            }
+        ], function(err){
+            if(err)
+                console.error(err);
+            else
+                console.log("List updated");
 
-            root.find('input').addClass('item');
-            hide(root);
-            product.writeEl(root);
-
-            root.find('.edit').click(editProduct.bind(null, root, product));
-            root.find('.add').click(copyToDishProducts.bind(null, product));
-            root.find('.remove').click(removeProduct.bind(null, root, product));
-
-            productsList.append(root).trigger('append');
-        }
+            return callback && callback(err);
+        });
     }
 })(socket);
