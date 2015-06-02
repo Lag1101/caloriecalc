@@ -35,13 +35,6 @@
         //saveDaily();
     });
 
-    function changeBusyState(busy){
-        if(busy)
-            state.text('Обновление...');
-        else
-            state.text('Готово');
-    }
-
     function checkNorm(){
         var norms = {
             min: new Product(),
@@ -177,7 +170,6 @@
 
     socket.on('getDaily', function (data) {
         if(data){
-            changeBusyState(false);
             clearDaily();
             restoreDaily(data, function(err){
                 if(err)
