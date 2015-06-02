@@ -1,9 +1,14 @@
 var express = require('express');
 var router = express.Router();
+var env = require('../config').get('NODE_ENV');
 
 /* GET home page. */
 router.get('/', function(req, res) {
-  res.render('index', { title: 'CalorieCalc' });
+    var p = {
+        title: 'CalorieCalc',
+        devel: env === 'production'
+    };
+    res.render('index', p);
 });
 
 

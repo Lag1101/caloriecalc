@@ -10,6 +10,13 @@ var Day  = require('../models/day').Day;
 var DishProduct  = require('../models/product').DishProduct;
 var Dish  = require('../models/dish').Dish;
 
+require('./clearDb');
+require('./createDbProducts');
+require('./createDbDishProducts');
+require('./createDbEndDishProducts');
+require('./createDbDaily');
+
+
 async.series([
     open,
     dropDatabase,

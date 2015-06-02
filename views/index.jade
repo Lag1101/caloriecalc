@@ -4,9 +4,9 @@ block content
     - var items = [{label:'Б',classId: 'proteins', min: 90.46, max: 136.16},{label:'Ж',classId: 'triglyceride', min: 30, max: 40},{label:'У',classId: 'carbohydrate', min: 135.69, max: 194.51},{label:'Ккал',classId: 'calorie', min: 1206.11, max: 1556.11}];
     - var daily = [{label:'Завтрак У40-50',classId: 'breakfast'},{label:'Ланч У20-30',classId: 'firstLunch'},{label:'Обед У20-30',classId: 'secondLunch'},{label:'Перекус У15',classId: 'thirdLunch'},{label:'Ужин У10',classId: 'dinner'},{label:'Перед сном У10',classId: 'secondDinner'}];
     div(class='container-fluid')
-            div
-                div(class='myTable')
-                    include dailyView
+        div
+            div(class='myTable')
+                include dailyView
 
     div(class='container-fluid')
         div
@@ -16,20 +16,12 @@ block content
 
 
 
-    script.
-        var socket = io.connect('', {
-            reconnect: true
-        });
-        io.enable('browser client gzip');
-        socket
-                .on('connect', function () {
-                    console.log("connected");
-                })
-                .on('disconnect', function () {
-                    console.log("disconnected");
-                })
-    script(src='product.js')
-    script(src='utils.js')
-    script(src='dailyView.js')
-    script(src='products.js')
+    if( devel )
+        script(src='Release/index.js')
+    else
+        script(src='socket.js')
+        script(src='product.js')
+        script(src='utils.js')
+        script(src='dailyView.js')
+        script(src='products.js')
 
