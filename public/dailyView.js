@@ -126,30 +126,52 @@
         links.calorie = daily.find('.calorie:not(.notCalc)');
     }
 
-    function restoreDaily(dailyProducts){
-        restoreDailyItem(daily.find('.breakfast'), dailyProducts.breakfast);
-        restoreDailyItem(daily.find('.firstLunch'), dailyProducts.firstLunch);
-        restoreDailyItem(daily.find('.secondLunch'), dailyProducts.secondLunch);
-        restoreDailyItem(daily.find('.thirdLunch'), dailyProducts.thirdLunch);
-        restoreDailyItem(daily.find('.dinner'), dailyProducts.dinner);
-        restoreDailyItem(daily.find('.secondDinner'), dailyProducts.secondDinner);
+    function restoreDaily(dailyProducts, cb){
 
-        if(dailyProducts.additional) {
-            for (var i = 0; i < dailyProducts.additional.length; i++) {
-                var additional = dailyProducts.additional[i];
-
-                var clone = newItem.clone();
-                clone.removeClass('newItem').addClass('additionalProduct');
-                clone.find('.addButton')
-                    .off('click')
-                    .removeClass('addButton')
-                    .addClass('remove')
-                    .text('-');
-                newItem.before(clone);
-                restoreDailyItem(clone, additional);
+        async.parallel([
+            function(cb){
+                restoreDailyItem(daily.find('.breakfast'), dailyProducts.breakfast);
+                return cb();
+            },
+            function(cb){
+                restoreDailyItem(daily.find('.firstLunch'), dailyProducts.firstLunch);
+                return cb();
+            },
+            function(cb){
+                restoreDailyItem(daily.find('.secondLunch'), dailyProducts.secondLunch);
+                return cb();
+            },
+            function(cb){
+                restoreDailyItem(daily.find('.thirdLunch'), dailyProducts.thirdLunch);
+                return cb();
+            },
+            function(cb){
+                restoreDailyItem(daily.find('.dinner'), dailyProducts.dinner);
+                return cb();
+            },
+            function(cb){
+                restoreDailyItem(daily.find('.secondDinner'), dailyProducts.secondDinner);
+                return cb();
+            },
+            function(cb){
+                async.each(dailyProducts.additional, function(additional, cb){
+                    var clone = newItem.clone();
+                    clone.removeClass('newItem').addClass('additionalProduct');
+                    clone.find('.addButton')
+                        .off('click')
+                        .removeClass('addButton')
+                        .addClass('remove')
+                        .text('-');
+                    newItem.before(clone);
+                    restoreDailyItem(clone, additional);
+                    return cb();
+                }, cb);
             }
-            updateLinks();
-        }
+        ], function(err){
+            if(err)
+                return cb(err);
+            return cb();
+        });
     }
 
 
@@ -157,9 +179,14 @@
         if(data){
             changeBusyState(false);
             clearDaily();
-            restoreDaily(data);
-            updateLinks();
-            reCalcDaily();
+            restoreDaily(data, function(err){
+                if(err)
+                    console.error(err);
+                else{
+                    updateLinks();
+                    reCalcDaily();
+                }
+            });
         }
     });
     function responseDaily(date) {

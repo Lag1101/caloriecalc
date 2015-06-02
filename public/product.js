@@ -69,8 +69,16 @@ var Product = (function(){
         if(except.indexOf('mass') < 0)
             el.find('.mass')            .val(this.mass   .toFixed(2));
     };
-
+    Product.numericFields = [
+        'proteins',
+        'triglyceride',
+        'carbohydrate',
+        'calorie',
+        'mass'
+    ];
     Product.prototype.applyToNumerics = function(f){
+
+
         this.proteins = f(this.proteins, 'proteins');
         this.triglyceride = f(this.triglyceride, 'triglyceride');
         this.carbohydrate = f(this.carbohydrate, 'carbohydrate');
