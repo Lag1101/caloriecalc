@@ -49,32 +49,46 @@ function addProducts(srcList, user, cb){
 
 function addDishProducts(srcList, user, cb){
     async.each(srcList, function (productData, cb) {
-        user.addDishProduct(productData, cb);
+        Product.prepareProduct(productData);
+        user.products.push(productData);
+        return cb(null, user);
     }, cb);
 }
-function addDaily(dailyProducts, dstDaily, callback){
+function addDaily(dailyProducts, user, callback){
     async.each(Object.getOwnPropertyNames(dailyProducts), function (date, cb) {
         if(!date) return cb(new Error('Date field is required!'));
 
-        var rawDay = dailyProducts[date];
-
-        async.parallel([
+        async.waterfall([
             function(cb){
-                async.forEachOf(Day.fields, function(field, index, cb){
-                    var raw = rawDay[field].products;
-                    Product.prepareProduct(raw);
-                    dstDaily.main[index].setFromRaw(raw);
-                    return cb();
-                }, cb)
+                user.getDailyByDate(date, cb);
             },
-            function(cb){
-                async.eachSeries(rawDay['additional'], function(raw, cb){
-                    Product.prepareProduct(raw);
-                    dstDaily.additional.push(raw);
-                    return cb();
-                }, cb);
+            function(daily, cb){
+                var rawDay = dailyProducts[date];
+
+                async.parallel([
+                    function(cb){
+                        async.forEachOf(Day.fields, function(field, index, cb){
+                            var raw = rawDay[field].products || new Product();
+                            Product.prepareProduct(raw);
+                            daily.main[index].setFromRaw(raw);
+                            return cb();
+                        }, cb)
+                    },
+                    function(cb){
+                        if(rawDay['additional'])
+                            async.eachSeries(rawDay['additional'], function(raw, cb){
+                                raw = raw || new Product();
+                                Product.prepareProduct(raw);
+                                daily.additional.push(raw);
+                                return cb();
+                            }, cb);
+                        else
+                            return cb()
+                    }
+                ],cb);
             }
-        ],cb);
+        ], cb);
+
     },callback);
 }
 
@@ -101,7 +115,7 @@ function createUsers(callback) {
                 async.parallel([
                     addProducts.bind(null, allProducts.currentDish.currentDishProducts, user),
                     addDishProducts.bind(null, allProducts.list, user),
-                    addDaily.bind(null, allProducts.dailyProducts, user.daily),
+                    addDaily.bind(null, allProducts.dailyProducts, user),
                     addDish.bind(null, allProducts.dishList, user)
                 ], cb);
             }

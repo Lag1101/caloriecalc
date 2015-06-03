@@ -76,7 +76,7 @@ schema.statics.numericFields = [
 schema.statics.prepareProduct = function(product){
     var Product = this;
 
-    delete product.id;
+    product && delete product.id;
     Product.numericFields.map(function(field){
         var val = product[field];
         if( typeof val == "string" ){

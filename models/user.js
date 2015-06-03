@@ -74,7 +74,7 @@ schema.methods.getCurrentDishes = function(callback){
 };
 
 schema.methods.addDish = function(newDish, callback){
-    if(!newDish) return;
+    if(!newDish) return callback(new Error('Empty dish'));
 
     var user = this;
 
@@ -104,7 +104,7 @@ schema.methods.getCurrentDishProducts = function(callback){
 };
 
 schema.methods.addDishProduct = function(newDishProductId, callback){
-    if(!newDishProductId) return;
+    if(!newDishProductId) return callback(new Error('Empty id'));
 
     var user = this;
 
@@ -211,7 +211,7 @@ schema.methods.gerRawProductList = function(callback){
     }, callback);
 };
 schema.methods.addProduct = function(newProduct, callback){
-    if(!newProduct) return;
+    if(!newProduct) return callback(new Error('Empty product'));;
 
 
     var user = this;
