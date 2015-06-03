@@ -49,6 +49,32 @@ function addProducts(srcList, dstList, cb){
     }, cb);
 }
 
+function addDaily(dailyProducts, dstDaily, callback){
+    async.each(Object.getOwnPropertyNames(dailyProducts), function (date, cb) {
+        if(!date) return cb(new Error('Date field is required!'));
+
+        var rawDay = dailyProducts[date];
+
+        async.parallel([
+            function(cb){
+                async.forEachOf(Day.fields, function(field, index, cb){
+                    var raw = rawDay[field].products;
+                    Product.prepareProduct(raw);
+                    dstDaily.main[index].setFromRaw(raw);
+                    return cb();
+                }, cb)
+            },
+            function(cb){
+                async.eachSeries(rawDay['additional'], function(raw, cb){
+                    Product.prepareProduct(raw);
+                    dstDaily.additional.push(raw);
+                    return cb();
+                }, cb);
+            }
+        ],cb);
+    },callback);
+}
+
 function createUsers(callback) {
     var users = [
         {username: 'luckybug', password: '123'}
@@ -64,7 +90,8 @@ function createUsers(callback) {
             function(allProducts, cb){
                 async.parallel([
                     addProducts.bind(null, allProducts.currentDish.currentDishProducts, user.currentDishProducts),
-                    addProducts.bind(null, allProducts.list, user.products)
+                    addProducts.bind(null, allProducts.list, user.products),
+                    addDaily.bind(null, allProducts.dailyProducts, user.daily)
                 ], cb);
             }
         ], function(err){

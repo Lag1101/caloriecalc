@@ -150,23 +150,76 @@ function setCurrentDate(socket, username, date){
     });
 }
 
-function fixProduct(socket, username, fixedProduct){
+function fixDaily(socket, username, fixedProduct){
     if(!fixedProduct) return;
-
     async.waterfall([
         function(cb){
-            Product.findById(fixedProduct.id, cb);
+            User.findOne({username: username}, cb);
         },
-        function(product, cb){
+        function(user, cb){
+            user.getDailyByDate(user.date, function(err, daily){
+                cb(err, daily, user)
+            });
+        },
+        function(daily, user, cb){
+            if(!daily)
+                return cb(new Error("Daily doesn't exist"));
+            daily.fixProduct(fixedProduct, function(err){
+                return cb(null, user)
+            });
+        },
+        function(user, cb){
+            user.save(cb);
+        }
+    ],function(err){
+        if(err)
+            logger.error(err);
+        else
+            logger.info('Saved', fixedProduct, err);
+    });
+}
+function fixDishProduct(socket, username, fixedProduct){
+    if(!fixedProduct) return;
+    async.waterfall([
+        function(cb){
+            User.findOne({username: username}, cb);
+        },
+        function(user, cb){
+            var product = user.currentDishProducts.id(fixedProduct.id);
+            return cb(null, product, user)
+        },
+        function(product, user, cb){
             if(!product)
                 return cb(new Error("Product doesn't exist"));
             product.setFromRaw(fixedProduct);
-            return product.save(cb);
+            user.save(cb);
         }
-    ],
-    function(err){
+    ],function(err){
         if(err)
-            logger.error('Some problem with saving', fixedProduct, err);
+            logger.error(err);
+        else
+            logger.info('Saved', fixedProduct, err);
+    });
+}
+function fixProduct(socket, username, fixedProduct){
+    if(!fixedProduct) return;
+    async.waterfall([
+        function(cb){
+            User.findOne({username: username}, cb);
+        },
+        function(user, cb){
+            var product =user.products.id(fixedProduct.id);
+            return cb(null, product, user)
+        },
+        function(product, user, cb){
+            if(!product)
+                return cb(new Error("Product doesn't exist"));
+            product.setFromRaw(fixedProduct);
+            user.save(cb);
+        }
+    ],function(err){
+        if(err)
+            logger.error(err);
         else
             logger.info('Saved', fixedProduct, err);
     });
@@ -306,7 +359,7 @@ module.exports = function(server){
             .on('removeProduct',            removeProduct.bind(null, socket, username))
 
             .on('getDaily',                 getDaily.bind(null, socket, username))
-            .on('fixDailyProduct',          fixProduct.bind(null, socket, username))
+            .on('fixDailyProduct',          fixDaily.bind(null, socket, username))
             .on('removeDailyProduct',       removeDailyProduct.bind(null, socket, username))
             .on('addDailyProduct',          addDailyProduct.bind(null, socket, username))
 
@@ -318,11 +371,11 @@ module.exports = function(server){
             .on('setCurrentDate',           setCurrentDate.bind(null, socket, username))
 
             .on('fixProduct',               fixProduct.bind(null, socket, username))
-            .on('fixDishProduct',           fixProduct.bind(null, socket,  username))
+            .on('fixDishProduct',           fixDishProduct.bind(null, socket,  username))
 
             .on('getCurrentDishes',         getCurrentDishes.bind(null, socket, username))
             .on('addDish',                  addDish.bind(null, socket, username))
             .on('removeDish',               removeDish.bind(null, socket, username))
-            .on('fixDish',                  fixProduct.bind(null, socket, username))
+            //.on('fixDish',                  fixProduct.bind(null, socket, username))
     });
 };
