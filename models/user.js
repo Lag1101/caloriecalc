@@ -5,11 +5,10 @@ var util = require('util');
 
 
 var Dish = require('./dish').Dish;
+var DishSchema = require('./dish').DishSchema;
 var Product = require('./product').Product;
-var DishProduct = require('./product').DishProduct;
 var Day = require('./day').Day;
 var DaySchema = require('./day').DaySchema;
-var DailyProduct = require('../models/product').DailyProduct;
 var ProductSchema = require('./product').ProductSchema;
 
 var mongoose = require('../lib/mongoose'),
@@ -46,7 +45,7 @@ var schema = new Schema({
         default: '2015-06-05'
     },
     dishes:{
-        type: [Schema.Types.String],
+        type: [DishSchema],
         default: []
     },
     currentDishProducts:{
@@ -59,12 +58,7 @@ schema.methods.getCurrentDishes = function(callback){
     var user = this;
     async.waterfall([
         function(cb){
-            async.map(user.dishes, function(dishId, cb){
-                Dish.findById(dishId, cb);
-            }, cb);
-        },
-        function(dishes, cb){
-            async.map(dishes, function(dish, cb){
+            async.map(user.dishes, function(dish, cb){
                 if(!dish)
                     return cb(new Error("Such product doesn't exist"));
                 else
@@ -84,36 +78,22 @@ schema.methods.addDish = function(newDish, callback){
 
     var user = this;
 
-    Dish.addDish(newDish, function(err, d){
-        user.dishes.push(d.id);
-        return callback(err, user);
+    var dish = Dish.clearCreate();
+    dish.setFromRaw(newDish, function(err, dish){
+        if(err)
+            return callback(err);
+        else{
+            user.dishes.push(dish);
+            return callback(null, user);
+        }
     });
 };
 schema.methods.removeDish = function(dishId, callback){
     var user = this;
 
-    var index = user.dishes.indexOf(dishId);
-    if(index < 0)
-        return callback(new Error(user.username + " doesn't have such dish " + dishId));
-    else{
-        async.waterfall([
-            function(cb){
-                Dish.findById(dishId, cb);
-            },
-            function(dish, cb){
-                if(!dish)
-                    return cb(new Error("Dish doesn't exist"));
-                dish.remove(cb);
-            },
-            function(product, cb){
-                user.dishes.splice(index, 1);
-                cb();
-            }
-        ], function(err){
-            if(err) return callback(err);
-            return callback(null, user);
-        });
-    }
+    user.dishes.id(dishId).remove(function(err){
+        return callback(err, user);
+    });
 };
 
 schema.methods.getCurrentDishProducts = function(callback){

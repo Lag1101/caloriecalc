@@ -6,16 +6,27 @@ var async = require('async');
 
 var mongoose = require('../lib/mongoose'),
     Schema = mongoose.Schema;
-var EndDishProduct = require('../models/product').EndDishProduct;
+var Product = require('../models/product').Product;
+var ProductSchema = require('../models/product').ProductSchema;
 
 var schema = new Schema({
     description: {
         type: Schema.Types.String,
         default: ""
     },
-    full: Schema.Types.String,
-    portion: Schema.Types.String
+    contain:{
+        type: [ProductSchema],
+        default: []
+    }
 });
+
+schema.statics.clearCreate = function() {
+    var dish = new Dish();
+    dish.contain.push(new Product());
+    dish.contain.push(new Product());
+
+    return dish;
+};
 
 schema.methods.getRaw = function(cb) {
     var dish = this;
@@ -24,10 +35,10 @@ schema.methods.getRaw = function(cb) {
         function(cb){
             async.parallel({
                 full: function (cb) {
-                    EndDishProduct.findById(dish.full, cb);
+                    cb(null , dish.contain[0]);
                 },
                 portion: function(cb){
-                    EndDishProduct.findById(dish.portion, cb);
+                    cb(null , dish.contain[1]);
                 }
             }, cb)
         },
@@ -45,35 +56,6 @@ schema.methods.getRaw = function(cb) {
     ], cb);
 };
 
-schema.statics.addDish = function(rawDish, cb) {
-    async.parallel({
-        full: function (cb) {
-            EndDishProduct.prepareProduct(rawDish.full);
-            var product = new EndDishProduct(rawDish.full);
-            product.save(function(err){
-                return cb(err, product.id)
-            });
-        },
-        portion: function(cb){
-            EndDishProduct.prepareProduct(rawDish.portion);
-            var product = new EndDishProduct(rawDish.portion);
-            product.save(function(err){
-                return cb(err, product.id)
-            });
-        }
-    }, function(err, ids){
-        if(err)
-            return cb(err);
-
-        var dish = new Dish({
-            full: ids.full,
-            portion: ids.portion,
-            description: rawDish.description
-        });
-        return dish.save(cb);
-    });
-};
-
 schema.methods.setFromRaw = function(newDish, cb) {
     var dish = this;
 
@@ -81,31 +63,15 @@ schema.methods.setFromRaw = function(newDish, cb) {
     dish.description = newDish.description;
     async.waterfall([
         function(cb){
-            async.parallel({
-                full: function (cb) {
-                    EndDishProduct.findById(dish.full, function(err, p){
-                        if(err)
-                            return cb(err);
-                        else if(!p)
-                            return callback(new Error("Product doesn't exist"));
-                        p.setFromRaw(newDish.full);
-                        return p.save(cb);
-                    });
-                },
-                portion: function(cb){
-                    EndDishProduct.findById(dish.portion, function(err, p){
-                        if(err)
-                            return cb(err);
-                        else if(!p)
-                            return callback(new Error("Product doesn't exist"));
-                        p.setFromRaw(newDish.portion);
-                        return p.save(cb);
-                    });
-                }
-            }, cb)
+            Product.prepareProduct(newDish.full);
+            dish.contain[0].setFromRaw(newDish.full);
+
+            Product.prepareProduct(newDish.portion);
+            dish.contain[1].setFromRaw(newDish.portion);
+            return cb();
         },
-        function(fullAndPortion, cb){
-            dish.save(cb);
+        function(cb){
+            return cb(null, dish);
         }
     ], cb);
 };

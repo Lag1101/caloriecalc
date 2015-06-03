@@ -99,6 +99,5 @@ schema.methods.setFromRaw = function(raw) {
 };
 
 exports.Product = mongoose.model('Product', schema);
-exports.EndDishProduct = mongoose.model('EndDishProduct', schema);
 
 exports.ProductSchema = schema;

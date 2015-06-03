@@ -41,14 +41,17 @@ function requireModels(callback) {
     }, callback);
 }
 
-function addProducts(srcList, dstList, cb){
+function addProducts(srcList, user, cb){
     async.each(srcList, function (productData, cb) {
-        Product.prepareProduct(productData);
-        dstList.push(productData);
-        return cb();
+        user.addProduct(productData, cb);
     }, cb);
 }
 
+function addDishProducts(srcList, user, cb){
+    async.each(srcList, function (productData, cb) {
+        user.addDishProduct(productData, cb);
+    }, cb);
+}
 function addDaily(dailyProducts, dstDaily, callback){
     async.each(Object.getOwnPropertyNames(dailyProducts), function (date, cb) {
         if(!date) return cb(new Error('Date field is required!'));
@@ -75,6 +78,13 @@ function addDaily(dailyProducts, dstDaily, callback){
     },callback);
 }
 
+function addDish(srcDishList, user, cb){
+    async.each(srcDishList, function (dishData, cb) {
+        dishData.full = dishData.dish;
+        user.addDish(dishData, cb);
+    }, cb);
+}
+
 function createUsers(callback) {
     var users = [
         {username: 'luckybug', password: '123'}
@@ -89,9 +99,10 @@ function createUsers(callback) {
             },
             function(allProducts, cb){
                 async.parallel([
-                    addProducts.bind(null, allProducts.currentDish.currentDishProducts, user.currentDishProducts),
-                    addProducts.bind(null, allProducts.list, user.products),
-                    addDaily.bind(null, allProducts.dailyProducts, user.daily)
+                    addProducts.bind(null, allProducts.currentDish.currentDishProducts, user),
+                    addDishProducts.bind(null, allProducts.list, user),
+                    addDaily.bind(null, allProducts.dailyProducts, user.daily),
+                    addDish.bind(null, allProducts.dishList, user)
                 ], cb);
             }
         ], function(err){

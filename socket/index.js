@@ -7,7 +7,6 @@ var Product = require('../models/product').Product;
 var Dish = require('../models/dish').Dish;
 var async = require('async');
 var logger = require('../lib/logger');
-var EndDishProduct = require('../models/product').EndDishProduct;
 
 function getCurrentDishes(socket, username){
     async.waterfall([
@@ -22,7 +21,12 @@ function getCurrentDishes(socket, username){
             return cb();
         }
     ], function(err){
-        if(err) logger.error(err);
+        if(err)
+            logger.error(err);
+        else {
+            logger.info('Got dishes');
+            //return getCurrentDishes(socket, username);
+        }
     });
 }
 
@@ -41,8 +45,10 @@ function addDish(socket, username, newDish){
     ], function(err){
         if(err)
             logger.error(err);
-        else
-            getCurrentDishes(socket, username);
+        else {
+            logger.info('Added dish', newDish);
+            return getCurrentDishes(socket, username);
+        }
     });
 
 }
@@ -82,7 +88,12 @@ function getCurrentDishProducts(socket, username){
             return cb();
         }
     ], function(err){
-        if(err) logger.error(err);
+        if(err)
+            logger.error(err);
+        else
+        {
+            logger.info('Got current dish products');
+        }
     });
 }
 
@@ -149,7 +160,34 @@ function setCurrentDate(socket, username, date){
         });
     });
 }
-
+function fixDish(socket, username, fixedDish){
+    if(!fixedDish) return;
+    async.waterfall([
+        function(cb){
+            User.findOne({username: username}, cb);
+        },
+        function(user, cb){
+            var dish = user.dishes.id(fixedDish.id);
+            if(!dish)
+                return cb(new Error("Dish doesn't exist"));
+            else
+                return cb(null, dish, user);
+        },
+        function(dish, user, cb){
+            dish.setFromRaw(fixedDish, function(err){
+                return cb(null, user)
+            });
+        },
+        function(user, cb){
+            user.save(cb);
+        }
+    ],function(err){
+        if(err)
+            logger.error(err);
+        else
+            logger.info('Saved', fixedDish, err);
+    });
+}
 function fixDaily(socket, username, fixedProduct){
     if(!fixedProduct) return;
     async.waterfall([
@@ -235,11 +273,15 @@ function list(socket, username){
         },
         function(rawProducts, cb){
             socket.emit('list', rawProducts);
-            logger.info('Response list');
             cb();
         }
     ],function(err){
-        if(err) logger.error(err);
+        if(err)
+            logger.error(err);
+        else
+        {
+            logger.info('Got list');
+        }
     });
 }
 
@@ -296,7 +338,11 @@ function getDaily(socket, username, date){
             cb();
         }
     ], function(err){
-        if(err) logger.error(err);
+        if(err)
+            logger.error(err);
+        else {
+            logger.info('Got daily', date);
+        }
     });
 
 }
@@ -376,6 +422,6 @@ module.exports = function(server){
             .on('getCurrentDishes',         getCurrentDishes.bind(null, socket, username))
             .on('addDish',                  addDish.bind(null, socket, username))
             .on('removeDish',               removeDish.bind(null, socket, username))
-            //.on('fixDish',                  fixProduct.bind(null, socket, username))
+            .on('fixDish',                  fixDish.bind(null, socket, username))
     });
 };
