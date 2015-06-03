@@ -5,11 +5,9 @@
 var User = require('../models/user').User;
 var Product = require('../models/product').Product;
 var Dish = require('../models/dish').Dish;
-var DishProduct = require('../models/product').DishProduct;
 var async = require('async');
 var logger = require('../lib/logger');
 var EndDishProduct = require('../models/product').EndDishProduct;
-var DailyProduct = require('../models/product').DailyProduct;
 
 function getCurrentDishes(socket, username){
     async.waterfall([
@@ -152,12 +150,12 @@ function setCurrentDate(socket, username, date){
     });
 }
 
-function fixProduct(socket, username, model, fixedProduct){
+function fixProduct(socket, username, fixedProduct){
     if(!fixedProduct) return;
 
     async.waterfall([
         function(cb){
-            model.findById(fixedProduct.id, cb);
+            Product.findById(fixedProduct.id, cb);
         },
         function(product, cb){
             if(!product)
@@ -308,7 +306,7 @@ module.exports = function(server){
             .on('removeProduct',            removeProduct.bind(null, socket, username))
 
             .on('getDaily',                 getDaily.bind(null, socket, username))
-            .on('fixDailyProduct',          fixProduct.bind(null, socket, username, DailyProduct))
+            .on('fixDailyProduct',          fixProduct.bind(null, socket, username))
             .on('removeDailyProduct',       removeDailyProduct.bind(null, socket, username))
             .on('addDailyProduct',          addDailyProduct.bind(null, socket, username))
 
@@ -319,12 +317,12 @@ module.exports = function(server){
             .on('getCurrentDate',           getCurrentDate.bind(null, socket, username))
             .on('setCurrentDate',           setCurrentDate.bind(null, socket, username))
 
-            .on('fixProduct',               fixProduct.bind(null, socket, username, Product))
-            .on('fixDishProduct',           fixProduct.bind(null, socket,  username, DishProduct))
+            .on('fixProduct',               fixProduct.bind(null, socket, username))
+            .on('fixDishProduct',           fixProduct.bind(null, socket,  username))
 
             .on('getCurrentDishes',         getCurrentDishes.bind(null, socket, username))
             .on('addDish',                  addDish.bind(null, socket, username))
             .on('removeDish',               removeDish.bind(null, socket, username))
-            .on('fixDish',                  fixProduct.bind(null, socket, username, Dish))
+            .on('fixDish',                  fixProduct.bind(null, socket, username))
     });
 };

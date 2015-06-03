@@ -37,12 +37,8 @@ var schema = new Schema({
         type: [ProductSchema],
         default: []
     },
-    dailyDates:{
-        type: [Schema.Types.String],
-        default: []
-    },
     daily: {
-        type: [Schema.Types.String],
+        type: [DaySchema],
         default: []
     },
     date:{
@@ -161,29 +157,25 @@ schema.methods.removeDishProduct = function(dishProductId, callback){
 schema.methods.getDailyByDate = function(date, callback){
     var user = this;
 
-    for(var i = 0; i < user.daily.length; i++){
-        var dailyDate = user.dailyDates[i];
-
-        if(dailyDate === user.date) {
-            return Day.findById(user.daily[i], function(err, daily){
-                if(!daily)
-                    return callback(new Error("Daily doesn't exist"));
-                return callback(err, daily);
-
-            });
-        }
-    }
 
     async.waterfall([
         function(cb){
-            return Day.createClear(user.date, cb);
+            for(var i = 0; i < user.daily.length; i++) {
+                var day = user.daily[i];
+                if(day.date === date)
+                    return cb(null, day);
+            }
+            return cb(null, null);
         },
-        function(daily, _,  cb){
-            user.daily.push(daily._id);
-            user.dailyDates.push(user.date);
-            user.save(function(err){
-                return cb(err, daily);
-            })
+        function(day, cb){
+            if(!day) {
+                var newDay = Day.clearCreate(date);
+                user.daily.push(newDay);
+                user.save(function(err){
+                    return cb(err, newDay);
+                });
+            }
+            else return cb(null, day);
         }
     ], callback);
 };
@@ -194,9 +186,6 @@ schema.methods.getRawDailyByDate = function(date, callback){
         function(cb){
             return user.getDailyByDate(user.date, cb);
         },
-        //function(daily, cb){
-        //    return Day.findById(dailyId, cb);
-        //},
         function(daily, cb){
             return daily.getRaw(cb);
         }
@@ -211,9 +200,6 @@ schema.methods.newDailyItem = function(date, newDailyItem, callback){
         },
         function(daily, cb){
             daily.addProduct(newDailyItem, cb);
-        },
-        function(daily, cb){
-            return daily.save(cb);
         }
     ], function(err, daily){
         if(err)
@@ -229,25 +215,7 @@ schema.methods.removeDailyItem = function(date, dailyItemId, callback){
             user.getDailyByDate(user.date, cb);
         },
         function(daily, cb){
-            var index = daily.additional.indexOf(dailyItemId);
-            if(index < 0)
-                return callback(new Error(user.username + " doesn't have such product in daily " + dailyItemId));
-            else{
-                async.waterfall([
-                    function(cb){
-                        DailyProduct.findById(dailyItemId, cb);
-                    },
-                    function(product, cb){
-                        if(!product)
-                            return cb(new Error("Item already doesn't exit"));
-                        product.remove(cb);
-                    },
-                    function(product, cb){
-                        daily.additional.splice(index, 1);
-                        daily.save(cb);
-                    }
-                ], cb);
-            }
+            daily.removeProduct(dailyItemId, cb);
         }
     ], function(err, daily){
         if(err)
