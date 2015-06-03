@@ -111,7 +111,7 @@
     responseDishList();
 
     function responseDishList(){
-        socket.emit('getDishList');
+        socket.emit('getCurrentDishes');
     }
     function responseDishProductList(){
         socket.emit('getCurrentDishProducts');
