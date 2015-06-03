@@ -10,6 +10,7 @@ var DishProduct = require('./product').DishProduct;
 var Day = require('./day').Day;
 var DaySchema = require('./day').DaySchema;
 var DailyProduct = require('../models/product').DailyProduct;
+var ProductSchema = require('./product').ProductSchema;
 
 var mongoose = require('../lib/mongoose'),
     Schema = mongoose.Schema;
@@ -33,7 +34,7 @@ var schema = new Schema({
         default: Date.now
     },
     products: {
-        type: [Schema.Types.String],
+        type: [ProductSchema],
         default: []
     },
     dailyDates:{
@@ -46,14 +47,14 @@ var schema = new Schema({
     },
     date:{
         type: Schema.Types.String,
-        default: ""
+        default: '2015-06-05'
     },
     dishes:{
         type: [Schema.Types.String],
         default: []
     },
     currentDishProducts:{
-        type: [Schema.Types.String],
+        type: [ProductSchema],
         default: []
     }
 });
@@ -121,21 +122,9 @@ schema.methods.removeDish = function(dishId, callback){
 
 schema.methods.getCurrentDishProducts = function(callback){
     var user = this;
-    async.waterfall([
-        function(cb){
-            async.map(user.currentDishProducts, function(productId, cb){
-                DishProduct.findById(productId, cb);
-            }, cb);
-        },
-        function(products, cb){
-            async.map(products, function(product, cb){
-                if(!product)
-                    return cb(new Error("Such product doesn't exist"));
-                else
-                    return cb(null, product.getRaw());
-            }, cb);
-        }
-    ], callback);
+    async.mapSeries(user.currentDishProducts, function(product, cb){
+        return cb(null, product.getRaw());
+    }, callback);
 };
 
 schema.methods.addDishProduct = function(newDishProductId, callback){
@@ -145,61 +134,29 @@ schema.methods.addDishProduct = function(newDishProductId, callback){
 
     async.waterfall([
         function(cb){
-            Product.findById(newDishProductId, cb);
-        },
-        function(product, cb){
+            var product = user.products.id(newDishProductId);
             if(!product)
-                return cb(new Error("Product doesn't exist"));
+                return cb(new Error(newDishProductId, "product doesn't exist"));
             return cb(null, product.getRaw());
+        },
+        function(rawNewProduct, cb){
+            user.currentDishProducts.push(rawNewProduct);
+            return cb();
         }
-    ],function(err, rawNewProduct){
-        if(err) return callback(err);
-
-        var product = new DishProduct(rawNewProduct);
-        return product.save(function(err){
-            user.currentDishProducts.push(product.id);
+    ],function(err){
+        if(err)
+            return callback(err);
+        else
             return callback(err, user);
-        });
     });
 };
 schema.methods.removeDishProduct = function(dishProductId, callback){
     var user = this;
 
-    var index = user.currentDishProducts.indexOf(dishProductId);
-    if(index < 0)
-        return callback(new Error(user.username + " doesn't have such product " + dishProductId));
-    else{
-        async.waterfall([
-            function(cb){
-                DishProduct.findById(dishProductId, cb);
-            },
-            function(product, cb){
-                if(!product)
-                    return cb(new Error("Product doesn't exist"));
-                product.remove(cb);
-            },
-            function(product, cb){
-                user.currentDishProducts.splice(index, 1);
-                cb();
-            }
-        ], function(err){
-            if(err) return callback(err);
-            return callback(null, user);
-        });
-    }
-};
-schema.methods.gerRawProductList = function(callback){
-    var user = this;
-    async.map(user.products, function(productId, cb){
-        Product.findById(productId, function(err, product){
-            if(err)
-                return cb(err);
-            else if(!product)
-                    return cb(new Error("Product doesn't exist"));
-            else
-                return cb(null, product.getRaw());
-        });
-    }, callback);
+
+    user.currentDishProducts.id(dishProductId).remove(function(err){
+        return callback(err, user);
+    });
 };
 schema.methods.getDailyByDate = function(date, callback){
     var user = this;
@@ -245,7 +202,6 @@ schema.methods.getRawDailyByDate = function(date, callback){
         }
     ], callback);
 };
-
 schema.methods.newDailyItem = function(date, newDailyItem, callback){
     var user = this;
     delete newDailyItem.id;
@@ -266,7 +222,6 @@ schema.methods.newDailyItem = function(date, newDailyItem, callback){
         return callback(err, user);
     });
 };
-
 schema.methods.removeDailyItem = function(date, dailyItemId, callback){
     var user = this;
     async.waterfall([
@@ -301,43 +256,28 @@ schema.methods.removeDailyItem = function(date, dailyItemId, callback){
         return callback(err, user);
     });
 };
-
-schema.methods.addProduct = function(newProduct, callback){
+schema.methods.gerRawProductList = function(callback){
     var user = this;
-    delete newProduct.id;
-    var product = new Product(newProduct);
-    return product.save(function(err){
-        if(!err)
-            user.products.push(product.id);
-        return callback(err, user);
-    });
+    async.mapSeries(user.products, function(product, cb){
+        return cb(null, product.getRaw());
+    }, callback);
+};
+schema.methods.addProduct = function(newProduct, callback){
+    if(!newProduct) return;
+
+
+    var user = this;
+    Product.prepareProduct(newProduct);
+    user.products.push(newProduct);
+    return callback(null, user);
 };
 
 schema.methods.removeProduct = function(productId, callback){
     var user = this;
 
-    var index = user.products.indexOf(productId);
-    if(index < 0)
-        return callback(new Error(user.username + " doesn't have such product " + productId));
-    else{
-        async.waterfall([
-            function(cb){
-                Product.findById(productId, cb);
-            },
-            function(product, cb){
-                if(!product)
-                    return cb(new Error("pRoduct doesn't exist"));
-                product.remove(cb);
-            },
-            function(product, cb){
-                user.products.splice(index, 1);
-                cb();
-            }
-        ], function(err){
-            if(err) return callback(err);
-            return callback(null, user);
-        });
-    }
+    user.products.id(productId).remove(function(err){
+        return callback(err, user);
+    });
 };
 
 schema.methods.encryptPassword = function(password) {

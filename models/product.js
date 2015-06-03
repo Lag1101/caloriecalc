@@ -76,6 +76,7 @@ schema.statics.numericFields = [
 schema.statics.prepareProduct = function(product){
     var Product = this;
 
+    delete product.id;
     Product.numericFields.map(function(field){
         var val = product[field];
         if( typeof val == "string" ){
@@ -99,7 +100,6 @@ schema.methods.setFromRaw = function(raw) {
 
 exports.Product = mongoose.model('Product', schema);
 exports.DailyProduct = mongoose.model('DailyProduct', schema);
-exports.DishProduct = mongoose.model('DishProduct', schema);
 exports.EndDishProduct = mongoose.model('EndDishProduct', schema);
 
 exports.ProductSchema = schema;

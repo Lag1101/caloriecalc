@@ -9,13 +9,7 @@ var Product  = require('../models/product').Product;
 var Day  = require('../models/day').Day;
 var DishProduct  = require('../models/product').DishProduct;
 var Dish  = require('../models/dish').Dish;
-
-require('./clearDb');
-require('./createDbProducts');
-require('./createDbDishProducts');
-require('./createDbEndDishProducts');
-require('./createDbDaily');
-
+var exProducts = require('../products').products;
 
 async.series([
     open,
@@ -26,9 +20,8 @@ async.series([
     if(err)
         logger.error(err);
     else
-        logger.log('db created')
+        logger.info('db created')
     mongoose.disconnect();
-    process.exit(err ? 255 : 0);
 });
 
 function open(callback) {
@@ -48,86 +41,36 @@ function requireModels(callback) {
     }, callback);
 }
 
+function addProducts(srcList, dstList, cb){
+    async.each(srcList, function (productData, cb) {
+        Product.prepareProduct(productData);
+        dstList.push(productData);
+        return cb();
+    }, cb);
+}
+
 function createUsers(callback) {
     var users = [
         {username: 'luckybug', password: '123'}
     ];
 
-    async.waterfall([
-        function(cb){
-            async.parallel({
-                products: function(cb){
-                    Product.find(function (err, product) {
-                        return cb(null, product);
-                    });
-                },
-                days: function (cb) {
-                    Day.find(function (err, day) {
-                        return cb(null, day);
-                    });
-                },
-                dishProducts: function (cb) {
-                    DishProduct.find(function (err, product) {
-                        return cb(null, product);
-                    });
-                },
-                dishes: function (cb) {
-                    Dish.find(function (err, dish) {
-                        return cb(null, dish);
-                    });
-                }
+    async.each(users, function(rawUser, cb){
+        var user = new mongoose.models.User(rawUser);
+
+        async.waterfall([
+            function(cb){
+                exProducts.load(cb);
             },
-            function(err, res){
-                cb(err, res)
-            })
-        },
-        function(res, cb){
-            async.parallel({
-                    products: function(cb){
-                        async.map(res.products, function (product, cb) {
-                            cb(null, product.id);
-                        }, function(err, ids){
-                            cb(null, ids);
-                        })
-                    },
-                    days: function (cb) {
-                        async.map(res.days, function (day, cb) {
-                            cb(null, day);
-                        }, function(err, ids){
-                            cb(null, ids);
-                        })
-                    },
-                    dishProducts: function(cb){
-                        async.map(res.dishProducts, function (product, cb) {
-                            cb(null, product.id);
-                        }, function(err, ids){
-                            cb(null, ids);
-                        })
-                    },
-                    dishes: function(cb){
-                        async.map(res.dishes, function (dish, cb) {
-                            cb(null, dish.id);
-                        }, function(err, ids){
-                            cb(null, ids);
-                        })
-                    }
-                },
-                function(err, res){
-                    cb(err, res)
-                })
-        },
-        function(resultIds, cb){
-            async.each(users, function(userData){
-                var user = new mongoose.models.User({
-                    username: userData.username,
-                    password: userData.password,
-                    products: resultIds.products,
-                    daily: resultIds.days,
-                    currentDishProducts: resultIds.dishProducts,
-                    dishes: resultIds.dishes
-                });
-                user.save(cb);
-            }, cb);
-        }
-    ], callback);
+            function(allProducts, cb){
+                async.parallel([
+                    addProducts.bind(null, allProducts.currentDish.currentDishProducts, user.currentDishProducts),
+                    addProducts.bind(null, allProducts.list, user.products)
+                ], cb);
+            }
+        ], function(err){
+            if(err) return cb(err);
+            else return user.save(cb);
+        });
+
+    }, callback);
 }

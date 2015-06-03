@@ -98,14 +98,16 @@ function newDishProduct(socket, username, newDishProductId){
         },
         function(user, cb){
             user.save(cb);
+        },
+        function(user, n, cb){
+            getCurrentDishProducts(socket, username);
+            return cb();
         }
     ], function(err){
         if(err)
             logger.error(err);
-        else {
+        else
             logger.info('Copied dishProduct', newDishProductId);
-            getCurrentDishProducts(socket, username);
-        }
     });
 
 }
