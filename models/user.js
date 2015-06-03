@@ -131,8 +131,10 @@ schema.methods.addDishProduct = function(newDishProductId, callback){
 schema.methods.removeDishProduct = function(dishProductId, callback){
     var user = this;
 
-
-    user.currentDishProducts.id(dishProductId).remove(function(err){
+    var p = user.currentDishProducts.id(dishProductId);
+    if(!p)
+        return callback(new Error("Already removed"));
+    p.remove(function(err){
         return callback(err, user);
     });
 };
