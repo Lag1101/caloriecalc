@@ -263,7 +263,7 @@ function newProduct(socket, user, newProduct){
         }
     });
 }
-function removeProduct(socket, id, user){
+function removeProduct(socket, user, id){
     async.waterfall([
         function(cb){
             user.removeProduct(id, cb);
