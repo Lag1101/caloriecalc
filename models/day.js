@@ -101,8 +101,12 @@ schema.methods.addProduct = function(newProduct, cb){
 
 schema.methods.removeProduct = function(id, cb){
     var day = this;
-    day.additional.id(id).remove(function(err){
-        return cb(err, day);
+
+    var d = day.additional.id(id)
+    if(!d)
+        return callback(new Error("Already removed"));
+    d.remove(function(err){
+        return callback(err, day);
     });
 };
 

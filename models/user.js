@@ -90,8 +90,10 @@ schema.methods.addDish = function(newDish, callback){
 };
 schema.methods.removeDish = function(dishId, callback){
     var user = this;
-
-    user.dishes.id(dishId).remove(function(err){
+    var d = user.dishes.id(dishId);
+    if(!d)
+        return callback(new Error("Already removed"));
+    d.remove(function(err){
         return callback(err, user);
     });
 };
@@ -223,7 +225,10 @@ schema.methods.addProduct = function(newProduct, callback){
 schema.methods.removeProduct = function(productId, callback){
     var user = this;
 
-    user.products.id(productId).remove(function(err){
+    var p = user.products.id(productId);
+    if(!p)
+        return callback(new Error("Already removed"));
+    p.remove(function(err){
         return callback(err, user);
     });
 };
