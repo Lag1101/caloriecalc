@@ -22,6 +22,8 @@ var schema = new Schema({
         default: []
     }
 });
+schema.set('redisCache', true);
+schema.set('expires', 60*30);
 
 schema.statics.fields = [
     'breakfast',
@@ -47,33 +49,6 @@ schema.statics.clearCreate = function(date){
         day.main.push(new Product());
 
     return day;
-};
-schema.methods.getRaw = function(callback) {
-    var day = this;
-
-    var raw = {
-        date: day.date,
-        additional: [],
-        id: day._id.toString()
-    };
-    async.parallel([
-        function(cb){
-            async.forEachOf(Day.fields, function(field, index, cb){
-                raw[Day.fields[index]] = day.main[index].getRaw();
-                return cb();
-            },cb);
-        },
-        function(cb){
-            async.mapSeries(day.additional, function(product, cb){
-                raw.additional.push(product.getRaw());
-                return cb();
-            },cb);
-        }
-    ], function(err){
-        if(err) return callback(err);
-
-        return callback(null, raw);
-    });
 };
 
 schema.methods.fixProduct = function(newProduct, cb){
@@ -104,7 +79,7 @@ schema.methods.removeProduct = function(id, cb){
 
     var d = day.additional.id(id)
     if(!d)
-        return cb(new Error("Already removed"));
+        return cb(new Error(id + " already removed"));
     d.remove(function(err){
         return cb(err, day);
     });

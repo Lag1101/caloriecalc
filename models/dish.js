@@ -19,6 +19,8 @@ var schema = new Schema({
         default: []
     }
 });
+schema.set('redisCache', true);
+schema.set('expires', 60*30);
 
 schema.statics.clearCreate = function() {
     var dish = new Dish();
@@ -26,34 +28,6 @@ schema.statics.clearCreate = function() {
     dish.contain.push(new Product());
 
     return dish;
-};
-
-schema.methods.getRaw = function(cb) {
-    var dish = this;
-
-    async.waterfall([
-        function(cb){
-            async.parallel({
-                full: function (cb) {
-                    cb(null , dish.contain[0]);
-                },
-                portion: function(cb){
-                    cb(null , dish.contain[1]);
-                }
-            }, cb)
-        },
-        function(fullAndPortion, cb){
-            if(!fullAndPortion.full || !fullAndPortion.portion)
-                return cb(new Error("Product doesn't exist"));
-
-            return cb(null, {
-                id:     dish._id.toString(),
-                description: dish.description,
-                full:   fullAndPortion.full.getRaw(),
-                portion:   fullAndPortion.portion.getRaw()
-            });
-        }
-    ], cb);
 };
 
 schema.methods.setFromRaw = function(newDish, cb) {

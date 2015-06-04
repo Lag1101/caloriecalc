@@ -37,10 +37,17 @@ var schema = new Schema({
         default: 0.0
     }
 });
+schema.set('redisCache', true);
+schema.set('expires', 60*30);
+
+
+schema.virtual('id')
+    .get(function() { return this._id; });
+
 
 schema.methods.getRaw = function() {
     return {
-        id:             this._id.toString(),
+        //_id:             this._id.toString(),
         description:    this.description,
         details:        this.details,
         proteins:       this.proteins,

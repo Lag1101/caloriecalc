@@ -53,24 +53,13 @@ var schema = new Schema({
         default: []
     }
 });
+schema.set('redisCache', true);
+schema.set('expires', 60*30);
 
 schema.methods.getCurrentDishes = function(callback){
     var user = this;
-    async.waterfall([
-        function(cb){
-            async.map(user.dishes, function(dish, cb){
-                if(!dish)
-                    return cb(new Error("Such product doesn't exist"));
-                else
-                    return dish.getRaw(cb)
-            }, cb);
-        }
-    ], function(err, rawDishes){
-        if(err)
-            return callback(err);
 
-        return callback(null, rawDishes);
-    });
+    return callback(null, user.dishes);
 };
 
 schema.methods.addDish = function(newDish, callback){
@@ -100,9 +89,10 @@ schema.methods.removeDish = function(dishId, callback){
 
 schema.methods.getCurrentDishProducts = function(callback){
     var user = this;
-    async.mapSeries(user.currentDishProducts, function(product, cb){
-        return cb(null, product.getRaw());
-    }, callback);
+    return callback(null, user.currentDishProducts);
+    //async.mapSeries(user.currentDishProducts, function(product, cb){
+    //    return cb(null, product.getRaw());
+    //}, callback);
 };
 
 schema.methods.addDishProduct = function(newDishProductId, callback){
@@ -118,6 +108,7 @@ schema.methods.addDishProduct = function(newDishProductId, callback){
             return cb(null, product.getRaw());
         },
         function(rawNewProduct, cb){
+            delete rawNewProduct._id;
             user.currentDishProducts.push(rawNewProduct);
             return cb();
         }
@@ -133,7 +124,7 @@ schema.methods.removeDishProduct = function(dishProductId, callback){
 
     var p = user.currentDishProducts.id(dishProductId);
     if(!p)
-        return callback(new Error("Already removed"));
+        return callback(new Error(dishProductId, "already removed"));
     p.remove(function(err){
         return callback(err, user);
     });
@@ -171,7 +162,7 @@ schema.methods.getRawDailyByDate = function(date, callback){
             return user.getDailyByDate(user.date, cb);
         },
         function(daily, cb){
-            return daily.getRaw(cb);
+            return cb(null, daily);
         }
     ], callback);
 };
@@ -210,9 +201,10 @@ schema.methods.removeDailyItem = function(date, dailyItemId, callback){
 };
 schema.methods.gerRawProductList = function(callback){
     var user = this;
-    async.mapSeries(user.products, function(product, cb){
-        return cb(null, product.getRaw());
-    }, callback);
+    return callback(null, user.products);
+    //async.mapSeries(user.products, function(product, cb){
+    //    return cb(null, product.getRaw());
+    //}, callback);
 };
 schema.methods.addProduct = function(newProduct, callback){
     if(!newProduct) return callback(new Error('Empty product'));;

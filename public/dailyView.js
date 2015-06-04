@@ -22,7 +22,11 @@
         max: $('.maximum')
     };
 
-    Product.emptyProduct.writeEl(daily.find('.newItem'));
+    newItem.find('input').off('input paste').on('input paste', function(){
+        $(this).val( utils.validate( $(this).val() ) );
+        reCalcDaily();
+    });
+    Product.emptyProduct.writeEl(newItem);
     updateLinks();
 
     daily.find('.addButton').click(function(){
@@ -95,20 +99,26 @@
         checkNorm();
     }
 
-    function clearDaily(){
-        Product.emptyProduct.writeEl(daily.find('.breakfast'));
-        Product.emptyProduct.writeEl(daily.find('.firstLunch'));
-        Product.emptyProduct.writeEl(daily.find('.secondLunch'));
-        Product.emptyProduct.writeEl(daily.find('.thirdLunch'));
-        Product.emptyProduct.writeEl(daily.find('.dinner'));
-        Product.emptyProduct.writeEl(daily.find('.secondDinner'));
+    function clearDaily(cb){
 
-        daily.find('.additionalProduct').each(function(){
-            $(this).empty();
-            $(this).detach();
+        async.parallel([
+            function(cb){
+                async.eachSeries(Day.fields, function (field, cb) {
+                    Product.emptyProduct.writeEl(daily.find('.'+field));
+                    return cb();
+                }, cb);
+            },
+            function(cb){
+                daily.find('.additionalProduct').each(function(){
+                    $(this).empty();
+                    $(this).detach();
+                });
+                return cb();
+            }
+        ], function(err){
+            updateLinks();
+            return cb && cb(err);
         });
-
-        updateLinks();
     }
 
 
@@ -119,32 +129,16 @@
         links.calorie = daily.find('.calorie:not(.notCalc)');
     }
 
-    function restoreDaily(dailyProducts, cb){
+    function restoreDaily(newDay, cb){
+
+        var dailyProducts = new Day(newDay);
 
         async.parallel([
-            function(cb){
-                restoreDailyItem(daily.find('.breakfast'), dailyProducts.breakfast);
-                return cb();
-            },
-            function(cb){
-                restoreDailyItem(daily.find('.firstLunch'), dailyProducts.firstLunch);
-                return cb();
-            },
-            function(cb){
-                restoreDailyItem(daily.find('.secondLunch'), dailyProducts.secondLunch);
-                return cb();
-            },
-            function(cb){
-                restoreDailyItem(daily.find('.thirdLunch'), dailyProducts.thirdLunch);
-                return cb();
-            },
-            function(cb){
-                restoreDailyItem(daily.find('.dinner'), dailyProducts.dinner);
-                return cb();
-            },
-            function(cb){
-                restoreDailyItem(daily.find('.secondDinner'), dailyProducts.secondDinner);
-                return cb();
+            function(cb) {
+                async.eachSeries(Day.fields, function (field, cb) {
+                    restoreDailyItem(daily.find('.'+field), dailyProducts[field]);
+                    return cb();
+                }, cb)
             },
             function(cb){
                 async.eachSeries(dailyProducts.additional, function(additional, cb){
@@ -170,15 +164,17 @@
 
     socket.on('getDaily', function (data) {
         if(data){
-            clearDaily();
-            restoreDaily(data, function(err){
-                if(err)
-                    console.error(err);
-                else{
-                    updateLinks();
-                    reCalcDaily();
-                }
+            clearDaily(function(){
+                restoreDaily(data, function(err){
+                    if(err)
+                        console.error(err);
+                    else{
+                        updateLinks();
+                        reCalcDaily();
+                    }
+                });
             });
+
         }
     });
     function responseDaily(date) {
@@ -209,12 +205,12 @@
             //saveDaily();
         });
 
-        el.find('input').off('input paste').on('input paste', function(){
-            $(this).val( utils.validate( $(this).val() ) );
+        el.find('.description .details').off('input paste').on('input paste', function(){
             reCalcDaily();
             fixProduct(el, product);
         });
         el.find('.item').off('input paste').on('input paste', function(){
+            $(this).val( utils.validate( $(this).val() ) );
             reCalcDaily();
             fixProduct(el, product);
         });
@@ -226,24 +222,19 @@
 
         var products = {
             date: date,
-            breakfast: createDailyItem(daily.find('.breakfast')),
-            firstLunch: createDailyItem(daily.find('.firstLunch')),
-            secondLunch: createDailyItem(daily.find('.secondLunch')),
-            thirdLunch: createDailyItem(daily.find('.thirdLunch')),
-            dinner: createDailyItem(daily.find('.dinner')),
-            secondDinner: createDailyItem(daily.find('.secondDinner')),
+            main:[
+                createDailyItem(daily.find('.breakfast')),
+                createDailyItem(daily.find('.firstLunch')),
+                createDailyItem(daily.find('.secondLunch')),
+                createDailyItem(daily.find('.thirdLunch')),
+                createDailyItem(daily.find('.dinner')),
+                createDailyItem(daily.find('.secondDinner'))
+            ],
             additional: []
         };
 
         daily.find('.additionalProduct').each(function(){
             products.additional.push(createDailyItem($(this)));
         });
-
-        //clearTimeout(timeOutToSendChanges);
-        //changeBusyState(false);
-        //timeOutToSendChanges = setTimeout(function(){
-        //    socket.emit('setDaily', products);
-        //    changeBusyState(false);
-        //}, msToSendChanges);
     }
 })(socket);

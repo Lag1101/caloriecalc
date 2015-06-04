@@ -124,13 +124,6 @@
         utils.confirmDialog(
             "Вы уверены, что хотите удалить " + product.description + " ?",
             function(){
-                view.detach();
-
-                var i = products.indexOf(product);
-
-                if(i >= 0)
-                    products.splice(i, 1);
-
                 socket.emit('removeProduct', product.id);
             }
         );
@@ -156,8 +149,9 @@
             .append($('<input>').addClass('mass'))
             .addClass('portion inline-block');
 
-        return function(dish, cb){
+        return function(newDish, cb){
 
+            var dish = new Dish(newDish);
             var fullViewClone = fullViewTemp.clone();
             var portionViewClone = portionViewTemp.clone();
             new Product(dish.full).writeEl(fullViewClone);
@@ -261,9 +255,6 @@
         product.writeEl(productView);
         productView.find('.remove').click(function(){
             productView.detach();
-            var i = currentDishProducts.indexOf(product);
-            if(i >= 0)
-                currentDishProducts.splice(i, 1);
             reCalc();
             socket.emit('removeDishProduct', product.id);
         });

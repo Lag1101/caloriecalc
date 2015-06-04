@@ -9,7 +9,7 @@ var Product = (function(){
 
     Product.prototype.constr = function(product) {
         product = product || {};
-        this.id =  (product.id ||  this.id) || '';
+        this.id =  (product.id || product._id ||  this.id) || '';
         this.description =  (product.description ||  this.description) || '';
         this.details =      (product.details ||      this.details)  || '';
         this.proteins =     (Product.validate(product.proteins) ||     this.proteins)  || 0;

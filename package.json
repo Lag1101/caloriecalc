@@ -23,6 +23,7 @@
     "intel": "*",
     "mongoose": "4.0.1",
     "async": "*",
-    "node-minify": "*"
+    "node-minify": "*",
+    "mongoose-redis-cache": "*"
   }
 }

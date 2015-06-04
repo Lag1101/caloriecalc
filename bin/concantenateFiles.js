@@ -46,6 +46,8 @@ new compressor.minify({
     fileIn: [
         './public/socket.js',
         './public/product.js',
+        './public/dish.js',
+        './public/day.js',
         './public/utils.js',
         './public/dailyView.js',
         './public/products.js'
