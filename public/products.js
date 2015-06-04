@@ -126,6 +126,11 @@
             function(){
                 view.detach();
 
+                var i = products.indexOf(product);
+
+                if(i >= 0)
+                    products.splice(i, 1);
+
                 socket.emit('removeProduct', product.id);
             }
         );
@@ -174,6 +179,7 @@
                         "Вы уверены, что хотите удалить " + dishView.find('.description').html() + " ?",
                         function(){
                             socket.emit('removeDish', dish.id);
+                            dishView.detach();
                         }
                     );
                 });
@@ -255,9 +261,11 @@
         product.writeEl(productView);
         productView.find('.remove').click(function(){
             productView.detach();
-            reCalc(function(){
-                socket.emit('removeDishProduct', product.id);
-            });
+            var i = currentDishProducts.indexOf(product);
+            if(i >= 0)
+                currentDishProducts.splice(i, 1);
+            reCalc();
+            socket.emit('removeDishProduct', product.id);
         });
 
         productView.appendTo(currentDishProductsView);

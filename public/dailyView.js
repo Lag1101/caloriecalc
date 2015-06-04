@@ -205,6 +205,7 @@
         el.find('.remove').off('click').click(function(){
             el.detach();
             socket.emit('removeDailyProduct', product.id);
+            reCalcDaily();
             //saveDaily();
         });
 

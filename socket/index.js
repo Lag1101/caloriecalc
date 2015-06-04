@@ -61,7 +61,6 @@ function removeDish(socket, user, id){
             logger.error(err);
         else {
             logger.info('Removed dish', id);
-            return getCurrentDishes(socket, user);
         }
     });
 }
@@ -92,16 +91,15 @@ function newDishProduct(socket, user, newDishProductId){
         },
         function(user, cb){
             user.save(cb);
-        },
-        function(user, n, cb){
-            getCurrentDishProducts(socket, user);
-            return cb();
         }
     ], function(err){
         if(err)
             logger.error(err);
-        else
+        else {
             logger.info('Copied dishProduct', newDishProductId);
+            getCurrentDishes(socket, user);
+        }
+
     });
 
 }
@@ -119,7 +117,6 @@ function removeDishProduct(socket, user, id){
             logger.error(err);
         else {
             logger.info('Removed product', id);
-            return getCurrentDishProducts(socket, user);
         }
     });
 }
@@ -129,7 +126,10 @@ function getCurrentDate(socket, user){
 }
 
 function setCurrentDate(socket, user, date){
-    if(err) logger.error(err);
+    if(!date) {
+        logger.error('Empty date');
+        return;
+    }
 
     user.date = date;
     user.save(function(){
@@ -276,7 +276,6 @@ function removeProduct(socket, user, id){
             logger.error(err);
         else {
             logger.info('Removed product', id);
-            return list(socket, user);
         }
     });
 }
@@ -311,7 +310,6 @@ function removeDailyProduct(socket, user, dailyItemId){
             logger.error(err);
         else {
             logger.info('Removed daily product', dailyItemId);
-            return getDaily(socket, user, user.date);
         }
     });
 }
