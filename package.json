@@ -24,6 +24,7 @@
     "mongoose": "4.0.1",
     "async": "*",
     "node-minify": "*",
-    "mongoose-redis-cache": "*"
+    "mongoose-redis-cache": "*",
+    "compression": "*"
   }
 }
