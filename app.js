@@ -6,13 +6,14 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var compression = require('compression');
 var config = require('./config');
+var session = require('express-session');
 
 var app = express();
 
 var options = {
-  setHeaders: function (res, path, stat) {
-    res.setHeader('Cache-Control', 'public, max-age=' + config.get('cacheExpireTimeSecs'));
-  }
+  //setHeaders: function (res, path, stat) {
+  //  res.setHeader('Cache-Control', 'public, max-age=' + config.get('cacheExpireTimeSecs'));
+  //}
 };
 
 // view engine setup
@@ -27,9 +28,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public'), options));
+app.use(session({
+    secret: config.get('session:secret'),
+    resave: false,
+    saveUninitialized: true,
+    //cookie: { secure: true },
+    store: new session.MemoryStore()
+}));
 app.use(compression());
 
 require('./routes')(app);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

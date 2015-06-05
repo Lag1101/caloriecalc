@@ -25,6 +25,7 @@
     "async": "*",
     "node-minify": "*",
     "mongoose-redis-cache": "*",
-    "compression": "*"
+    "compression": "*",
+    "express-session": "*"
   }
 }
