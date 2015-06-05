@@ -103,16 +103,13 @@
 
         async.parallel([
             function(cb){
-                async.eachSeries(Day.fields, function (field, cb) {
+                async.each(Day.fields, function (field, cb) {
                     Product.emptyProduct.writeEl(daily.find('.'+field));
                     return cb();
                 }, cb);
             },
             function(cb){
-                daily.find('.additionalProduct').each(function(){
-                    $(this).empty();
-                    $(this).detach();
-                });
+                daily.find('.additionalProduct').detach();
                 return cb();
             }
         ], function(err){
@@ -135,13 +132,13 @@
 
         async.parallel([
             function(cb) {
-                async.eachSeries(Day.fields, function (field, cb) {
+                async.each(Day.fields, function (field, cb) {
                     restoreDailyItem(daily.find('.'+field), dailyProducts[field]);
                     return cb();
                 }, cb)
             },
             function(cb){
-                async.eachSeries(dailyProducts.additional, function(additional, cb){
+                dailyProducts.additional.map(function(additional){
                     var clone = newItem.clone();
                     clone.removeClass('newItem').addClass('additionalProduct');
                     clone.find('.addButton')
@@ -151,8 +148,8 @@
                         .text('-');
                     newItem.before(clone);
                     restoreDailyItem(clone, additional);
-                    return cb();
-                }, cb);
+                });
+                return cb();
             }
         ], function(err){
             if(err)

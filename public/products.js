@@ -422,7 +422,7 @@
             },
             function(reorderProducts, cb){
                 productsList.empty();
-                async.eachSeries(reorderProducts, function(product, cb){
+                reorderProducts.map(function(product){
                     var productView = productViewTemp.clone();
 
                     var root = $('<div>').append(productView);
@@ -439,8 +439,8 @@
 
                     productsList.append(root).trigger('append');
 
-                    return cb();
-                }, cb);
+                });
+                return cb();
             }
         ], function(err){
             if(err)
