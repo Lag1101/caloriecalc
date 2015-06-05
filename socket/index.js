@@ -32,9 +32,6 @@ function addDish(socket, user, newDish){
     async.waterfall([
         function(cb){
             user.addDish(newDish, cb);
-        },
-        function(user, cb){
-            user.save(cb);
         }
     ], function(err){
         if(err)
@@ -52,9 +49,6 @@ function removeDish(socket, user, id){
     async.waterfall([
         function(cb){
             user.removeDish(id, cb);
-        },
-        function(user, cb){
-            user.save(cb);
         }
     ], function(err){
         if(err)
@@ -88,9 +82,6 @@ function newDishProduct(socket, user, newDishProductId){
     async.waterfall([
         function(cb){
             user.addDishProduct(newDishProductId, cb);
-        },
-        function(user, cb){
-            user.save(cb);
         }
     ], function(err){
         if(err)
@@ -108,9 +99,6 @@ function removeDishProduct(socket, user, id){
     async.waterfall([
         function(cb){
             user.removeDishProduct(id, cb);
-        },
-        function(user, cb){
-            user.save(cb);
         }
     ], function(err){
         if(err)
@@ -135,9 +123,7 @@ function setCurrentDate(socket, user, date){
 
     user.date = date;
     logger.info('set date', date);
-    user.save(function(){
-        getDaily(socket, user, user.date);
-    });
+    getDaily(socket, user, user.date);
 }
 function fixDish(socket, user, fixedDish){
     if(!fixedDish) return;
@@ -147,15 +133,10 @@ function fixDish(socket, user, fixedDish){
             if(!dish)
                 return cb(new Error("Dish doesn't exist"));
             else
-                return cb(null, dish, user);
+                return cb(null, dish);
         },
-        function(dish, user, cb){
-            dish.setFromRaw(fixedDish, function(err){
-                return cb(null, user)
-            });
-        },
-        function(user, cb){
-            user.save(cb);
+        function(dish, cb){
+            dish.setFromRaw(fixedDish, cb);
         }
     ],function(err){
         if(err)
@@ -175,12 +156,7 @@ function fixDaily(socket, user, fixedProduct){
         function(daily, user, cb){
             if(!daily)
                 return cb(new Error("Daily doesn't exist"));
-            daily.fixProduct(fixedProduct, function(err){
-                return cb(null, user)
-            });
-        },
-        function(user, cb){
-            user.save(cb);
+            daily.fixProduct(fixedProduct, cb);
         }
     ],function(err){
         if(err)
@@ -194,13 +170,12 @@ function fixDishProduct(socket, user, fixedProduct){
     async.waterfall([
         function(cb){
             var product = user.currentDishProducts.id(fixedProduct.id);
-            return cb(null, product, user)
+            return cb(null, product)
         },
-        function(product, user, cb){
+        function(product, cb){
             if(!product)
                 return cb(new Error("Product doesn't exist"));
             product.setFromRaw(fixedProduct);
-            user.save(cb);
         }
     ],function(err){
         if(err)
@@ -214,13 +189,13 @@ function fixProduct(socket, user, fixedProduct){
     async.waterfall([
         function(cb){
             var product =user.products.id(fixedProduct.id);
-            return cb(null, product, user)
+            return cb(null, product)
         },
-        function(product, user, cb){
+        function(product, cb){
             if(!product)
                 return cb(new Error("Product doesn't exist"));
             product.setFromRaw(fixedProduct);
-            user.save(cb);
+            return cb();
         }
     ],function(err){
         if(err)
@@ -250,14 +225,7 @@ function list(socket, user){
 }
 
 function newProduct(socket, user, newProduct){
-    async.waterfall([
-        function(cb){
-            user.addProduct(newProduct, cb);
-        },
-        function(user, cb){
-            user.save(cb);
-        }
-    ], function(err){
+    user.addProduct(newProduct,  function(err){
         if(err)
             logger.error(err);
         else {
@@ -267,14 +235,7 @@ function newProduct(socket, user, newProduct){
     });
 }
 function removeProduct(socket, user, id){
-    async.waterfall([
-        function(cb){
-            user.removeProduct(id, cb);
-        },
-        function(user, cb){
-            user.save(cb);
-        }
-    ], function(err){
+    user.removeProduct(id, function(err){
         if(err)
             logger.error(err);
         else {
@@ -302,14 +263,8 @@ function getDaily(socket, user, date){
 
 }
 function removeDailyProduct(socket, user, dailyItemId){
-    async.waterfall([
-        function(cb){
-            user.removeDailyItem(user.date, dailyItemId, cb);
-        },
-        function(user, cb){
-            user.save(cb);
-        }
-    ], function(err, user){
+
+    user.removeDailyItem(user.date, dailyItemId, function(err, user){
         if(err)
             logger.error(err);
         else {
@@ -318,14 +273,7 @@ function removeDailyProduct(socket, user, dailyItemId){
     });
 }
 function addDailyProduct(socket, user, newDailyItem){
-    async.waterfall([
-        function(cb){
-            user.newDailyItem(user.date, newDailyItem, cb);
-        },
-        function(user, cb){
-            user.save(cb);
-        }
-    ], function(err){
+    user.newDailyItem(user.date, newDailyItem, function(err){
         if(err)
             logger.error(err);
         else {
@@ -334,6 +282,18 @@ function addDailyProduct(socket, user, newDailyItem){
         }
     });
 }
+
+function saveUser(user, cb){
+    return user.save(function(err, user){
+        if(err)
+            logger.error('Some problem with saving', user.username, err);
+        else
+            logger.error(user.username, 'saved');
+
+        return cb && cb(err, user);
+    });
+}
+
 module.exports = function(server){
     var io = require('socket.io').listen(server);
 
@@ -347,7 +307,18 @@ module.exports = function(server){
                 return new Error(err);
 
             socket
+                .on('error', function(err){
+                    logger.error(err);
+                    logger.info('Try to save', user.username);
+                    saveUser(user);
+                })
                 .on('disconnect', function () {
+                    user.save(function(err, user){
+                        if(err)
+                            logger.error(err);
+                        else
+                            logger.error(user.username, 'saved');
+                    });
                     console.info('disconnected');
                 })
                 .on('list',                     list.bind(null, socket, user))
