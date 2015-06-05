@@ -1,6 +1,6 @@
 {
   "PORT": 3001,
-  "title": "Balda",
+  "title": "Калькулятор каллорий",
   "session": {
     "secret": "KillerIsJim",
     "key": "connect.sid",
