@@ -9,6 +9,7 @@ var config = require('./config');
 var Session = require('express-session');
 var sessionStore = new Session.MemoryStore();
 var app = express();
+var AuthError = require('./models/user').AuthError;
 
 var session = Session({
     secret: config.get('session:secret'),
@@ -53,23 +54,21 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-if (app.get('env') !== 'production') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
-}
-
-// production error handler
-// no stacktraces leaked to user
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message
-  });
+
+    if(err instanceof AuthError) {
+        res.status(403);
+        res.send({
+            message: err.message,
+            error: {}
+        });
+    } else {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: (app.get('env') !== 'production' ? err : {})
+        });
+    }
 });
 
 

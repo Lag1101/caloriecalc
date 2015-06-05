@@ -243,6 +243,22 @@ schema.methods.checkPassword = function(password) {
     return this.encryptPassword(password) === this.hashedPassword;
 };
 
+schema.statics.login = function(username, password, callback) {
+    var User = this;
+
+    async.waterfall([
+        function(callback) {
+            User.findOne({username: username}, callback);
+        },
+        function(user, callback) {
+            if (!user || !user.checkPassword(password))
+                callback(new AuthError("Пароль или имя неверены"));
+            else
+                callback(null, user);
+        }
+    ], callback);
+};
+
 schema.statics.authorize = function(username, password, callback) {
     var User = this;
 
@@ -252,11 +268,7 @@ schema.statics.authorize = function(username, password, callback) {
         },
         function(user, callback) {
             if (user) {
-                if (user.checkPassword(password)) {
-                    callback(null, user);
-                } else {
-                    callback(new AuthError("Пароль неверен"));
-                }
+                callback(new AuthError("Это имя уже занято"));
             } else {
                 var user = new User({username: username, password: password});
                 user.save(function(err) {

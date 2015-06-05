@@ -15,7 +15,7 @@ router.route('/')
         var username = req.body.username;
         var password = req.body.password;
 
-        User.login(username, password, function(err, user) {
+        User.authorize(username, password, function(err, user) {
             if (err) return next(err);
 
             req.session.username = user.username;
