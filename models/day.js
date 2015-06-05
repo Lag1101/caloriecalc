@@ -22,8 +22,8 @@ var schema = new Schema({
         default: []
     }
 });
-schema.set('redisCache', true);
-schema.set('expires', 60*30);
+//schema.set('redisCache', true);
+//schema.set('expires', 60*30);
 
 schema.statics.fields = [
     'breakfast',

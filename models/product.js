@@ -37,8 +37,8 @@ var schema = new Schema({
         default: 0.0
     }
 });
-schema.set('redisCache', true);
-schema.set('expires', 60*30);
+//schema.set('redisCache', true);
+//schema.set('expires', 60*30);
 
 
 schema.virtual('id')
