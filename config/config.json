@@ -1,6 +1,6 @@
 {
   "PORT": 3001,
-  "title": "Калькулятор каллорий",
+  "title": "РљР°Р»СЊРєСѓР»СЏС‚РѕСЂ РєР°Р»Р»РѕСЂРёР№",
   "session": {
     "secret": "KillerIsJim",
     "key": "connect.sid",

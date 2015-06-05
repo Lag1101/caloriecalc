@@ -26,6 +26,7 @@
     "node-minify": "*",
     "mongoose-redis-cache": "*",
     "compression": "*",
-    "express-session": "*"
+    "express-session": "*",
+    "socket.io-express-session": "*"
   }
 }

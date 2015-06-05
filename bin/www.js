@@ -4,7 +4,8 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('../app').app;
+var session = require('../app').session;
 var debug = require('debug')('caloriecalc:server');
 var http = require('http');
 var config = require('../config');
@@ -25,7 +26,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
-require('../socket')(server);
+require('../socket')(server, session);
 
 /**
  * Listen on provided port, on all network interfaces.

@@ -294,13 +294,16 @@ function saveUser(user, cb){
     });
 }
 
-module.exports = function(server){
+module.exports = function(server, session){
+    var ios = require('socket.io-express-session');
     var io = require('socket.io').listen(server);
+    io.use(ios(session)); // session support
 
     var username = 'luckybug';
 
     io.on('connection', function(socket){
-        console.info(socket.id, 'socket connected');
+        console.info(socket.id, 'socket connected', 'session', socket.handshake.session);
+        var username = socket.handshake.session.username;
 
         User.findOne({username: username}, function(err, user){
             if(err || !user)
