@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var config = require('../config');
 var env = config.get('NODE_ENV');
-var cacheTime = config.get('cacheExpireTimeSecs');
 var User = require('../models/user').User;
 
 /* GET home page. */
@@ -12,7 +11,7 @@ router.get('/', function(req, res) {
 
         var p = {
             title: config.get('title'),
-            devel: env === 'production',
+            devel: env !== 'production',
             user: user
         };
         res.render('index', p);
