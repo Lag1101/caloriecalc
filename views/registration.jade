@@ -5,22 +5,45 @@ block content
             div( class="form-group")
                 label( for="input-username" class="col-lg-2 control-label") Имя
                 div( class="col-lg-10")
-                    input( name="username" value="name" type="text" class="form-control" id="input-username" placeholder="Имя")
+                    input( name="username" type="text" class="form-control" id="input-username" placeholder="Имя")
             div( class="form-group")
                 label( for="input-password" class="col-lg-2 control-label") Пароль
                 div( class="col-lg-10")
-                    input( name="password" value="pass" type="password" class="form-control" id="input-password" placeholder="Пароль")
+                    input( name="password" type="password" class="form-control" id="input-password" placeholder="Пароль")
+            div( class="form-group")
+                label( for="reinput-password" class="col-lg-2 control-label") Повторите ароль
+                div( class="col-lg-10")
+                    input( type="password" class="form-control" id="reinput-password" placeholder="Пароль")
             div( class="form-group")
                 div( class="col-lg-offset-2 col-lg-10")
-                    button( type="submit" class="btn btn-primary" data-loading-text="Отправляю...") Войти
+                    button( type="submit" class="btn btn-primary" data-loading-text="Отправляю...") Зарегистрироваться
                     span( class="help-block error")
     script.
+
+        var inp = $('#input-password');
+        var reinp = $('#reinput-password');
+        function checkPassword(){
+            if(reinp.val() !== inp.val()) {
+                reinp.addClass('alert-danger');
+                inp.addClass('alert-danger');
+            } else {
+                reinp.removeClass('alert-danger');
+                inp.removeClass('alert-danger');
+            }
+        }
+        inp.on('input paste', checkPassword);
+        reinp.on('input paste', checkPassword);
+
         $(document.forms['login-form']).on('submit', function() {
             var form = $(this);
+
+            if(reinp.val() === inp.val())
+                $('.error', form).html('Пароли не совпадают');
+
             $('.error', form).html('');
             $(":submit", form).button("loading");
             $.ajax({
-                url: "/login",
+                url: "/registration",
                 method: "POST",
                 data: form.serialize(),
                     complete: function() {
@@ -28,7 +51,7 @@ block content
                 },
                 statusCode: {
                     200: function() {
-                        form.html("Вы вошли в сайт").addClass('alert-success');
+                        form.html("Вы успешно зарегистрированны").addClass('alert-success');
                         window.location.href = "/calculator";
                     },
                     403: function(jqXHR) {

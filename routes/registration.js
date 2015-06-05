@@ -9,7 +9,7 @@ var User = require('../models/user').User;
 /* GET home page. */
 router.route('/')
     .get(function(req, res, next) {
-        res.render('login');
+        res.render('registration');
     })
     .post(function(req, res, next) {
         var username = req.body.username;

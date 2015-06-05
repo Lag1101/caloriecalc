@@ -3,15 +3,17 @@ block content
     div(class='container')
         form( class="form-horizontal login-form" name="login-form")
             div( class="form-group")
+                a(href='/registration' class="col-lg-offset-2 col-lg-1") Зарегистрироваться?
+            div( class="form-group")
                 label( for="input-username" class="col-lg-2 control-label") Имя
                 div( class="col-lg-10")
-                    input( type="text" class="form-control" id="input-username" placeholder="Имя")
+                    input( name="username" type="text" class="form-control" id="input-username" placeholder="Имя")
             div( class="form-group")
                 label( for="input-password" class="col-lg-2 control-label") Пароль
                 div( class="col-lg-10")
-                    input( type="password" class="form-control" id="input-password" placeholder="Пароль")
+                    input( name="password" type="password" class="form-control" id="input-password" placeholder="Пароль")
             div( class="form-group")
-                div( class="col-lg-offset-2 col-lg-10")
+                div( class="col-lg-offset-2 col-lg-1")
                     button( type="submit" class="btn btn-primary" data-loading-text="Отправляю...") Войти
                     span( class="help-block error")
 
