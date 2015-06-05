@@ -57,12 +57,14 @@ var utils = (function(){
         var w1 = s1.split(' ');
         var w2 = s2.split(' ');
 
-        var distance = 0;
+        var minDistance = 0;
         for(var k1 = 0; k1 < w1.length; k1++) {
             if(w1[k1])
             for(var k2 = 0; k2 < w2.length; k2++) {
-                if(w2[k2])
-                    distance += LevenshteinDistance(w1[k1], w2[k2]);
+                if(w2[k2]) {
+                    var distance = LevenshteinDistance(w1[k1], w2[k2]);
+                    if( minDistance < distance)  minDistance = distance;
+                }
             }
         }
 

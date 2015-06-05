@@ -52,7 +52,9 @@
 
     socket.on('getDishList', restoreDishList);
 
-
+    newProduct.find('.description').on('input change', function(){
+        updateList();
+    });
     addButton.click(function(){
         var product = new Product();
         product.readEl(newProduct);
@@ -346,9 +348,18 @@
     function reorder(products, cb){
         var mult = (order === "greater") ? 1 : -1;
 
-        async.sortBy(products, function(product, cb){
-            return cb(null, mult*product[sortKey])
-        }, cb);
+        var searchProduct = new Product();
+        searchProduct.readEl(newProduct);
+        var searchText = searchProduct.description;
+
+        if(searchText)
+            async.sortBy(products, function(product, cb){
+                return cb(null, mult*utils.distanceBeetweenStrings(searchText, product.description))
+            }, cb);
+        else
+            async.sortBy(products, function(product, cb){
+                return cb(null, mult*product[sortKey])
+            }, cb);
     }
 
     function appear(productView){
