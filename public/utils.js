@@ -6,7 +6,25 @@ var utils = (function(){
     var fields = ['description', 'proteins', 'triglyceride', 'carbohydrate', 'calorie', 'details'];
 
     function validate(str){
+        str = str && str.toString() || '';
         return str.replace(',', '.');
+    }
+
+    function isValid(str){
+        return !isNaN(parseFloat(str));
+    }
+
+    function validateField(el){
+        var str = el.val();
+        str = utils.validate(str);
+        el.val(str);
+        if(utils.isValid(str)){
+            el.removeClass('label-danger');
+            return true;
+        } else {
+            el.addClass('label-danger');
+            return false;
+        }
     }
 
     function fromDateToString(d){
@@ -127,6 +145,8 @@ var utils = (function(){
         icons: icons,
         DropdownButton: DropdownButton,
         validate: validate,
+        isValid: isValid,
+        validateField: validateField,
         fromDateToString: fromDateToString,
         distanceBeetweenStrings: distanceBeetweenStrings
     };

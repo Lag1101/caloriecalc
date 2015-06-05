@@ -19,14 +19,11 @@ var Product = (function(){
         this.mass =         (Product.validate(product.mass) ||         this.mass)  || 100;
     };
     Product.validate = function(s) {
-        if(typeof(s) === "string") {
-            var t = s.replace(',', '.');
-            if( t[t.length-1] !== '.')
-                return parseFloat(t);
-            else
-            return t;
-        }
-        return s;
+        var r = utils.validate(s);
+        if(utils.isValid(r))
+            return parseFloat(r);
+        else
+            return '';
     };
     Product.prototype.getRaw = function() {
         return {

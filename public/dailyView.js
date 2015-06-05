@@ -10,6 +10,7 @@
     var daily = $('.daily');
     var state = daily.find('.state');
     var newItem = daily.find('.newItem');
+    var addButton = daily.find('.addButton');
     var links = {
         proteins: null,
         triglyceride: null,
@@ -22,10 +23,20 @@
         max: $('.maximum')
     };
 
-    newItem.find('input').off('input paste').on('input paste', function(){
-        $(this).val( utils.validate( $(this).val() ) );
+    function validateField(){
+        if(utils.validateField($(this))){
+            addButton
+                .attr('disabled', false)
+                .removeClass('disabled');
+        } else {
+            addButton
+                .attr('disabled', true)
+                .addClass('disabled');
+        }
         reCalcDaily();
-    });
+    }
+
+    newItem.find('input').on('input paste', validateField);
     Product.emptyProduct.writeEl(newItem);
     updateLinks();
 
@@ -207,9 +218,9 @@
             fixProduct(el, product);
         });
         el.find('.item').off('input paste').on('input paste', function(){
-            $(this).val( utils.validate( $(this).val() ) );
+            if(utils.validateField($(this)))
+                fixProduct(el, product);
             reCalcDaily();
-            fixProduct(el, product);
         });
         //newItem.find('.daily').val(daily.find('.newItem').find('.daily').val())
     }

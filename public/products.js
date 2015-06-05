@@ -37,6 +37,7 @@
         });
     });
     defaultDish.find('.mass').on('input paste', function(){
+        utils.validateField($(this));
         calcPortion(defaultDish);
     });
 
@@ -54,6 +55,17 @@
 
     newProduct.find('.description').on('input change', function(){
         updateList();
+    });
+    newProduct.find('input').on('input change', function(){
+        if(utils.validateField($(this))){
+            addButton
+                .attr('disabled', false)
+                .removeClass('disabled');
+        } else {
+            addButton
+                .attr('disabled', true)
+                .addClass('disabled');
+        }
     });
     addButton.click(function(){
         var product = new Product();
@@ -187,6 +199,7 @@
                 fixDish(dish);
             });
             portionViewClone.find('.mass').on('input change', function(){
+                utils.validateField($(this));
                 calcPortion(dishView, function(){
                     var p = new Product();
                     p.readEl(portionViewClone);
@@ -195,6 +208,7 @@
                 });
             });
             fullViewClone.find('.mass').on('input change', function(){
+                utils.validateField($(this));
                 calcPortion(dishView, function(){
                     var p = new Product();
                     p.readEl(fullViewClone);
@@ -246,8 +260,8 @@
                 .append($('<input>').addClass('carbohydrate'))
                 .append($('<input>').addClass('calorie'))
                 .append($('<input>').addClass('mass').on('input paste', function(){
-                    $(this).val( utils.validate( $(this).val() ) );
-                    fixDishProduct(productView, product);
+                    if(utils.validateField($(this)))
+                        fixDishProduct(productView, product);
                     reCalc();
                 })));
 
