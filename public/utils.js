@@ -63,7 +63,7 @@ var utils = (function(){
             for(var k2 = 0; k2 < w2.length; k2++) {
                 if(w2[k2]) {
                     var distance = LevenshteinDistance(w1[k1], w2[k2]);
-                    if( minDistance < distance)  minDistance = distance;
+                    if( minDistance > distance)  minDistance = distance;
                 }
             }
         }
