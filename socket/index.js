@@ -288,7 +288,7 @@ function saveUser(user, cb){
         if(err)
             logger.error('Some problem with saving', user.username, err);
         else
-            logger.error(user.username, 'saved');
+            logger.info(user.username, 'saved');
 
         return cb && cb(err, user);
     });
@@ -313,12 +313,7 @@ module.exports = function(server){
                     saveUser(user);
                 })
                 .on('disconnect', function () {
-                    user.save(function(err, user){
-                        if(err)
-                            logger.error(err);
-                        else
-                            logger.error(user.username, 'saved');
-                    });
+                    saveUser(user);
                     console.info('disconnected');
                 })
                 .on('list',                     list.bind(null, socket, user))

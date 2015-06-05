@@ -5,9 +5,15 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var compression = require('compression');
-
+var config = require('./config');
 
 var app = express();
+
+var options = {
+  setHeaders: function (res, path, stat) {
+    res.setHeader('Cache-Control', 'public, max-age=' + config.get('cacheExpireTimeSecs'));
+  }
+};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -20,7 +26,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), options));
 app.use(compression());
 
 require('./routes')(app);
@@ -36,7 +42,7 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
+if (app.get('env') !== 'production') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
