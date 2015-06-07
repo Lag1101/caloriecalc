@@ -370,7 +370,19 @@
             async.sortBy(products, function(product, cb){
                 return cb(null, mult*utils.distanceBeetweenStrings(searchText, product.description))
             }, cb);
-        else
+        else{
+            products.sort(function(p1, p2){
+                if (p1[sortKey] < p2[sortKey]) {
+                    return mult;
+                }
+                if (p1[sortKey] > p2[sortKey]) {
+                    return mult * -1;
+                }
+                // a must be equal to b
+                return 0;
+            });
+        }
+
             async.sortBy(products, function(product, cb){
                 return cb(null, mult*product[sortKey])
             }, cb);
