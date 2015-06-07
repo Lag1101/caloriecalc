@@ -213,7 +213,11 @@
             //saveDaily();
         });
 
-        el.find('.description .details').off('input paste').on('input paste', function(){
+        el.find('.description').off('input paste').on('input paste', function(){
+            reCalcDaily();
+            fixProduct(el, product);
+        });
+        el.find('.details').off('input paste').on('input paste', function(){
             reCalcDaily();
             fixProduct(el, product);
         });
