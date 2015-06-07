@@ -53,9 +53,9 @@
 
     socket.on('getDishList', restoreDishList);
 
-    newProduct.find('.description').on('input change', function(){
-        updateList();
-    });
+    //newProduct.find('.description').on('input change', function(){
+    //    updateList();
+    //});
     newProduct.find('input').on('input change', function(){
         if(utils.validateField($(this))){
             addButton
@@ -364,7 +364,7 @@
 
         var searchProduct = new Product();
         searchProduct.readEl(newProduct);
-        var searchText = searchProduct.description;
+        var searchText = null;//searchProduct.description;
 
         if(searchText)
             async.sortBy(products, function(product, cb){
