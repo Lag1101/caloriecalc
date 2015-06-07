@@ -363,10 +363,10 @@
         var mult = (order === "greater") ? 1 : -1;
         var sorted = products.sort(function(p1, p2){
             if (p1[sortKey] < p2[sortKey]) {
-                return mult;
+                return mult * -1;
             }
             if (p1[sortKey] > p2[sortKey]) {
-                return mult * -1;
+                return mult * 1;
             }
             // a must be equal to b
             return 0;
