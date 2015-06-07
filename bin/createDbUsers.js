@@ -101,7 +101,8 @@ function addDish(srcDishList, user, cb){
 
 function createUsers(callback) {
     var users = [
-        {username: 'luckybug', password: '123'}
+        {username: 'luckybug', password: '123'},
+        {username: 'Hathor', password: '123'}
     ];
 
     async.each(users, function(rawUser, cb){
