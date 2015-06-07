@@ -217,7 +217,7 @@
             reCalcDaily();
             fixProduct(el, product);
         });
-        el.find('.item').off('input paste').on('input paste', function(){
+        el.find('input').off('input paste').on('input paste', function(){
             if(utils.validateField($(this)))
                 fixProduct(el, product);
             reCalcDaily();
