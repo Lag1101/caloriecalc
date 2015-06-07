@@ -361,31 +361,18 @@
 
     function reorder(products, cb){
         var mult = (order === "greater") ? 1 : -1;
+        var sorted = products.sort(function(p1, p2){
+            if (p1[sortKey] < p2[sortKey]) {
+                return mult;
+            }
+            if (p1[sortKey] > p2[sortKey]) {
+                return mult * -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
 
-        var searchProduct = new Product();
-        searchProduct.readEl(newProduct);
-        var searchText = null;//searchProduct.description;
-
-        if(searchText)
-            async.sortBy(products, function(product, cb){
-                return cb(null, mult*utils.distanceBeetweenStrings(searchText, product.description))
-            }, cb);
-        else{
-            products.sort(function(p1, p2){
-                if (p1[sortKey] < p2[sortKey]) {
-                    return mult;
-                }
-                if (p1[sortKey] > p2[sortKey]) {
-                    return mult * -1;
-                }
-                // a must be equal to b
-                return 0;
-            });
-        }
-
-            async.sortBy(products, function(product, cb){
-                return cb(null, mult*product[sortKey])
-            }, cb);
+        return cb(null, sorted);
     }
 
     function appear(productView){
