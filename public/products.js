@@ -148,6 +148,9 @@
         utils.confirmDialog(
             "Вы уверены, что хотите удалить " + product.description + " ?",
             function(){
+                var i = products.indexOf(product);
+                if(i >= 0)
+                    products.splice(i, 1);
                 socket.emit('removeProduct', product.id);
                 view.detach();
             }
@@ -281,6 +284,9 @@
 
         product.writeEl(productView);
         productView.find('.remove').click(function(){
+            var i = currentDishProducts.indexOf(product);
+            if(i >= 0)
+                currentDishProducts.splice(i, 1);
             productView.detach();
             reCalc();
             socket.emit('removeDishProduct', product.id);
