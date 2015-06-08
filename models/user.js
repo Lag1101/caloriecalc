@@ -208,7 +208,7 @@ schema.methods.addProduct = function(newProduct, callback){
     var user = this;
     Product.prepareProduct(newProduct);
     user.products.push(newProduct);
-    return callback(null, user);
+    return callback(null, user.products[user.products.length-1]);
 };
 
 schema.methods.removeProduct = function(productId, callback){

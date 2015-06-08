@@ -224,13 +224,13 @@ function list(socket, user){
     });
 }
 
-function newProduct(socket, user, newProduct){
-    user.addProduct(newProduct,  function(err){
+function newProduct(socket, user, newProductRaw){
+    user.addProduct(newProductRaw,  function(err, newProduct){
         if(err)
             logger.error(err);
         else {
             logger.info('Added product', newProduct);
-            return list(socket, user);
+            socket.emit('newProduct', newProduct);
         }
     });
 }

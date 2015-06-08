@@ -119,10 +119,14 @@
             });
         }
     });
-
-    socket.on('newDishProduct', function(newDishProductRaw){
-        currentDishProducts.push(newDishProductRaw);
-        addToCurrentDish(newDishProductRaw);
+    socket.on('newProduct', function(newProduct){
+        var p = addToList(newProduct);
+        products.push(p);
+        updateList();
+    });
+    socket.on('newDishProduct', function(newDishProduct){
+        var p = addToCurrentDish(newDishProduct);
+        currentDishProducts.push(p);
         reCalc();
     });
 
@@ -446,6 +450,28 @@
             .append($('<button>').addClass('cancel item hidden btn btn-xs btn-default').append(utils.icons.cancel.clone()))
             .addClass('edit-menu'));
 
+
+    function addToList(newProduct){
+        var product = new Product(newProduct);
+
+        var productView = productViewTemp.clone();
+
+        var root = $('<div>').append(productView);
+
+        productView.addClass('product inline-block');
+
+        root.find('input').addClass('item');
+        hide(root);
+        product.writeEl(root);
+
+        root.find('.edit').click(editProduct.bind(null, root, product));
+        root.find('.add').click(copyToDishProducts.bind(null, product));
+        root.find('.remove').click(removeProduct.bind(null, root, product));
+
+        productsList.append(root).trigger('append');
+
+        return product;
+    }
     function updateList(callback) {
         async.waterfall([
             function(cb){
@@ -453,24 +479,7 @@
             },
             function(reorderProducts, cb){
                 productsList.empty();
-                reorderProducts.map(function(product){
-                    var productView = productViewTemp.clone();
-
-                    var root = $('<div>').append(productView);
-
-                    productView.addClass('product inline-block');
-
-                    root.find('input').addClass('item');
-                    hide(root);
-                    product.writeEl(root);
-
-                    root.find('.edit').click(editProduct.bind(null, root, product));
-                    root.find('.add').click(copyToDishProducts.bind(null, product));
-                    root.find('.remove').click(removeProduct.bind(null, root, product));
-
-                    productsList.append(root).trigger('append');
-
-                });
+                reorderProducts.map(addToList);
                 return cb();
             }
         ], function(err){
