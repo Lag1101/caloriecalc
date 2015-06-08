@@ -83,12 +83,12 @@ function newDishProduct(socket, user, newDishProductId){
         function(cb){
             user.addDishProduct(newDishProductId, cb);
         }
-    ], function(err){
+    ], function(err, newProduct){
         if(err)
             logger.error(err);
         else {
-            logger.info('Copied dishProduct', newDishProductId);
-            getCurrentDishProducts(socket, user);
+            logger.info('Copied dishProduct', newProduct);
+            socket.emit('newDishProduct', newProduct);
         }
 
     });
@@ -105,7 +105,6 @@ function removeDishProduct(socket, user, id){
             logger.error(err);
         else {
             logger.info('Removed product', id);
-            getCurrentDishProducts(socket, user);
         }
     });
 }
@@ -176,6 +175,7 @@ function fixDishProduct(socket, user, fixedProduct){
             if(!product)
                 return cb(new Error("Product doesn't exist"));
             product.setFromRaw(fixedProduct);
+            return cb();
         }
     ],function(err){
         if(err)
@@ -240,7 +240,6 @@ function removeProduct(socket, user, id){
             logger.error(err);
         else {
             logger.info('Removed product', id);
-            return list(socket, user);
         }
     });
 }

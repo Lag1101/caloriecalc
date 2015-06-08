@@ -110,14 +110,9 @@ schema.methods.addDishProduct = function(newDishProductId, callback){
         function(rawNewProduct, cb){
             delete rawNewProduct._id;
             user.currentDishProducts.push(rawNewProduct);
-            return cb();
+            return cb(null, user.currentDishProducts[user.currentDishProducts.length-1]);
         }
-    ],function(err){
-        if(err)
-            return callback(err);
-        else
-            return callback(err, user);
-    });
+    ], callback);
 };
 schema.methods.removeDishProduct = function(dishProductId, callback){
     var user = this;

@@ -120,6 +120,12 @@
         }
     });
 
+    socket.on('newDishProduct', function(newDishProductRaw){
+        currentDishProducts.push(newDishProductRaw);
+        addToCurrentDish(newDishProductRaw);
+        reCalc();
+    });
+
     responseProductList();
     responseDishProductList();
     responseDishList();
@@ -139,6 +145,7 @@
             "Вы уверены, что хотите удалить " + product.description + " ?",
             function(){
                 socket.emit('removeProduct', product.id);
+                view.detach();
             }
         );
     }
