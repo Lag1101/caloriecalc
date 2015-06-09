@@ -11,9 +11,7 @@ var env = config.get('NODE_ENV');
 /* GET home page. */
 router.route('/')
     .get(function(req, res, next) {
-        res.render('login', {
-            devel: env !== 'production'
-        });
+        res.render('login');
     })
     .post(function(req, res, next) {
         var username = req.body.username;

@@ -1,6 +1,11 @@
 /**
  * Created by vasiliy.lomanov on 13.05.2015.
  */
+var socket = require('./socket');
+var utils = require('./utils');
+var Product = require('./product');
+var Dish = require('./dish');
+
 (function(socket){
 
     var products = [];

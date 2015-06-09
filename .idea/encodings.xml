@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/clientApp/dailyView.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/clientApp/products.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/clientApp/utils.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/config/config.json" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/models/user.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/products/index.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/productsList.json" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/public/dailyView.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/public/products.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/public/utils.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/routes/calculator.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/routes/frontpage.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/routes/index.js" charset="UTF-8" />

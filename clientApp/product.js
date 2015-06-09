@@ -2,6 +2,8 @@
  * Created by vasiliy.lomanov on 14.05.2015.
  */
 
+var utils = require('./utils');
+
 var Product = (function(){
     function Product(product){
         this.constr(product);
@@ -86,3 +88,5 @@ var Product = (function(){
     Product.emptyProduct = new Product();
     return Product;
 })();
+
+module.exports = Product;

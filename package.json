@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www.js",
-    "postinstall": "cd ./public; bower install;"
+    "build-client-debug": "browserify clientApp/index.js --debug -o public/index.js",
+    "build-client": "browserify clientApp/index.js | uglifyjs --compress --mangle -o public/index.js",
+    "build-3rdparty": "uglifyjs public/bower_components/jquery/dist/jquery.js public/bower_components/socket.io-client/socket.io.js public/bower_components/async/lib/async.js public/bower_components/bootstrap/dist/js/bootstrap.js public/bower_components/bootstrap-dialog/dist/js/bootstrap-dialog.js --compress --mangle -o public/3rdparty.js",
+    "postinstall": "cd ./public; bower install"
   },
   "dependencies": {
     "bower": "*",
@@ -29,5 +32,12 @@
     "express-session": "*",
     "socket.io-express-session": "*",
     "connect-mongo": "*"
+  },
+  "devDependencies": {
+    "browserify": "~10.2.4",
+    "uglify-js": "~2.4.23",
+    "source-map": "~0.4.2",
+    "yargs": "~3.10.0",
+    "uglify-to-browserify": "~1.0.2"
   }
 }
