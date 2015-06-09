@@ -27,6 +27,7 @@
     "mongoose-redis-cache": "*",
     "compression": "*",
     "express-session": "*",
-    "socket.io-express-session": "*"
+    "socket.io-express-session": "*",
+    "connect-mongo": "*"
   }
 }

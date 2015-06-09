@@ -7,7 +7,10 @@ var bodyParser = require('body-parser');
 var compression = require('compression');
 var config = require('./config');
 var Session = require('express-session');
-var sessionStore = new Session.MemoryStore();
+var mongoose = require('./lib/mongoose');
+
+var MongoStore = require('connect-mongo')(Session);
+var sessionStore = new MongoStore({ mongooseConnection: mongoose.connection });
 var app = express();
 var AuthError = require('./models/user').AuthError;
 
