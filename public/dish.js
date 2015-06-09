@@ -2,9 +2,6 @@
  * Created by vasiliy.lomanov on 04.06.2015.
  */
 
-var Product = require('./product');
-var utils = require('./utils');
-
 var Dish = (function(){
     function Dish(dish){
         this.constr(dish);
@@ -20,5 +17,3 @@ var Dish = (function(){
 
     return Dish;
 })();
-
-module.exports = Dish;

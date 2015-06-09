@@ -2,11 +2,6 @@
  * Created by vasiliy.lomanov on 13.05.2015.
  */
 
-var Product = require('./product');
-var socket = require('./socket');
-var utils = require('./utils');
-var Day = require('./day');
-
 (function(socket){
 
     var msToSendChanges = 1 * 1000;

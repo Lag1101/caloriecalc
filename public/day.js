@@ -3,7 +3,6 @@
  */
 
 
-var Product = require('./product');
 var Day = (function(){
     function Day(day){
         this.constr(day);
@@ -39,5 +38,3 @@ var Day = (function(){
 
     return Day;
 })();
-
-module.exports = Day;

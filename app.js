@@ -22,14 +22,10 @@ var session = Session({
     store: sessionStore
 });
 var options = {
-  setHeaders: function (res, path, stat) {
-    res.setHeader('Cache-Control', 'public, max-age=' + config.get('cacheExpireTimeSecs'));
-  }
+  //setHeaders: function (res, path, stat) {
+  //  res.setHeader('Cache-Control', 'public, max-age=' + config.get('cacheExpireTimeSecs'));
+  //}
 };
-
-var browserify = require('browserify');
-browserify(["./public/product.js"]);
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

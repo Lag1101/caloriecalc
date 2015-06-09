@@ -11,6 +11,7 @@ router.get('/', function(req, res) {
 
         var p = {
             title: config.get('title'),
+            devel: env !== 'production',
             user: user
         };
         res.render('index', p);

@@ -151,5 +151,3 @@ var utils = (function(){
         distanceBeetweenStrings: distanceBeetweenStrings
     };
 })();
-
-module.exports = utils;

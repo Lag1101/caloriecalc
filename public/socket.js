@@ -13,5 +13,3 @@ socket
     .on('disconnect', function () {
         console.log("disconnected");
     });
-
-module.exports = socket;
