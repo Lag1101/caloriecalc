@@ -124,6 +124,31 @@ function setCurrentDate(socket, user, date){
     logger.info('set date', date);
     getDaily(socket, user, user.date);
 }
+function getBody(socket, user){
+    logger.info('get body', user.body);
+    socket.emit('getBody', user.body);
+}
+function setBody(socket, user, body){
+    if(!body) {
+        logger.error('Empty body');
+        return;
+    }
+
+    user.body = body;
+    logger.info('set body', body);
+}
+function getNorm(socket, user){
+    socket.emit('getNorm', user.norm);
+}
+function setNorm(socket, user, norm){
+    if(!norm) {
+        logger.error('Empty norm');
+        return;
+    }
+
+    user.norm = norm;
+    logger.info('set norm', norm);
+}
 function fixDish(socket, user, fixedDish){
     if(!fixedDish) return;
     async.waterfall([
@@ -341,6 +366,12 @@ module.exports = function(server, session){
                 .on('addDish',                  addDish.bind(null, socket, user))
                 .on('removeDish',               removeDish.bind(null, socket, user))
                 .on('fixDish',                  fixDish.bind(null, socket, user))
+
+                .on('getBody', getBody.bind(null, socket, user))
+                .on('setBody', setBody.bind(null, socket, user))
+
+                .on('getNorm', getNorm.bind(null, socket, user))
+                .on('setNorm', setNorm.bind(null, socket, user))
         });
 
     });

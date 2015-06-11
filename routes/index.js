@@ -10,4 +10,5 @@ module.exports = function(app){
     app.use('/registration', require('./registration'));
     app.use('/calculator', checkAuth, require('./calculator'));
     app.use('/logout',checkAuth, require('./logout'));
+    app.use('/dailyNorm',checkAuth, require('./dailyNorm'));
 };

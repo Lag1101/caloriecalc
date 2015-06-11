@@ -15,6 +15,26 @@ var mongoose = require('../lib/mongoose'),
     Schema = mongoose.Schema;
 
 var schema = new Schema({
+    body:{
+        type: Schema.Types.Mixed,
+        default:{
+            weight: 0,
+            height: 0,
+            age: 0,
+            activity: 1.2
+        }
+    },
+
+    norm:{
+        type: Schema.Types.Mixed,
+        default:{
+            calorie: {min: 0, max: 0},
+            proteins: {min: 0, max: 0},
+            triglyceride: {min: 0, max: 0},
+            carbohydrate: {min: 0, max: 0}
+        }
+    },
+
     username: {
         type: Schema.Types.String,
         unique: true,
@@ -55,6 +75,29 @@ var schema = new Schema({
 });
 //schema.set('redisCache', true);
 //schema.set('expires', 60*30);
+
+schema.methods.setBody = function(body, callback){
+    var user = this;
+    user.body = body;
+    return callback(null, user);
+};
+
+schema.methods.getBody = function(body, callback){
+    var user = this;
+    return callback(null, user.body);
+};
+
+schema.methods.setNorm = function(norm, callback){
+    var user = this;
+    user.norm = norm;
+    return callback(null, user);
+};
+
+schema.methods.getNorm = function(norm, callback){
+    var user = this;
+    user.norm = norm;
+    return callback(null, user.norm);
+};
 
 schema.methods.getCurrentDishes = function(callback){
     var user = this;
