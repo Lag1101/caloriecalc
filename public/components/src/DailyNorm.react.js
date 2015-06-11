@@ -104,23 +104,23 @@ var DailyNorm = React.createClass({
 
         return (
             <div className="dailyNorm">
-                <div>
+                <div class="input-group input-group">
                     <div>
-                        <p>Вес кг</p>
-                        <input type='number' value={weight} ref='weight' onChange={this.handleChange} placeholder='Вес кг'/>
+                        <label for="weight">Вес кг</label>
+                        <input type='number' value={weight} ref='weight' id='weight' onChange={this.handleChange} placeholder='Вес кг'/>
                     </div>
                     <div>
-                        <p>Рост см</p>
-                        <input type='number' value={height} ref='height' onChange={this.handleChange} placeholder='Вес кг'/>
+                        <label for="height">Рост см</label>
+                        <input type='number' value={height} ref='height' id='height' onChange={this.handleChange} placeholder='Вес кг'/>
                     </div>
                     <div>
-                        <p>Возраст лет</p>
-                        <input type='number' value={age} ref='age' onChange={this.handleChange} placeholder='Возраст лет'/>
+                        <label for="age">Возраст лет</label>
+                        <input type='number' value={age} ref='age' id='age'  onChange={this.handleChange} placeholder='Возраст лет'/>
                     </div>
 
                     <div>
-                        <p>Вид активности</p>
-                        <select value={activity} ref='activity' onChange={this.handleChange} className='form-control-static'>
+                        <label for="activity">Вид активности</label>
+                        <select value={activity} ref='activity' id='activity' onChange={this.handleChange} className='form-control-static'>
                             <option value={1.20}>Низкая (сидячий образ жизни)</option>
                             <option value={1.38}>Малая (1-3 раза в неделю легкие тренировки)</option>
                             <option value={1.55}>Средняя (1-5 раза в неделю умеренные тренировки)</option>
