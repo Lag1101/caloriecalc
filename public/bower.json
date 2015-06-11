@@ -5,6 +5,7 @@
     "jquery": "*",
     "socket.io-client": "*",
     "bootstrap-dialog": "*",
-    "async": "*"
+    "async": "*",
+    "react": "*"
   }
 }
