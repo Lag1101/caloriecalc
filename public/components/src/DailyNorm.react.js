@@ -129,24 +129,26 @@ var DailyNorm = React.createClass({
                     </div>
                 </div>
                 <div>
-                    <h3>Каллории</h3>
-                    <p>{'Минимум: ' + calorie.min}</p>
-                    <p>{'Максимум: ' + calorie.max}</p>
-                </div>
-                <div>
-                    <h3>Белки</h3>
-                    <p>{'Минимум: ' + proteins.min}</p>
-                    <p>{'Максимум: ' + proteins.max}</p>
-                </div>
-                <div>
-                    <h3>Жиры</h3>
-                    <p>{'Минимум: ' + triglyceride.min}</p>
-                    <p>{'Максимум: ' + triglyceride.max}</p>
-                </div>
-                <div>
-                    <h3>Углеводы</h3>
-                    <p>{'Минимум: ' + carbohydrate.min}</p>
-                    <p>{'Максимум: ' + carbohydrate.max}</p>
+                    <label for="calorie-norm">Каллории</label>
+                    <div id='calorie-norm'>
+                        <p>{'Минимум: ' + calorie.min}</p>
+                        <p>{'Максимум: ' + calorie.max}</p>
+                    </div>
+                    <label for="proteins-norm">Белки</label>
+                    <div id='proteins-norm'>
+                        <p>{'Минимум: ' + proteins.min}</p>
+                        <p>{'Максимум: ' + proteins.max}</p>
+                    </div>
+                    <label for="triglyceride-norm">Жиры</label>
+                    <div id='triglyceride-norm'>
+                        <p>{'Минимум: ' + triglyceride.min}</p>
+                        <p>{'Максимум: ' + triglyceride.max}</p>
+                    </div>
+                    <label for="carbohydrate-norm">Углеводы</label>
+                    <div id='carbohydrate-norm'>
+                        <p>{'Минимум: ' + carbohydrate.min}</p>
+                        <p>{'Максимум: ' + carbohydrate.max}</p>
+                    </div>
                 </div>
             </div>
         );
