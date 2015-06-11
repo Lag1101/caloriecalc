@@ -23,6 +23,24 @@
         max: $('.maximum')
     };
 
+    this.socket.emit('getNorm');
+    this.socket.on('getNorm', function(norm){
+        var minimum = daily.find('.minimum');
+        var maximum = daily.find('.maximum');
+
+        minimum.find('.proteins').val(norm.proteins.min);
+        maximum.find('.proteins').val(norm.proteins.max);
+
+        minimum.find('.triglyceride').val(norm.triglyceride.min);
+        maximum.find('.triglyceride').val(norm.triglyceride.max);
+
+        minimum.find('.carbohydrate').val(norm.carbohydrate.min);
+        maximum.find('.carbohydrate').val(norm.carbohydrate.max);
+
+        minimum.find('.calorie').val(norm.calorie.min);
+        maximum.find('.calorie').val(norm.calorie.max);
+    });
+
     function validateField(){
         if(utils.validateField($(this))){
             addButton

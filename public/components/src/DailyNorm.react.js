@@ -54,6 +54,7 @@ var DailyNorm = React.createClass({
         });
 
         this.setBody(body);
+        this.setNorm(norm);
     },
     handleChange: function(event){
         this.calcCalorieNormPerDay();
@@ -77,8 +78,12 @@ var DailyNorm = React.createClass({
     setBody: function(body){
         this.socket.emit('setBody', body);
     },
+    setNorm: function(norm){
+        this.socket.emit('setNorm', norm);
+    },
     handleGetBody: function(body){
         this.setState({body: body});
+        this.calcCalorieNormPerDay();
     },
     componentDidMount: function() {
         this.socket = socket;
