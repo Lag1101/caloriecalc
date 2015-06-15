@@ -69,7 +69,10 @@
     });
     addButton.click(function(){
         var product = new Product();
-        product.readEl(newProduct);
+        product.readEl(newProduct)
+
+        if(!product.description) return;
+
         socket.emit('newProduct', product.getRaw());
         //Product.emptyProduct.writeEl(newProduct);
     });
@@ -394,13 +397,13 @@
     }
 
     function reorder(products, cb){
-        var mult = (order === "greater") ? 1 : -1;
+        var mult = (order === "greater") ? -1 : 1;
         var sorted = products.sort(function(p1, p2){
             if (p1[sortKey] < p2[sortKey]) {
-                return mult * -1;
+                return mult;
             }
             if (p1[sortKey] > p2[sortKey]) {
-                return mult * 1;
+                return mult;
             }
             // a must be equal to b
             return 0;
