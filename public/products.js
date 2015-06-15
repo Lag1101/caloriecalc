@@ -53,9 +53,9 @@
 
     socket.on('getDishList', restoreDishList);
 
-    //newProduct.find('.description').on('input change', function(){
-    //    updateList();
-    //});
+    newProduct.find('.description').on('input change', function(){
+        updateList();
+    });
     newProduct.find('input').on('input change', function(){
         if(utils.validateField($(this))){
             addButton
@@ -71,7 +71,7 @@
         var product = new Product();
         product.readEl(newProduct);
         socket.emit('newProduct', product.getRaw());
-        Product.emptyProduct.writeEl(newProduct);
+        //Product.emptyProduct.writeEl(newProduct);
     });
 
     socket.on('list', function (data) {
@@ -83,7 +83,7 @@
                 console.error(err);
             else{
                 products = resProducts;
-
+                buildPrefixTree(products);
                 return updateList();
             }
         });
@@ -122,6 +122,8 @@
     socket.on('newProduct', function(newProduct){
         var p = addToList(newProduct);
         products.push(p);
+
+        prefixTree.addString(p.description, p);
         updateList();
     });
     socket.on('newDishProduct', function(newDishProduct){
@@ -151,6 +153,7 @@
                 var i = products.indexOf(product);
                 if(i >= 0)
                     products.splice(i, 1);
+                prefixTree.removeString(product.description, product)
                 socket.emit('removeProduct', product.id);
                 view.detach();
             }
@@ -376,6 +379,20 @@
         });
     }
 
+    var prefixTree = new PrefixTree.Node();
+    function buildPrefixTree(products){
+        console.time("buildPrefixTree");
+        products.map(function(product){
+            prefixTree.addString(product.description, product);
+        });
+        console.timeEnd("buildPrefixTree");
+    }
+
+    function filterBySerachString(searchStr, cb){
+        var searchedProducts = prefixTree.getLinksByString(searchStr);
+        return cb(null, searchedProducts);
+    }
+
     function reorder(products, cb){
         var mult = (order === "greater") ? 1 : -1;
         var sorted = products.sort(function(p1, p2){
@@ -481,7 +498,15 @@
     function updateList(callback) {
         async.waterfall([
             function(cb){
-                reorder(products, cb)
+                var searchedProduct = new Product();
+                searchedProduct.readEl(newProduct);
+                return cb(null, searchedProduct.description);
+            },
+            function(searchStr, cb){
+                filterBySerachString(searchStr, cb)
+            },
+            function(searchedProducts, cb){
+                reorder(searchedProducts, cb)
             },
             function(reorderProducts, cb){
                 productsList.empty();

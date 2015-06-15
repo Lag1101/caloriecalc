@@ -45,6 +45,7 @@ new compressor.minify({
     type: 'uglifyjs',
     fileIn: [
         './public/socket.js',
+        './public/js/PrefixTree.js',
         './public/utils.js',
         './public/product.js',
         './public/dish.js',
