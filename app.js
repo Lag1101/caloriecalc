@@ -14,7 +14,7 @@ var sessionStore = new MongoStore({
     mongooseConnection: mongoose.connection,
     ttl: 14 * 24 * 60 * 60, // = 14 days. Default
     autoRemove: 'interval',
-    autoRemoveInterval: 180 // In minutes. Default
+    autoRemoveInterval: 24*60 // In minutes. Default
 });
 var app = express();
 var AuthError = require('./models/user').AuthError;
