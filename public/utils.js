@@ -6,7 +6,10 @@ var utils = (function(){
     var fields = ['description', 'proteins', 'triglyceride', 'carbohydrate', 'calorie', 'details'];
 
     function validate(str){
-        str = str && str.toString() || '';
+        str = str || '';
+        str = str.toString();
+        str = str.replace(' ', '');
+        str = str || '0.0';
         return str.replace(',', '.');
     }
 

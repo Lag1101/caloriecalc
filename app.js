@@ -10,7 +10,12 @@ var Session = require('express-session');
 var mongoose = require('./lib/mongoose');
 
 var MongoStore = require('connect-mongo')(Session);
-var sessionStore = new MongoStore({ mongooseConnection: mongoose.connection });
+var sessionStore = new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 14 * 24 * 60 * 60, // = 14 days. Default
+    autoRemove: 'interval',
+    autoRemoveInterval: 180 // In minutes. Default
+});
 var app = express();
 var AuthError = require('./models/user').AuthError;
 

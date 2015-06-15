@@ -214,11 +214,11 @@ schema.methods.newDailyItem = function(date, newDailyItem, callback){
         function(daily, cb){
             daily.addProduct(newDailyItem, cb);
         }
-    ], function(err, daily){
+    ], function(err, dailyItem){
         if(err)
             return callback(err);
 
-        return callback(err, user);
+        return callback(err, dailyItem);
     });
 };
 schema.methods.removeDailyItem = function(date, dailyItemId, callback){
@@ -245,7 +245,7 @@ schema.methods.gerRawProductList = function(callback){
     //}, callback);
 };
 schema.methods.addProduct = function(newProduct, callback){
-    if(!newProduct) return callback(new Error('Empty product'));;
+    if(!newProduct) return callback(new Error('Empty product'));
 
 
     var user = this;

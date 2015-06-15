@@ -71,7 +71,7 @@ schema.methods.addProduct = function(newProduct, cb){
     var day = this;
     Product.prepareProduct(newProduct);
     day.additional.push(newProduct);
-    return cb(null, day);
+    return cb(null, day.additional[day.additional.length-1]);
 };
 
 schema.methods.removeProduct = function(id, cb){

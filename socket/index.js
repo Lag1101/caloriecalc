@@ -169,11 +169,11 @@ function fixDish(socket, user, fixedDish){
             logger.info('Saved', fixedDish, err);
     });
 }
-function fixDaily(socket, user, fixedProduct){
+function fixDaily(socket, user, date, fixedProduct){
     if(!fixedProduct) return;
     async.waterfall([
         function(cb){
-            user.getDailyByDate(user.date, function(err, daily){
+            user.getDailyByDate(date, function(err, daily){
                 cb(err, daily, user)
             });
         },
@@ -286,9 +286,9 @@ function getDaily(socket, user, date){
     });
 
 }
-function removeDailyProduct(socket, user, dailyItemId){
+function removeDailyProduct(socket, user, date, dailyItemId){
 
-    user.removeDailyItem(user.date, dailyItemId, function(err, user){
+    user.removeDailyItem(date, dailyItemId, function(err, user){
         if(err)
             logger.error(err);
         else {
@@ -296,13 +296,14 @@ function removeDailyProduct(socket, user, dailyItemId){
         }
     });
 }
-function addDailyProduct(socket, user, newDailyItem){
-    user.newDailyItem(user.date, newDailyItem, function(err){
+function addDailyProduct(socket, user, date, newDailyItem){
+    user.newDailyItem(date, newDailyItem, function(err, dailyItem){
         if(err)
             logger.error(err);
         else {
-            logger.info('Added daily product', newDailyItem);
-            return getDaily(socket, user, user.date);
+            logger.info('Added daily product', dailyItem);
+            socket.emit('addDailyProduct', date, dailyItem);
+            //return getDaily(socket, user, date);
         }
     });
 }
@@ -322,8 +323,6 @@ module.exports = function(server, session){
     var ios = require('socket.io-express-session');
     var io = require('socket.io').listen(server);
     io.use(ios(session)); // session support
-
-    var username = 'luckybug';
 
     io.on('connection', function(socket){
         console.info(socket.id, 'socket connected', 'session', socket.handshake.session);

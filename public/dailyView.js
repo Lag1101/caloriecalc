@@ -62,7 +62,8 @@
 
         var p = new Product();
         p.readEl(newItem);
-        socket.emit('addDailyProduct', p);
+        var date = dailyDate.val();
+        socket.emit('addDailyProduct', date, p);
 
         Product.emptyProduct.writeEl(newItem);
         //saveDaily();
@@ -101,6 +102,10 @@
         responseDaily(dailyDate.val());
         updateLinks();
         reCalcDaily();
+    });
+    socket.on('addDailyProduct', function(date, newDailyProduct){
+        if(date ===  dailyDate.val())
+            addAdditionalProduct(newDailyProduct);
     });
 
     dailyDate.on('input propertychange paste', function(){
@@ -155,6 +160,18 @@
         links.calorie = daily.find('.calorie:not(.notCalc)');
     }
 
+    function addAdditionalProduct(additional){
+        var clone = newItem.clone();
+        clone.removeClass('newItem').addClass('additionalProduct');
+        clone.find('.addButton')
+            .off('click')
+            .removeClass('addButton')
+            .addClass('remove')
+            .text('-');
+        newItem.before(clone);
+        restoreDailyItem(clone, additional);
+    }
+
     function restoreDaily(newDay, cb){
 
         var dailyProducts = new Day(newDay);
@@ -167,17 +184,7 @@
                 }, cb)
             },
             function(cb){
-                dailyProducts.additional.map(function(additional){
-                    var clone = newItem.clone();
-                    clone.removeClass('newItem').addClass('additionalProduct');
-                    clone.find('.addButton')
-                        .off('click')
-                        .removeClass('addButton')
-                        .addClass('remove')
-                        .text('-');
-                    newItem.before(clone);
-                    restoreDailyItem(clone, additional);
-                });
+                dailyProducts.additional.map(addAdditionalProduct);
                 return cb();
             }
         ], function(err){
@@ -213,58 +220,38 @@
         return product.getRaw();
     }
 
-    function fixProduct(el, product){
+    function fixProduct(el, product, date){
         var fixedProduct = new Product();
         fixedProduct.readEl(el);
         fixedProduct.id = product.id;
-        socket.emit('fixDailyProduct', fixedProduct);
+        socket.emit('fixDailyProduct', date, fixedProduct);
     }
 
     function restoreDailyItem(el, details){
         var product = new Product(details);
         product.writeEl(el);
 
+        var date = dailyDate.val();
         el.find('.remove').off('click').click(function(){
             el.detach();
-            socket.emit('removeDailyProduct', product.id);
+            socket.emit('removeDailyProduct', date, product.id);
             reCalcDaily();
             //saveDaily();
         });
 
         el.find('.description').off('input paste').on('input paste', function(){
             reCalcDaily();
-            fixProduct(el, product);
+            fixProduct(el, product, date);
         });
         el.find('.details').off('input paste').on('input paste', function(){
             reCalcDaily();
-            fixProduct(el, product);
+            fixProduct(el, product, date);
         });
         el.find('input').off('input paste').on('input paste', function(){
             if(utils.validateField($(this)))
-                fixProduct(el, product);
+                fixProduct(el, product, date);
             reCalcDaily();
         });
         //newItem.find('.daily').val(daily.find('.newItem').find('.daily').val())
-    }
-
-    function saveDaily(){
-        var date = dailyDate.val();
-
-        var products = {
-            date: date,
-            main:[
-                createDailyItem(daily.find('.breakfast')),
-                createDailyItem(daily.find('.firstLunch')),
-                createDailyItem(daily.find('.secondLunch')),
-                createDailyItem(daily.find('.thirdLunch')),
-                createDailyItem(daily.find('.dinner')),
-                createDailyItem(daily.find('.secondDinner'))
-            ],
-            additional: []
-        };
-
-        daily.find('.additionalProduct').each(function(){
-            products.additional.push(createDailyItem($(this)));
-        });
     }
 })(socket);
