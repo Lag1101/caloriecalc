@@ -11,4 +11,6 @@ module.exports = function(app){
     app.use('/calculator', checkAuth, require('./calculator'));
     app.use('/logout',checkAuth, require('./logout'));
     app.use('/dailyNorm',checkAuth, require('./dailyNorm'));
+
+    app.use('/testPage',checkAuth, require('./testPage'));
 };
