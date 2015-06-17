@@ -309,6 +309,8 @@ function addDailyProduct(socket, user, date, newDailyItem){
 }
 
 function saveUser(user, cb){
+    if(!user)
+        return cb && cb(new Error("Such user doesn't exist"));
     return user.save(function(err, user){
         if(err)
             logger.error('Some problem with saving', user.username, err);
@@ -332,13 +334,21 @@ module.exports = function(server, session){
             if(err || !user)
                 return new Error(err);
 
+            var autoSave = setInterval(function(){
+                saveUser(user, function(err){
+                    if(err) logger.error(err);
+                });
+            }, 2*60*1000);
+
             socket
                 .on('error', function(err){
                     logger.error(err);
                     logger.info('Try to save', user.username);
+                    clearInterval(autoSave);
                     saveUser(user);
                 })
                 .on('disconnect', function () {
+                    clearInterval(autoSave);
                     saveUser(user);
                     console.info('disconnected');
                 })
