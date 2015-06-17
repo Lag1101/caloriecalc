@@ -2,7 +2,7 @@
  * Created by vasiliy.lomanov on 16.06.2015.
  */
 
-var ProductList = React.createClass({
+var DishProductList = React.createClass({
     getInitialState: function() {
         return {
             id: null,
@@ -13,13 +13,12 @@ var ProductList = React.createClass({
         var newProduct = this.refs.newProduct.getProduct();
         console.log('Added', newProduct);
         socket.emit('newProduct', newProduct);
+
+
     },
     changeHandle: function(product){
 
-        socket.emit('fixProduct', product);
-    },
-    addHandle: function(id){
-        socket.emit('newDishProduct', id);
+        socket.emit('fixDishProduct', product);
     },
     removeHandle: function(id){
         var products = this.state.products;
@@ -28,27 +27,28 @@ var ProductList = React.createClass({
             if(id === products[i]._id){
                 products.splice(i, 1);
                 this.setState({products: products});
-                socket.emit('removeProduct', id);
+                socket.emit('removeDishProduct', id);
                 return;
             }
         }
     },
     componentDidMount: function() {
-        socket.on('list', function(data){
+        socket.emit('getCurrentDishProducts');
+        socket.on('getCurrentDishProducts', function(data){
             this.setState({products: data})
         }.bind(this));
-        socket.on('newProduct', function(newProduct){
+
+        socket.on('newDishProduct', function(newProduct){
             var products = this.state.products;
             products.push(newProduct);
             this.setState({products: products})
         }.bind(this));
-        socket.emit('list');
     },
     render: function() {
         var products = this.state.products.map(function (product) {
             return (
                 <div className='product'>
-                    <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.addHandle.bind(this, product._id)}></input>
+                    <input type='button' className='btn btn-xs btn-danger inline-block item' value='-' onClick={this.removeHandle.bind(this, product._id)}></input>
                     <div className='inline-block'>
                         <Product
                                 enabled =         {true}
@@ -65,18 +65,11 @@ var ProductList = React.createClass({
                                 details =         {product.details}>
                         </Product>
                     </div>
-                    <input type='button' className='btn btn-xs btn-danger inline-block item' value='-' onClick={this.removeHandle.bind(this, product._id)}></input>
                 </div>
             );
         }.bind(this));
         return (
-            <div className="productList">
-                <div className='product newProduct'>
-                    <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.newProduct}></input>
-                    <div className='inline-block'>
-                        <Product enabled={true} ref='newProduct'/>
-                    </div>
-                </div>
+            <div className="dishList">
                 {products}
             </div>
         );

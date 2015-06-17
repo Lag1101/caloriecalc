@@ -3,7 +3,7 @@
  */
 var NumericInput = React.createClass({
     getValue: function(){
-        return this.props.value || 0.0;
+        return this.state.value || 0.0;
     },
     changeHandle: function(event){
         var str = React.findDOMNode(this.refs.input).value;
@@ -16,25 +16,34 @@ var NumericInput = React.createClass({
             valid: valid
         });
 
-        this.props.value = valid ? parseFloat(str) : 0.0;
         this.props.changeHandle();
     },
     getInitialState: function() {
         return {
             value: this.props.value || 0,
             valid: true,
-            enabled: true
+            enabled: this.props.enabled || false
         }
+    },
+    makeDisabled: function(){
+        this.setState({enabled:false});
+    },
+    makeEnabled: function(){
+        this.setState({enabled:true});
     },
     render: function() {
         var value = this.state.value;
         var enabled = this.state.enabled;
 
         var className = this.props.css + " ";
-        if(!this.state.valid)
-            className += "label-danger";
+        if(!enabled)
+            className += "disabled ";
+        else if(!this.state.valid)
+            className += "label-danger ";
         else
-            className += "label-success";
+            className += "label-success ";
+
+
 
         if(enabled) return (
             <input ref='input' value={value} className={className} onChange={this.changeHandle}></input>
@@ -47,20 +56,26 @@ var NumericInput = React.createClass({
 
 var TextInput = React.createClass({
     getValue: function(){
-        return this.props.value || '';
+        return this.state.value || '';
     },
     changeHandle: function(event){
-        this.props.value = React.findDOMNode(this.refs.div).innerHTML ;
+        this.setState({value: React.findDOMNode(this.refs.div).innerHTML});
         this.props.changeHandle();
     },
     getInitialState: function() {
         return {
-            value: '',
-            enabled: true
+            value: this.props.value || '',
+            enabled: this.props.enabled || false
         }
     },
+    makeDisabled: function(){
+        this.setState({enabled:false});
+    },
+    makeEnabled: function(){
+        this.setState({enabled:true});
+    },
     render: function() {
-        var value = this.props.value;
+        var value = this.state.value;
         var enabled = this.state.enabled;
 
         var className = this.props.css + " ";

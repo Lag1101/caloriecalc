@@ -5,22 +5,24 @@
 var ProductBox = React.createClass({
     getInitialState: function() {
         return {
-            data: []
+            products: []
         }
     },
     componentDidMount: function() {
-        socket.on('list', function(data){
-            this.setState({data: data})
-        }.bind(this));
-        socket.emit('list');
+
     },
     changeHandle: function(){
         console.log('product changed', this.getProduct());
     },
     render: function() {
         return (
-            <div className="myTable" >
-                <ProductList data={this.state.data} />
+            <div>
+                <div className="myTable" >
+                    <DishProductList />
+                </div>
+                <div className="myTable" >
+                    <ProductList />
+                </div>
             </div>
         );
     }
@@ -29,6 +31,6 @@ var ProductBox = React.createClass({
 
 
 React.render(
-    <ProductBox data />,
+    <ProductBox />,
     document.getElementById('content')
 );

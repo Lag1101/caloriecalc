@@ -6,35 +6,65 @@
 var Product = React.createClass({
     getProduct: function(){
         return {
-            id: this.props.id,
-            description: this.refs.description.getValue(),
-            proteins: this.refs.proteins.getValue(),
-            triglyceride: this.refs.triglyceride.getValue(),
-            carbohydrate: this.refs.carbohydrate.getValue(),
-            calorie: this.refs.calorie.getValue(),
-            mass: this.refs.mass.getValue(),
-            details: this.refs.details.getValue()
+            id:              this.props.id,
+            description:     this.refs.description.getValue(),
+            proteins:        this.refs.proteins.getValue(),
+            triglyceride:    this.refs.triglyceride.getValue(),
+            carbohydrate:    this.refs.carbohydrate.getValue(),
+            calorie:         this.refs.calorie.getValue(),
+            mass:            this.refs.mass.getValue(),
+            details:         this.refs.details.getValue(),
         };
     },
     getInitialState: function() {
         return {
-            //id: null
+            enabled:         this.props.enabled || false
         }
     },
     changeHandle: function(){
-        //console.log('product changed', this.getProduct());
-        this.props.changeHandle(this.getProduct());
+        this.props.changeHandle && this.props.changeHandle(this.getProduct());
+    },
+    makeDisabled: function(){
+        var refs = this.refs;
+        [
+            refs.description,
+            refs.proteins,
+            refs.triglyceride,
+            refs.carbohydrate,
+            refs.calorie,
+            refs.mass,
+            refs.details
+        ].map(function(ref){
+                ref.makeDisabled();
+            });
+    },
+    makeEnabled: function(){
+        var refs = this.refs;
+        [
+            refs.description,
+            refs.proteins,
+            refs.triglyceride,
+            refs.carbohydrate,
+            refs.calorie,
+            refs.mass,
+            refs.details
+        ].map(function(ref){
+                ref.makeEnabled();
+            });
+    },
+    componentDidMount: function(){
+
     },
     render: function() {
         return (
-            <div className='product'>
-                <TextInput     css='description item'   changeHandle={this.changeHandle} value={this.props.description}     ref='description'></TextInput>
-                <NumericInput  css='proteins item'      changeHandle={this.changeHandle} value={this.props.proteins}        ref='proteins'></NumericInput>
-                <NumericInput  css='triglyceride item'  changeHandle={this.changeHandle} value={this.props.triglyceride}    ref='triglyceride'></NumericInput>
-                <NumericInput  css='carbohydrate item'  changeHandle={this.changeHandle} value={this.props.carbohydrate}    ref='carbohydrate'></NumericInput>
-                <NumericInput  css='calorie item'       changeHandle={this.changeHandle} value={this.props.calorie}         ref='calorie'></NumericInput>
-                <NumericInput  css='mass item'          changeHandle={this.changeHandle} value={this.props.mass}            ref='mass'></NumericInput>
-                <TextInput     css='details item'       changeHandle={this.changeHandle} value={this.props.details}     className='details'         ref='details'></TextInput>
+            <div>
+                <TextInput    enabled={this.state.enabled} css='description item'   changeHandle={this.changeHandle} value={this.props.description}              ref='description'></TextInput>
+                <NumericInput enabled={this.state.enabled} css='proteins item'      changeHandle={this.changeHandle} value={this.props.proteins}                 ref='proteins'></NumericInput>
+                <NumericInput enabled={this.state.enabled} css='triglyceride item'  changeHandle={this.changeHandle} value={this.props.triglyceride}             ref='triglyceride'></NumericInput>
+                <NumericInput enabled={this.state.enabled} css='carbohydrate item'  changeHandle={this.changeHandle} value={this.props.carbohydrate}             ref='carbohydrate'></NumericInput>
+                <NumericInput enabled={this.state.enabled} css='calorie item'       changeHandle={this.changeHandle} value={this.props.calorie}                  ref='calorie'></NumericInput>
+                <NumericInput enabled={this.state.enabled} css='mass item'          changeHandle={this.changeHandle} value={this.props.mass || 100.0}            ref='mass'></NumericInput>
+                <TextInput    enabled={this.state.enabled} css='details item'       changeHandle={this.changeHandle} value={this.props.details}                  ref='details'></TextInput>
             </div>
         );
     }
