@@ -3,14 +3,15 @@
  */
 var NumericInput = React.createClass({
     getValue: function(){
-        return this.state.value || 0.0;
+        return this.props.value;
     },
     changeHandle: function(event){
         var str = React.findDOMNode(this.refs.input).value;
         str = str.replace(',','.');
         str = str.replace(/[^\d\.]/g, '');
 
-        var valid = !isNaN(parseFloat(str))
+        var valid = !isNaN(parseFloat(str));
+        this.props.value = str;
         this.setState({
             value: str,
             valid: valid
@@ -62,16 +63,18 @@ var NumericInput = React.createClass({
 
 var TextInput = React.createClass({
     getValue: function(){
-        return this.state.value || '';
+        return this.props.value;
     },
     changeHandle: function(event){
-        this.setState({value: React.findDOMNode(this.refs.div).innerHTML});
+        var str = React.findDOMNode(this.refs.div).innerHTML;
+        this.props.value = str;
+        this.setState({value: str});
         this.props.changeHandle();
     },
     getInitialState: function() {
         return {
             value: this.props.value,
-            enabled: this.props.enabled || false
+            enabled: this.props.enabled
         }
     },
     makeDisabled: function(){

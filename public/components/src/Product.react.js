@@ -13,7 +13,7 @@ var Product = React.createClass({
             carbohydrate:    this.refs.carbohydrate.getValue(),
             calorie:         this.refs.calorie.getValue(),
             mass:            this.refs.mass.getValue(),
-            details:         this.refs.details.getValue(),
+            details:         this.refs.details.getValue()
         };
     },
     getInitialState: function() {
