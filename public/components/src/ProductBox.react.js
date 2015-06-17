@@ -5,29 +5,22 @@
 var ProductBox = React.createClass({
     getInitialState: function() {
         return {
-            id: null
+            data: []
         }
+    },
+    componentDidMount: function() {
+        socket.on('list', function(data){
+            this.setState({data: data})
+        }.bind(this));
+        socket.emit('list');
     },
     changeHandle: function(){
         console.log('product changed', this.getProduct());
     },
     render: function() {
-        var products = this.props.data.map(function (product) {
-            return (
-                <Product  id =              {product.id}
-                          description =     {product.description}
-                          proteins =        {product.proteins}
-                          triglyceride =    {product.triglyceride}
-                          carbohydrate =    {product.carbohydrate}
-                          calorie =         {product.calorie}
-                          mass =            {product.mass}
-                          details =         {product.details}>
-                </Product>
-            );
-        });
         return (
-            <div className="productList">
-                {products}
+            <div className="myTable" >
+                <ProductList data={this.state.data} />
             </div>
         );
     }
@@ -36,6 +29,6 @@ var ProductBox = React.createClass({
 
 
 React.render(
-    <ProductList />,
+    <ProductBox data />,
     document.getElementById('content')
 );

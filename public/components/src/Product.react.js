@@ -18,22 +18,23 @@ var Product = React.createClass({
     },
     getInitialState: function() {
         return {
-            id: null
+            //id: null
         }
     },
     changeHandle: function(){
-        console.log('product changed', this.getProduct());
+        //console.log('product changed', this.getProduct());
+        this.props.changeHandle(this.getProduct());
     },
     render: function() {
         return (
             <div className='product'>
-                <TextInput      changeHandle={this.changeHandle}   ref='description'></TextInput>
-                <NumericInput   changeHandle={this.changeHandle}   ref='proteins'></NumericInput>
-                <NumericInput   changeHandle={this.changeHandle}   ref='triglyceride'></NumericInput>
-                <NumericInput   changeHandle={this.changeHandle}   ref='carbohydrate'></NumericInput>
-                <NumericInput   changeHandle={this.changeHandle}   ref='calorie'></NumericInput>
-                <NumericInput   changeHandle={this.changeHandle}   ref='mass'></NumericInput>
-                <TextInput      changeHandle={this.changeHandle}   ref='details'></TextInput>
+                <TextInput     css='description item'   changeHandle={this.changeHandle} value={this.props.description}     ref='description'></TextInput>
+                <NumericInput  css='proteins item'      changeHandle={this.changeHandle} value={this.props.proteins}        ref='proteins'></NumericInput>
+                <NumericInput  css='triglyceride item'  changeHandle={this.changeHandle} value={this.props.triglyceride}    ref='triglyceride'></NumericInput>
+                <NumericInput  css='carbohydrate item'  changeHandle={this.changeHandle} value={this.props.carbohydrate}    ref='carbohydrate'></NumericInput>
+                <NumericInput  css='calorie item'       changeHandle={this.changeHandle} value={this.props.calorie}         ref='calorie'></NumericInput>
+                <NumericInput  css='mass item'          changeHandle={this.changeHandle} value={this.props.mass}            ref='mass'></NumericInput>
+                <TextInput     css='details item'       changeHandle={this.changeHandle} value={this.props.details}     className='details'         ref='details'></TextInput>
             </div>
         );
     }

@@ -8,23 +8,29 @@ var ProductList = React.createClass({
             id: null
         }
     },
-    changeHandle: function(){
-        console.log('product changed', this.getProduct());
+    changeHandle: function(product){
+        console.log('product changed', product);
+
+        socket.emit('fixProduct', product);
     },
     render: function() {
         var products = this.props.data.map(function (product) {
             return (
-                <Product  id =              {product.id}
-                          description =     {product.description}
-                          proteins =        {product.proteins}
-                          triglyceride =    {product.triglyceride}
-                          carbohydrate =    {product.carbohydrate}
-                          calorie =         {product.calorie}
-                          mass =            {product.mass}
-                          details =         {product.details}>
+                <Product
+                        ref=''
+                        changeHandle={this.changeHandle}
+                        key =             {product._id}
+                        id =              {product._id}
+                        description =     {product.description}
+                        proteins =        {product.proteins}
+                        triglyceride =    {product.triglyceride}
+                        carbohydrate =    {product.carbohydrate}
+                        calorie =         {product.calorie}
+                        mass =            {product.mass}
+                        details =         {product.details}>
                 </Product>
             );
-        });
+        }.bind(this));
         return (
             <div className="productList">
                 {products}

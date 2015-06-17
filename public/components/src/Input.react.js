@@ -9,17 +9,19 @@ var NumericInput = React.createClass({
         var str = React.findDOMNode(this.refs.input).value;
         str = str.replace(',','.');
         str = str.replace(/[^\d\.]/g, '');
+
+        var valid = !isNaN(parseFloat(str))
         this.setState({
             value: str,
-            valid: !isNaN(parseFloat(str))
+            valid: valid
         });
 
-        this.props.value = this.state.valid ? parseFloat(str) : 0.0;
+        this.props.value = valid ? parseFloat(str) : 0.0;
         this.props.changeHandle();
     },
     getInitialState: function() {
         return {
-            value: '0.0',
+            value: this.props.value || 0,
             valid: true,
             enabled: true
         }
@@ -28,7 +30,7 @@ var NumericInput = React.createClass({
         var value = this.state.value;
         var enabled = this.state.enabled;
 
-        var className = "item ";
+        var className = this.props.css + " ";
         if(!this.state.valid)
             className += "label-danger";
         else
@@ -61,7 +63,7 @@ var TextInput = React.createClass({
         var value = this.props.value;
         var enabled = this.state.enabled;
 
-        var className = "myLabel ";
+        var className = this.props.css + " ";
         if(this.state.enabled)
             className += "enableForInput";
         else
