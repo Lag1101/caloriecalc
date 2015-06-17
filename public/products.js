@@ -386,13 +386,13 @@
     function buildPrefixTree(products){
         console.time("buildPrefixTree");
         products.map(function(product){
-            prefixTree.addString(product.description, product);
+            prefixTree.addString(product.description.toLowerCase(), product);
         });
         console.timeEnd("buildPrefixTree");
     }
 
     function filterBySerachString(searchStr, cb){
-        var searchedProducts = prefixTree.getLinksByString(searchStr);
+        var searchedProducts = prefixTree.getLinksByString(searchStr.toLowerCase());
         return cb(null, searchedProducts);
     }
 
@@ -506,7 +506,9 @@
                 return cb(null, searchedProduct.description);
             },
             function(searchStr, cb){
-                filterBySerachString(searchStr, cb)
+                if(searchStr)
+                    filterBySerachString(searchStr.toLowerCase(), cb);
+                else return cb(null, products);
             },
             function(searchedProducts, cb){
                 reorder(searchedProducts, cb)
