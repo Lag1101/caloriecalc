@@ -403,7 +403,7 @@
                 return mult;
             }
             if (p1[sortKey] > p2[sortKey]) {
-                return mult;
+                return -mult;
             }
             // a must be equal to b
             return 0;
