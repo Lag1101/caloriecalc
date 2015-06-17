@@ -27,7 +27,7 @@ var ProductList = React.createClass({
         {
             if(id === products[i]._id){
                 products.splice(i, 1);
-                this.setState({products: products});
+                this.setState({products: products.sort(this.refs.sortBar.getSortFunction())});
                 socket.emit('removeProduct', id);
                 return;
             }
@@ -35,14 +35,20 @@ var ProductList = React.createClass({
     },
     componentDidMount: function() {
         socket.on('list', function(data){
-            this.setState({products: data})
+            this.setState({products: data.sort(this.refs.sortBar.getSortFunction())})
         }.bind(this));
         socket.on('newProduct', function(newProduct){
             var products = this.state.products;
             products.push(newProduct);
-            this.setState({products: products})
+            this.setState({products: products.sort(this.refs.sortBar.getSortFunction())})
         }.bind(this));
         socket.emit('list');
+    },
+    resort: function(sortingFunction){
+        this.setState({
+            sortingFunction: sortingFunction,
+            products: this.state.products.sort(this.refs.sortBar.getSortFunction())
+        });
     },
     render: function() {
         var products = this.state.products.map(function (product) {
@@ -71,6 +77,7 @@ var ProductList = React.createClass({
         }.bind(this));
         return (
             <div className="productList">
+                <Sorting ref='sortBar' changeHandle={this.resort}/>
                 <div className='product newProduct'>
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.newProduct}></input>
                     <div className='inline-block'>
