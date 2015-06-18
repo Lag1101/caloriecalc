@@ -321,6 +321,77 @@ function saveUser(user, cb){
     });
 }
 
+
+function socketSetupHandles(socket, user){
+
+    var autoSave = setInterval(function(){
+        saveUser(user, function(err){
+            if(err) logger.error(err);
+        });
+    }, 2*60*1000);
+
+    socket
+        .on('error', function(err){
+            logger.error(err);
+            logger.info('Try to save', user.username);
+            clearInterval(autoSave);
+            saveUser(user);
+        })
+        .on('disconnect', function () {
+            clearInterval(autoSave);
+            saveUser(user);
+            console.info('disconnected');
+        })
+        .on('list',                     list.bind(null, socket, user))
+        .on('newProduct',               newProduct.bind(null, socket, user))
+        .on('removeProduct',            removeProduct.bind(null, socket, user))
+
+        .on('getDaily',                 getDaily.bind(null, socket, user))
+        .on('fixDailyProduct',          fixDaily.bind(null, socket, user))
+        .on('removeDailyProduct',       removeDailyProduct.bind(null, socket, user))
+        .on('addDailyProduct',          addDailyProduct.bind(null, socket, user))
+
+        .on('getCurrentDishProducts',   getCurrentDishProducts.bind(null, socket, user))
+        .on('newDishProduct',           newDishProduct.bind(null, socket, user))
+        .on('removeDishProduct',        removeDishProduct.bind(null, socket, user))
+
+        .on('getCurrentDate',           getCurrentDate.bind(null, socket, user))
+        .on('setCurrentDate',           setCurrentDate.bind(null, socket, user))
+
+        .on('fixProduct',               fixProduct.bind(null, socket, user))
+        .on('fixDishProduct',           fixDishProduct.bind(null, socket,  user))
+
+        .on('getCurrentDishes',         getCurrentDishes.bind(null, socket, user))
+        .on('addDish',                  addDish.bind(null, socket, user))
+        .on('removeDish',               removeDish.bind(null, socket, user))
+        .on('fixDish',                  fixDish.bind(null, socket, user))
+
+        .on('getBody', getBody.bind(null, socket, user))
+        .on('setBody', setBody.bind(null, socket, user))
+
+        .on('getNorm', getNorm.bind(null, socket, user))
+        .on('setNorm', setNorm.bind(null, socket, user))
+}
+
+var CacheDatum = (function(){
+    var expirationTime = 1000*60*60*24*7;
+    function CacheDatum(val){
+        this.val = val;
+        this.lastUpdate = Date.now();
+    }
+    CacheDatum.prototype.expired = function(){
+        var now = Date.now();
+        return now - this.lastUpdate > expirationTime;
+    };
+    CacheDatum.prototype.get = function(){
+        this.lastUpdate = Date.now();
+        return this.val;
+    };
+    return CacheDatum;
+})();
+
+var userCache = Object.create(null);
+
 module.exports = function(server, session){
     var ios = require('socket.io-express-session');
     var io = require('socket.io').listen(server);
@@ -329,59 +400,17 @@ module.exports = function(server, session){
     io.on('connection', function(socket){
         console.info(socket.id, 'socket connected', 'session', socket.handshake.session);
         var username = socket.handshake.session.username;
-
-        User.findOne({username: username}, function(err, user){
-            if(err || !user)
-                return new Error(err);
-
-            var autoSave = setInterval(function(){
-                saveUser(user, function(err){
-                    if(err) logger.error(err);
-                });
-            }, 2*60*1000);
-
-            socket
-                .on('error', function(err){
-                    logger.error(err);
-                    logger.info('Try to save', user.username);
-                    clearInterval(autoSave);
-                    saveUser(user);
-                })
-                .on('disconnect', function () {
-                    clearInterval(autoSave);
-                    saveUser(user);
-                    console.info('disconnected');
-                })
-                .on('list',                     list.bind(null, socket, user))
-                .on('newProduct',               newProduct.bind(null, socket, user))
-                .on('removeProduct',            removeProduct.bind(null, socket, user))
-
-                .on('getDaily',                 getDaily.bind(null, socket, user))
-                .on('fixDailyProduct',          fixDaily.bind(null, socket, user))
-                .on('removeDailyProduct',       removeDailyProduct.bind(null, socket, user))
-                .on('addDailyProduct',          addDailyProduct.bind(null, socket, user))
-
-                .on('getCurrentDishProducts',   getCurrentDishProducts.bind(null, socket, user))
-                .on('newDishProduct',           newDishProduct.bind(null, socket, user))
-                .on('removeDishProduct',        removeDishProduct.bind(null, socket, user))
-
-                .on('getCurrentDate',           getCurrentDate.bind(null, socket, user))
-                .on('setCurrentDate',           setCurrentDate.bind(null, socket, user))
-
-                .on('fixProduct',               fixProduct.bind(null, socket, user))
-                .on('fixDishProduct',           fixDishProduct.bind(null, socket,  user))
-
-                .on('getCurrentDishes',         getCurrentDishes.bind(null, socket, user))
-                .on('addDish',                  addDish.bind(null, socket, user))
-                .on('removeDish',               removeDish.bind(null, socket, user))
-                .on('fixDish',                  fixDish.bind(null, socket, user))
-
-                .on('getBody', getBody.bind(null, socket, user))
-                .on('setBody', setBody.bind(null, socket, user))
-
-                .on('getNorm', getNorm.bind(null, socket, user))
-                .on('setNorm', setNorm.bind(null, socket, user))
-        });
+        
+        if(userCache[username])
+            socketSetupHandles(socket, userCache[username].get());
+        else {
+            User.findOne({username: username}, function (err, user) {
+                if (err || !user)
+                    return new Error(err);
+                userCache[username] = new CacheDatum(user);
+                socketSetupHandles(socket, user);
+            });
+        }
 
     });
 };
