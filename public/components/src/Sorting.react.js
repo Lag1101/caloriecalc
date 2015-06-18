@@ -3,39 +3,58 @@
  */
 
 var Sorting = React.createClass({
-    getSortFunction: function(){
-        var SortBy = this.state.SortBy;
-        var SortOrder = this.state.SortOrder;
-
-        var sort = function(sortBy, sortOrder, p1, p2){
-
-            var mult = (SortOrder === "greater") ? -1 : 1;
-
-            if (p1[sortBy] < p2[sortBy]) {
-                return mult;
-            }
-            if (p1[sortBy] > p2[sortBy]) {
-                return -mult;
-            }
-            // a must be equal to b
+    statics: {
+        greater: function (sortBy, p1, p2) {
+            if (p1[sortBy] < p2[sortBy]) return -1;
+            if (p1[sortBy] > p2[sortBy]) return 1;
             return 0;
-        };
-
-        return sort.bind(null, SortBy, SortOrder);
+        },
+        defaultCompare: function (sortBy, p1, p2) {
+            if (p1[sortBy] < p2[sortBy]) return -1;
+            if (p1[sortBy] > p2[sortBy]) return 1;
+            return 0;
+        }.bind(null, 'description'),
+        less: function (sortBy, p1, p2) {
+            if (p1[sortBy] < p2[sortBy]) return 1;
+            if (p1[sortBy] > p2[sortBy]) return -1;
+            return 0;
+        }
     },
-    getInitialState: function() {
+    getSortFunction: function(){
+        var SortBy = this.props.SortBy;
+        var SortOrder = this.props.SortOrder;
+
+        if(SortOrder === "greater")
+            return Sorting.greater.bind(null, SortBy);
+        else
+            return Sorting.less.bind(null, SortBy);
+    },
+    getDefaultProps: function() {
         return {
             SortBy:         'description',
             SortOrder:         'greater'
+        };
+    },
+    getInitialState: function() {
+        return {
+            SortBy:         this.props.SortBy,
+            SortOrder:      this.props.SortOrder
         }
     },
     changeHandle: function(event){
-        console.log(React.findDOMNode(this.refs.SortBy).value);
-        this.state.SortBy = React.findDOMNode(this.refs.SortBy).value;
-        this.state.SortOrder = React.findDOMNode(this.refs.SortOrder).value;
-        this.setState({});
+        var sortBy = React.findDOMNode(this.refs.SortBy).value;
+        var sortOrder = React.findDOMNode(this.refs.SortOrder).value;
+
+        this.props.SortBy = sortBy;
+        this.props.SortOrder = sortOrder;
+
+        this.setState({
+            SortBy: sortBy,
+            SortOrder: sortOrder
+        });
 
         this.props.changeHandle && this.props.changeHandle(this.getSortFunction());
+
     },
     componentDidMount: function(){
 

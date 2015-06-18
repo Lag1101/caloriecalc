@@ -9,6 +9,11 @@ var ProductList = React.createClass({
             products: []
         }
     },
+    getDefaultProps: function() {
+        return {
+            compareFunction: Sorting.defaultCompare
+        };
+    },
     newProduct: function(){
         var newProduct = this.refs.newProduct.getProduct();
         console.log('Added', newProduct);
@@ -27,7 +32,7 @@ var ProductList = React.createClass({
         {
             if(id === products[i]._id){
                 products.splice(i, 1);
-                this.setState({products: products.sort(this.refs.sortBar.getSortFunction())});
+                this.setState({products: products.sort(this.props.compareFunction)});
                 socket.emit('removeProduct', id);
                 return;
             }
@@ -35,19 +40,20 @@ var ProductList = React.createClass({
     },
     componentDidMount: function() {
         socket.on('list', function(data){
-            this.setState({products: data.sort(this.refs.sortBar.getSortFunction())})
+            this.setState({products: data.sort(this.props.compareFunction)})
         }.bind(this));
         socket.on('newProduct', function(newProduct){
             var products = this.state.products;
             products.push(newProduct);
-            this.setState({products: products.sort(this.refs.sortBar.getSortFunction())})
+            this.setState({products: products.sort(this.props.compareFunction)})
         }.bind(this));
         socket.emit('list');
     },
-    resort: function(sortingFunction){
+    changeSorting: function(sortingFunction){
+        this.props.compareFunction = this.refs.sortBar.getSortFunction();
         this.setState({
             sortingFunction: sortingFunction,
-            products: this.state.products.sort(this.refs.sortBar.getSortFunction())
+            products: this.state.products.sort(this.props.compareFunction)
         });
     },
     render: function() {
@@ -77,7 +83,7 @@ var ProductList = React.createClass({
         }.bind(this));
         return (
             <div className="productList">
-                <Sorting ref='sortBar' changeHandle={this.resort}/>
+                <Sorting ref='sortBar' changeHandle={this.changeSorting}/>
                 <div className='product newProduct'>
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.newProduct}></input>
                     <div className='inline-block'>
