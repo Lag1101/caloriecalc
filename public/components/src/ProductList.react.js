@@ -63,6 +63,7 @@ var ProductList = React.createClass({
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.addHandle.bind(this, product._id)}></input>
                     <div className='inline-block'>
                         <Product
+                                hide=             {{details: true, mass: true}}
                                 enabled =         {true}
                                 ref =             {product._id}
                                 changeHandle=     {this.changeHandle}
@@ -87,7 +88,10 @@ var ProductList = React.createClass({
                 <div className='product newProduct'>
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.newProduct}></input>
                     <div className='inline-block'>
-                        <Product enabled={true} ref='newProduct'/>
+                        <Product
+                            enabled={true}
+                            ref='newProduct'
+                            hide=             {{details: true, mass: true}}/>
                     </div>
                 </div>
                 {products}

@@ -22,7 +22,8 @@ var NumericInput = React.createClass({
     getDefaultProps: function() {
         return {
             value: 0,
-            enabled: false
+            enabled: false,
+            hidden: false
         };
     },
     getInitialState: function() {
@@ -39,6 +40,8 @@ var NumericInput = React.createClass({
         this.setState({enabled:true});
     },
     render: function() {
+        if(this.props.hidden) return (<div/>);
+
         var value = this.state.value;
         var enabled = this.state.enabled;
 
@@ -90,6 +93,8 @@ var TextInput = React.createClass({
         };
     },
     render: function() {
+        if(this.props.hidden) return (<div/>);
+
         var value = this.state.value;
         var enabled = this.state.enabled;
 

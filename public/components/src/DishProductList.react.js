@@ -51,6 +51,7 @@ var DishProductList = React.createClass({
                     <input type='button' className='btn btn-xs btn-danger inline-block item' value='-' onClick={this.removeHandle.bind(this, product._id)}></input>
                     <div className='inline-block'>
                         <Product
+                                hide=             {{details: true}}
                                 enabled =         {true}
                                 ref =             {product._id}
                                 changeHandle=     {this.changeHandle}
@@ -70,6 +71,7 @@ var DishProductList = React.createClass({
         }.bind(this));
         return (
             <div className="dishList">
+                <Dish/>
                 {products}
             </div>
         );
