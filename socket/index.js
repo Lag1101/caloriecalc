@@ -8,6 +8,26 @@ var Dish = require('../models/dish').Dish;
 var async = require('async');
 var logger = require('../lib/logger');
 
+
+var DeferredCaller = (function(){
+    function DeferredCaller(time, call){
+        this.timeoutToSave = null;
+        this.time = time;
+
+        this.call = call;
+    }
+    DeferredCaller.prototype.tryToCall = function(){
+        if(this.timeoutToSave)
+            clearTimeout(this.timeoutToSave);
+
+        this.timeoutToSave = setTimeout(function(){
+            this.call();
+            this.timeoutToSave = null;
+        }.bind(this), this.time);
+    };
+    return DeferredCaller;
+})();
+
 function getCurrentDishes(socket, user){
     async.waterfall([
         function(cb){
@@ -27,7 +47,7 @@ function getCurrentDishes(socket, user){
     });
 }
 
-function addDish(socket, user, newDish){
+function addDish(socket, user, cb, newDish){
     if(!newDish) return;
     async.waterfall([
         function(cb){
@@ -40,12 +60,13 @@ function addDish(socket, user, newDish){
             logger.info('Added dish', newDish);
             return getCurrentDishes(socket, user);
         }
+        return cb();
     });
 
 }
 
 
-function removeDish(socket, user, id){
+function removeDish(socket, user, cb, id){
     async.waterfall([
         function(cb){
             user.removeDish(id, cb);
@@ -56,6 +77,7 @@ function removeDish(socket, user, id){
         else {
             logger.info('Removed dish', id);
         }
+        return cb();
     });
 }
 
@@ -78,7 +100,7 @@ function getCurrentDishProducts(socket, user){
     });
 }
 
-function newDishProduct(socket, user, newDishProductId){
+function newDishProduct(socket, user, cb, newDishProductId){
     async.waterfall([
         function(cb){
             user.addDishProduct(newDishProductId, cb);
@@ -90,12 +112,12 @@ function newDishProduct(socket, user, newDishProductId){
             logger.info('Copied dishProduct', newProduct);
             socket.emit('newDishProduct', newProduct);
         }
-
+        return cb();
     });
 
 }
 
-function removeDishProduct(socket, user, id){
+function removeDishProduct(socket, user, cb, id){
     async.waterfall([
         function(cb){
             user.removeDishProduct(id, cb);
@@ -106,6 +128,7 @@ function removeDishProduct(socket, user, id){
         else {
             logger.info('Removed product', id);
         }
+        return cb();
     });
 }
 
@@ -114,7 +137,7 @@ function getCurrentDate(socket, user){
     socket.emit('getCurrentDate', user.date);
 }
 
-function setCurrentDate(socket, user, date){
+function setCurrentDate(socket, user, cb, date){
     if(!date) {
         logger.error('Empty date');
         return;
@@ -123,12 +146,13 @@ function setCurrentDate(socket, user, date){
     user.date = date;
     logger.info('set date', date);
     getDaily(socket, user, user.date);
+    return cb();
 }
 function getBody(socket, user){
     logger.info('get body', user.body);
     socket.emit('getBody', user.body);
 }
-function setBody(socket, user, body){
+function setBody(socket, user, cb, body){
     if(!body) {
         logger.error('Empty body');
         return;
@@ -136,11 +160,12 @@ function setBody(socket, user, body){
 
     user.body = body;
     logger.info('set body', body);
+    return cb();
 }
 function getNorm(socket, user){
     socket.emit('getNorm', user.norm);
 }
-function setNorm(socket, user, norm){
+function setNorm(socket, user, cb, norm){
     if(!norm) {
         logger.error('Empty norm');
         return;
@@ -148,8 +173,9 @@ function setNorm(socket, user, norm){
 
     user.norm = norm;
     logger.info('set norm', norm);
+    return cb();
 }
-function fixDish(socket, user, fixedDish){
+function fixDish(socket, user, cb, fixedDish){
     if(!fixedDish) return;
     async.waterfall([
         function(cb){
@@ -167,9 +193,10 @@ function fixDish(socket, user, fixedDish){
             logger.error(err);
         else
             logger.info('Saved', fixedDish, err);
+        return cb();
     });
 }
-function fixDaily(socket, user, date, fixedProduct){
+function fixDaily(socket, user, cb, date, fixedProduct){
     if(!fixedProduct) return;
     async.waterfall([
         function(cb){
@@ -187,9 +214,10 @@ function fixDaily(socket, user, date, fixedProduct){
             logger.error(err);
         else
             logger.info('Saved', fixedProduct, err);
+        return cb();
     });
 }
-function fixDishProduct(socket, user, fixedProduct){
+function fixDishProduct(socket, user, cb, fixedProduct){
     if(!fixedProduct) return;
     async.waterfall([
         function(cb){
@@ -207,9 +235,10 @@ function fixDishProduct(socket, user, fixedProduct){
             logger.error(err);
         else
             logger.info('Saved', fixedProduct, err);
+        return cb();
     });
 }
-function fixProduct(socket, user, fixedProduct){
+function fixProduct(socket, user, cb, fixedProduct){
     if(!fixedProduct) return;
     async.waterfall([
         function(cb){
@@ -227,6 +256,7 @@ function fixProduct(socket, user, fixedProduct){
             logger.error(err);
         else
             logger.info('Saved', fixedProduct, err);
+        return cb();
     });
 }
 
@@ -249,7 +279,7 @@ function list(socket, user){
     });
 }
 
-function newProduct(socket, user, newProductRaw){
+function newProduct(socket, user, cb, newProductRaw){
     user.addProduct(newProductRaw,  function(err, newProduct){
         if(err)
             logger.error(err);
@@ -257,15 +287,17 @@ function newProduct(socket, user, newProductRaw){
             logger.info('Added product', newProduct);
             socket.emit('newProduct', newProduct);
         }
+        return cb();
     });
 }
-function removeProduct(socket, user, id){
+function removeProduct(socket, user, cb, id){
     user.removeProduct(id, function(err){
         if(err)
             logger.error(err);
         else {
             logger.info('Removed product', id);
         }
+        return cb();
     });
 }
 function getDaily(socket, user, date){
@@ -286,7 +318,7 @@ function getDaily(socket, user, date){
     });
 
 }
-function removeDailyProduct(socket, user, date, dailyItemId){
+function removeDailyProduct(socket, user, cb, date, dailyItemId){
 
     user.removeDailyItem(date, dailyItemId, function(err, user){
         if(err)
@@ -294,9 +326,10 @@ function removeDailyProduct(socket, user, date, dailyItemId){
         else {
             logger.info('Removed daily product', dailyItemId);
         }
+        return cb();
     });
 }
-function addDailyProduct(socket, user, date, newDailyItem){
+function addDailyProduct(socket, user, cb, date, newDailyItem){
     user.newDailyItem(date, newDailyItem, function(err, dailyItem){
         if(err)
             logger.error(err);
@@ -305,10 +338,12 @@ function addDailyProduct(socket, user, date, newDailyItem){
             socket.emit('addDailyProduct', date, dailyItem);
             //return getDaily(socket, user, date);
         }
+        return cb();
     });
 }
 
 function saveUser(user, cb){
+    logger.info('Try to save', user.username);
     if(!user)
         return cb && cb(new Error("Such user doesn't exist"));
     return user.save(function(err, user){
@@ -321,56 +356,50 @@ function saveUser(user, cb){
     });
 }
 
-
 function socketSetupHandles(socket, user){
-
-    var autoSave = setInterval(function(){
+    var saver = new DeferredCaller(10*1000, function(){
         saveUser(user, function(err){
             if(err) logger.error(err);
         });
-    }, 2*60*1000);
+    });
+    var save = saver.tryToCall.bind(saver);
 
     socket
         .on('error', function(err){
             logger.error(err);
-            logger.info('Try to save', user.username);
-            clearInterval(autoSave);
-            saveUser(user);
         })
         .on('disconnect', function () {
-            clearInterval(autoSave);
-            saveUser(user);
             console.info('disconnected');
         })
         .on('list',                     list.bind(null, socket, user))
-        .on('newProduct',               newProduct.bind(null, socket, user))
-        .on('removeProduct',            removeProduct.bind(null, socket, user))
+        .on('newProduct',               newProduct.bind(null, socket, user, save))
+        .on('removeProduct',            removeProduct.bind(null, socket, user, save))
 
         .on('getDaily',                 getDaily.bind(null, socket, user))
-        .on('fixDailyProduct',          fixDaily.bind(null, socket, user))
-        .on('removeDailyProduct',       removeDailyProduct.bind(null, socket, user))
-        .on('addDailyProduct',          addDailyProduct.bind(null, socket, user))
+        .on('fixDailyProduct',          fixDaily.bind(null, socket, user, save))
+        .on('removeDailyProduct',       removeDailyProduct.bind(null, socket, user, save))
+        .on('addDailyProduct',          addDailyProduct.bind(null, socket, user, save))
 
         .on('getCurrentDishProducts',   getCurrentDishProducts.bind(null, socket, user))
-        .on('newDishProduct',           newDishProduct.bind(null, socket, user))
-        .on('removeDishProduct',        removeDishProduct.bind(null, socket, user))
+        .on('newDishProduct',           newDishProduct.bind(null, socket, user, save))
+        .on('removeDishProduct',        removeDishProduct.bind(null, socket, user, save))
 
         .on('getCurrentDate',           getCurrentDate.bind(null, socket, user))
-        .on('setCurrentDate',           setCurrentDate.bind(null, socket, user))
+        .on('setCurrentDate',           setCurrentDate.bind(null, socket, user, save))
 
-        .on('fixProduct',               fixProduct.bind(null, socket, user))
-        .on('fixDishProduct',           fixDishProduct.bind(null, socket,  user))
+        .on('fixProduct',               fixProduct.bind(null, socket, user, save))
+        .on('fixDishProduct',           fixDishProduct.bind(null, socket,  user, save))
 
         .on('getCurrentDishes',         getCurrentDishes.bind(null, socket, user))
-        .on('addDish',                  addDish.bind(null, socket, user))
-        .on('removeDish',               removeDish.bind(null, socket, user))
-        .on('fixDish',                  fixDish.bind(null, socket, user))
+        .on('addDish',                  addDish.bind(null, socket, user, save))
+        .on('removeDish',               removeDish.bind(null, socket, user, save))
+        .on('fixDish',                  fixDish.bind(null, socket, user, save))
 
         .on('getBody', getBody.bind(null, socket, user))
-        .on('setBody', setBody.bind(null, socket, user))
+        .on('setBody', setBody.bind(null, socket, user, save))
 
         .on('getNorm', getNorm.bind(null, socket, user))
-        .on('setNorm', setNorm.bind(null, socket, user))
+        .on('setNorm', setNorm.bind(null, socket, user, save))
 }
 
 var CacheDatum = (function(){

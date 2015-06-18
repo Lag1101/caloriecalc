@@ -13,8 +13,6 @@ var DishProductList = React.createClass({
         var newProduct = this.refs.newProduct.getProduct();
         console.log('Added', newProduct);
         socket.emit('newProduct', newProduct);
-
-
     },
     changeHandle: function(product){
 
@@ -43,6 +41,16 @@ var DishProductList = React.createClass({
             products.push(newProduct);
             this.setState({products: products})
         }.bind(this));
+    },
+    calcResultDish: function(){
+        var res = {
+            proteins: 0.0,
+            triglyceride: 0.0,
+            carbohydrate: 0.0,
+            calorie: 0.0
+        };
+
+
     },
     render: function() {
         var products = this.state.products.map(function (product) {
