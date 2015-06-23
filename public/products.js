@@ -23,6 +23,8 @@
     var sortKey = sortBy.find('option:selected').val();
     var order = sortOrder.find('option:selected').val();
 
+    var searchBox = $('.searchBox');
+
 
     resultDish.find('.save').click(function(){
         var full = new Product();
@@ -53,7 +55,7 @@
 
     socket.on('getDishList', restoreDishList);
 
-    newProduct.find('.description').on('input change', function(){
+    searchBox.on('input change', function(){
         updateList();
     });
     newProduct.find('input').on('input change', function(){
@@ -501,9 +503,7 @@
     function updateList(callback) {
         async.waterfall([
             function(cb){
-                var searchedProduct = new Product();
-                searchedProduct.readEl(newProduct);
-                return cb(null, searchedProduct.description);
+                return cb(null, searchBox.val());
             },
             function(searchStr, cb){
                 if(searchStr)

@@ -12,12 +12,13 @@ div(class='myTable allProducts inline-block')
          input(class='#{item.classId} item' placeholder=item.label)
 
    div
-       div(class='product inline-block')
-            select(class='sortBy form-control-static')
+       div(class='product input-group inline-block')
+           input(class="searchBox form-control-static" placeholder="Поиск по имени")
+           select(class='sortBy form-control-static')
                 option(value="description") Имя
                 each item in items
                     option(value=item.classId) #{item.label}
-            select(class='sortOrder form-control-static')
+           select(class='sortOrder form-control-static')
                 option(value="greater") По возрастанию
                 option(value="lower") По убыванию
 
