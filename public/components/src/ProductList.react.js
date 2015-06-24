@@ -32,7 +32,9 @@ var ProductList = React.createClass({
         var products = this.props.originProducts;
         for(var i = products.length; i--; )
         {
+            var product = products[i];
             if(id === products[i]._id){
+                this.prefixTree.removeString(product.description, product);
                 products.splice(i, 1);
                 this.setState({products: this.getSearchResults()});
                 socket.emit('removeProduct', id);

@@ -21,7 +21,6 @@ PrefixTree.Node = (function(){
         });
     };
     Node.prototype.getLinksByString = function(str){
-        var getLinksByWord = this.getLinksByWord.bind(this);
         var allLinks = [];
         str.split(' ').map(function(word){
             var links = this.getLinksByWord(word);
@@ -72,6 +71,7 @@ PrefixTree.Node = (function(){
 
         if(node._links.length === 0)
             delete node._nodes[letter];
+
     }
     function addWord(node, word, link, index){
         index = index || 0;
