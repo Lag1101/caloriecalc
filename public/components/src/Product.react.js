@@ -5,15 +5,16 @@
 
 var Product = React.createClass({
     getProduct: function(){
+        var refs = this.refs;
         return {
             id:              this.props.id,
-            description:     this.refs.description.getValue(),
-            proteins:        this.refs.proteins.getValue(),
-            triglyceride:    this.refs.triglyceride.getValue(),
-            carbohydrate:    this.refs.carbohydrate.getValue(),
-            calorie:         this.refs.calorie.getValue(),
-            mass:            this.refs.mass.getValue(),
-            details:         this.refs.details.getValue()
+            description:     refs.description.getValue(),
+            proteins:        refs.proteins.getValue(),
+            triglyceride:    refs.triglyceride.getValue(),
+            carbohydrate:    refs.carbohydrate.getValue(),
+            calorie:         refs.calorie.getValue(),
+            mass:            refs.mass.getValue(),
+            details:         refs.details.getValue()
         };
     },
     getDefaultProps: function() {

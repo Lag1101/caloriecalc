@@ -110,7 +110,6 @@ var utils = (function(){
                         .addClass('caret')))
                 .append($('<ul>')
                     .addClass('dropdown-menu')
-                    .attr('aria-labelledby', 'dropdownMenu2')
                     .append($('<li>')
                         .append($('<a>')
                             .addClass('btn btn-xs edit')

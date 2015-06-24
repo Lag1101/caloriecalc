@@ -41,6 +41,11 @@ var Sorting = React.createClass({
             SortOrder:      this.props.SortOrder
         }
     },
+    searchHandle: function(e){
+        var str = e.target.value;
+
+        this.props.searchHandle && this.props.searchHandle(str);
+    },
     changeHandle: function(event){
         var sortBy = React.findDOMNode(this.refs.SortBy).value;
         var sortOrder = React.findDOMNode(this.refs.SortOrder).value;
@@ -61,8 +66,9 @@ var Sorting = React.createClass({
     },
     render: function() {
         return (
-            <div className='product inline-block' onChange={this.changeHandle}>
-                <select ref='SortBy' className='form-control-static'>
+            <div className='product inline-block btn-group btn-group-xs'>
+                <input className="searchBox form-control-static" onChange={this.searchHandle} placeholder="Поиск по имени"></input>
+                <select ref='SortBy' className='form-control-static' onChange={this.changeHandle}>
                     <option value="description">Имя</option>
                     <option value="proteins">Белки</option>
                     <option value="triglyceride">Жиры</option>

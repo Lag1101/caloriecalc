@@ -24,12 +24,11 @@ PrefixTree.Node = (function(){
         var getLinksByWord = this.getLinksByWord.bind(this);
         var allLinks = [];
         str.split(' ').map(function(word){
-            if(!word) return;
-            var links = getLinksByWord(word);
+            var links = this.getLinksByWord(word);
             links.map(function(link){
                 if(allLinks.indexOf(link) < 0) allLinks.push(link);
             })
-        });
+        }.bind(this));
 
         return allLinks;
     };
