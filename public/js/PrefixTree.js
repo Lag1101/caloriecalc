@@ -10,13 +10,13 @@ PrefixTree.Node = (function(){
     }
     Node.prototype.removeString = function(str, link){
         var removeWord = this.removeWord.bind(this);
-        str.split(' ').map(function(word){
+        str.toLowerCase().split(' ').map(function(word){
             removeWord(word, link);
         });
     };
     Node.prototype.addString = function(str, link){
         var addWord = this.addWord.bind(this);
-        str.split(' ').map(function(word){
+        str.toLowerCase().split(' ').map(function(word){
             addWord(word, link);
         });
     };

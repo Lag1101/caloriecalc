@@ -55,7 +55,7 @@ var ReactProductList = React.createClass({
     buildPrefix: function(){
         console.time("buildPrefixTree");
         this.props.originProducts.map(function(product){
-            this.prefixTree.addString(product.description.toLowerCase(), product);
+            this.prefixTree.addString(product.description, product);
         }.bind(this));
         console.timeEnd("buildPrefixTree");
     },
@@ -69,9 +69,7 @@ var ReactProductList = React.createClass({
         socket.on('newProduct', function(newProduct){
             var products = this.props.originProducts;
             products.push(newProduct);
-
-            this.props.originProducts.push(newProduct);
-            this.prefixTree.addString(newProduct.description.toLowerCase(), newProduct);
+            this.prefixTree.addString(newProduct.description, newProduct);
 
             this.setState({products: this.getSearchResults()})
         }.bind(this));
@@ -88,7 +86,7 @@ var ReactProductList = React.createClass({
         });
     },
     searchHandle: function(str){
-        this.props.searchStr = str.toLowerCase();
+        this.props.searchStr = str;
         this.setState({
             products: this.getSearchResults()
         });
