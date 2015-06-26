@@ -393,9 +393,11 @@
         console.timeEnd("buildPrefixTree");
     }
 
-    function filterBySerachString(searchStr, cb){
-        var searchedProducts = prefixTree.getLinksByString(searchStr.toLowerCase());
-        return cb(null, searchedProducts);
+    var deferredCaller = new DeferredCaller(200);
+    function filterBySearchString(searchStr, cb){
+        deferredCaller.tryToCall(function(){
+            return prefixTree.getLinksByString(searchStr.toLowerCase());
+        }, cb);
     }
 
     function reorder(products, cb){
@@ -506,9 +508,7 @@
                 return cb(null, searchBox.val());
             },
             function(searchStr, cb){
-                if(searchStr)
-                    filterBySerachString(searchStr.toLowerCase(), cb);
-                else return cb(null, products);
+                filterBySearchString(searchStr.toLowerCase(), cb);
             },
             function(searchedProducts, cb){
                 reorder(searchedProducts, cb)

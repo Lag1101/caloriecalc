@@ -22,7 +22,7 @@ PrefixTree.Node = (function(){
     };
     Node.prototype.getLinksByString = function(str){
         var allLinks = [];
-        str.split(' ').map(function(word){
+        str.toLowerCase().split(' ').map(function(word){
             var links = this.getLinksByWord(word);
             links.map(function(link){
                 if(allLinks.indexOf(link) < 0) allLinks.push(link);

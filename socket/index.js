@@ -11,18 +11,18 @@ var logger = require('../lib/logger');
 
 var DeferredCaller = (function(){
     function DeferredCaller(time, call){
-        this.timeoutToSave = null;
+        this.timeoutToCall = null;
         this.time = time;
 
         this.call = call;
     }
     DeferredCaller.prototype.tryToCall = function(){
-        if(this.timeoutToSave)
-            clearTimeout(this.timeoutToSave);
+        if(this.timeoutToCall)
+            clearTimeout(this.timeoutToCall);
 
-        this.timeoutToSave = setTimeout(function(){
+        this.timeoutToCall = setTimeout(function(){
             this.call();
-            this.timeoutToSave = null;
+            this.timeoutToCall = null;
         }.bind(this), this.time);
     };
     return DeferredCaller;

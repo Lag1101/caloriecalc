@@ -46,6 +46,7 @@ new compressor.minify({
     fileIn: [
         './public/socket.js',
         './public/js/PrefixTree.js',
+        './public/js/DeferredCaller',
         './public/utils.js',
         './public/product.js',
         './public/dish.js',
