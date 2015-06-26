@@ -21,7 +21,7 @@ var ProductBox = React.createClass({
                     <DishProductList />
                 </div>
                 <div className="myTable" >
-                    <ProductList />
+                    <ReactProductList />
                 </div>
             </div>
         );

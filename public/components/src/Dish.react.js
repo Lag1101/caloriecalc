@@ -24,12 +24,12 @@ var Dish = React.createClass({
             <div>
                 <div className='product inline-block'>
                     <p>Full</p>
-                    <Product
+                    <ReactProduct
                         enabled =         {true}
                         ref='full'
                         hide=             {{description: true, details: true}}/>
                     <p>Portion</p>
-                    <Product
+                    <ReactProduct
                         enabled =         {true}
                         ref='portion'
                         hide=             {{description: true, details: true}}/>

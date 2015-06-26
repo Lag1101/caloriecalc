@@ -66,19 +66,19 @@ var Sorting = React.createClass({
     },
     render: function() {
         return (
-            <div className='product inline-block btn-group btn-group-xs'>
-                <input className="searchBox form-control-static" onChange={this.searchHandle} placeholder="Поиск по имени"></input>
-                <select ref='SortBy' className='form-control-static' onChange={this.changeHandle}>
+            <div className='product form-inline'>
+                <select ref='SortBy' className='form-control' onChange={this.changeHandle}>
                     <option value="description">Имя</option>
                     <option value="proteins">Белки</option>
                     <option value="triglyceride">Жиры</option>
                     <option value="carbohydrate">Углеводы</option>
                     <option value="calorie">Ккал</option>
                 </select>
-                <select ref='SortOrder' className='form-control-static' onChange={this.changeHandle}>
+                <select ref='SortOrder' className='form-control' onChange={this.changeHandle}>
                     <option value="greater">По возрастанию</option>
                     <option value="lower">По убыванию</option>
                 </select>
+                <input className="searchBox form-control" onChange={this.searchHandle} placeholder="Поиск по имени"></input>
             </div>
         );
     }
