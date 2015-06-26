@@ -64,7 +64,7 @@ var ReactProduct = React.createClass({
     render: function() {
         var hide = this.props.hide;
         return (
-            <div>
+            <div className='inline-block'>
                 <ReactTextInput    enabled={this.state.enabled} css='description item'   changeHandle={this.changeHandle} value={this.props.description}      hidden={hide.description}          ref='description'></ReactTextInput>
                 <ReactNumericInput enabled={this.state.enabled} css='proteins item'      changeHandle={this.changeHandle} value={this.props.proteins}         hidden={hide.proteins}             ref='proteins'></ReactNumericInput>
                 <ReactNumericInput enabled={this.state.enabled} css='triglyceride item'  changeHandle={this.changeHandle} value={this.props.triglyceride}     hidden={hide.triglyceride}         ref='triglyceride'></ReactNumericInput>

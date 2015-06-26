@@ -49,7 +49,7 @@ var ReactProductList = React.createClass({
         this.refs[id].makeDisabled();
     },
     getSearchResults: function(){
-        var choosedProducts = this.prefixTree.getLinksByString(this.props.searchStr);
+        var choosedProducts = this.props.searchStr ? this.prefixTree.getLinksByString(this.props.searchStr) : this.props.originProducts;
         return choosedProducts.sort(this.props.compareFunction);
     },
     buildPrefix: function(){
