@@ -62,7 +62,6 @@ var ProductList = React.createClass({
     componentDidMount: function() {
         socket.on('list', function(data){
             this.props.originProducts = data;
-            var originProducts = this.props.originProducts;
             this.buildPrefix();
             this.setState({products: this.getSearchResults()})
         }.bind(this));

@@ -9,7 +9,6 @@ var utils = (function(){
         str = str || '';
         str = str.toString();
         str = str.replace(' ', '');
-        str = str || '0.0';
         return str.replace(',', '.');
     }
 
