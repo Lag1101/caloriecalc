@@ -1,7 +1,7 @@
 /**
  * Created by vasiliy.lomanov on 16.06.2015.
  */
-var NumericInput = React.createClass({
+var ReactNumericInput = React.createClass({
     getValue: function(){
         return this.props.value;
     },
@@ -74,7 +74,7 @@ var NumericInput = React.createClass({
     }
 });
 
-var TextInput = React.createClass({
+var ReactTextInput = React.createClass({
     getValue: function(){
         return this.props.value;
     },

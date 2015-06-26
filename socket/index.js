@@ -343,14 +343,14 @@ function addDailyProduct(socket, user, cb, date, newDailyItem){
 }
 
 function saveUser(user, cb){
-    logger.info('Try to save', user.username);
+    logger.info('Try to save', user && user.username);
     if(!user)
         return cb && cb(new Error("Such user doesn't exist"));
     return user.save(function(err, user){
         if(err)
-            logger.error('Some problem with saving', user.username, err);
+            logger.error('Some problem with saving', user && user.username, err);
         else
-            logger.info(user.username, 'saved');
+            logger.info(user && user.username, 'saved');
 
         return cb && cb(err, user);
     });
@@ -437,7 +437,7 @@ module.exports = function(server, session){
                 if (err || !user)
                     return new Error(err);
                 userCache[username] = new CacheDatum(user);
-                socketSetupHandles(socket, user);
+                socketSetupHandles(socket, userCache[username].val);
             });
         }
 

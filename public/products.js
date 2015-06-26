@@ -11,20 +11,9 @@
     var defaultDish = resultDish.find('.defaultDish');
     var dishListView = resultDish.find('.dishList');
 
-    var addButton = $('.addProductButton');
-    var newProduct = $('.newProduct');
-    var productsList = $('.productsList');
     var currentDishProductsView = $('.currentDishProducts');
-    var sortBy = $('.sortBy');
-    var sortOrder = $('.sortOrder');
     var portionView = defaultDish.find('.portion');
     var fullView = defaultDish.find('.dish');
-
-    var sortKey = sortBy.find('option:selected').val();
-    var order = sortOrder.find('option:selected').val();
-
-    var searchBox = $('.searchBox');
-
 
     resultDish.find('.save').click(function(){
         var full = new Product();
@@ -43,56 +32,7 @@
         calcPortion(defaultDish);
     });
 
-    sortBy.on('change', function () {
-        sortKey = sortBy.find('option:selected').val();
-        updateList();
-    });
-
-    sortOrder.on('change', function () {
-        order = sortOrder.find('option:selected').val();
-        updateList();
-    });
-
     socket.on('getDishList', restoreDishList);
-
-    searchBox.on('input change', function(){
-        updateList();
-    });
-    newProduct.find('input').on('input change', function(){
-        if(utils.validateField($(this))){
-            addButton
-                .attr('disabled', false)
-                .removeClass('disabled');
-        } else {
-            addButton
-                .attr('disabled', true)
-                .addClass('disabled');
-        }
-    });
-    addButton.click(function(){
-        var product = new Product();
-        product.readEl(newProduct)
-
-        if(!product.description) return;
-
-        socket.emit('newProduct', product.getRaw());
-        //Product.emptyProduct.writeEl(newProduct);
-    });
-
-    socket.on('list', function (data) {
-        products = [];
-        async.map(data, function(d, cb){
-            return cb(null, new Product(d))
-        }, function(err, resProducts){
-            if(err)
-                console.error(err);
-            else{
-                products = resProducts;
-                buildPrefixTree(products);
-                return updateList();
-            }
-        });
-    });
 
     socket.on('getCurrentDishes', function (data) {
         dishListView.empty();
@@ -124,20 +64,12 @@
             });
         }
     });
-    socket.on('newProduct', function(newProduct){
-        var p = addToList(newProduct);
-        products.push(p);
-
-        prefixTree.addString(p.description, p);
-        updateList();
-    });
     socket.on('newDishProduct', function(newDishProduct){
         var p = addToCurrentDish(newDishProduct);
         currentDishProducts.push(p);
         reCalc();
     });
 
-    responseProductList();
     responseDishProductList();
     responseDishList();
 
@@ -146,23 +78,6 @@
     }
     function responseDishProductList(){
         socket.emit('getCurrentDishProducts');
-    }
-    function responseProductList(){
-        socket.emit('list');
-    }
-
-    function removeProduct(view, product) {
-        utils.confirmDialog(
-            "Вы уверены, что хотите удалить " + product.description + " ?",
-            function(){
-                var i = products.indexOf(product);
-                if(i >= 0)
-                    products.splice(i, 1);
-                prefixTree.removeString(product.description, product)
-                socket.emit('removeProduct', product.id);
-                view.detach();
-            }
-        );
     }
 
     function fixDish(dish){
@@ -263,10 +178,6 @@
                 return cb(null, dishList);
             }
         });
-    }
-
-    function copyToDishProducts(product){
-        socket.emit('newDishProduct', product.id);
     }
 
     function addToCurrentDish(datum){
@@ -381,150 +292,6 @@
                 console.log('portion  dish products');
                 return cb && cb();
             }
-        });
-    }
-
-    var prefixTree = new PrefixTree.Node();
-    function buildPrefixTree(products){
-        console.time("buildPrefixTree");
-        products.map(function(product){
-            prefixTree.addString(product.description.toLowerCase(), product);
-        });
-        console.timeEnd("buildPrefixTree");
-    }
-
-    var deferredCaller = new DeferredCaller(200);
-    function filterBySearchString(searchStr, cb){
-        deferredCaller.tryToCall(function(){
-            return prefixTree.getLinksByString(searchStr.toLowerCase());
-        }, cb);
-    }
-
-    function reorder(products, cb){
-        var mult = (order === "greater") ? -1 : 1;
-        var sorted = products.sort(function(p1, p2){
-            if (p1[sortKey] < p2[sortKey]) {
-                return mult;
-            }
-            if (p1[sortKey] > p2[sortKey]) {
-                return -mult;
-            }
-            // a must be equal to b
-            return 0;
-        });
-
-        return cb(null, sorted);
-    }
-
-    function appear(productView){
-        var inputs = productView.find('input');
-        inputs.attr('disabled', false);
-        productView.find('.description')
-            .removeClass('disableForInput')
-            .addClass('enableForInput')
-            .attr('contenteditable', true);
-
-        var editMenu = productView.find('.edit-menu');
-
-        editMenu.find('.save').removeClass('hidden');
-        editMenu.find('.cancel').removeClass('hidden');
-        editMenu.removeClass('hidden');
-    }
-    function hide(productView){
-        var inputs = productView.find('input');
-        inputs.attr('disabled', true);
-
-        productView.find('.description')
-            .addClass('disableForInput')
-            .removeClass('enableForInput')
-            .attr('contenteditable', false);
-
-        var editMenu = productView.find('.edit-menu');
-        editMenu.find('.save').addClass('hidden');
-        editMenu.find('.cancel').addClass('hidden');
-        editMenu.addClass('hidden');
-    }
-    function editProduct(productView, product){
-        appear(productView);
-        var editMenu = productView.find('.edit-menu');
-        editMenu.find('.save').click(function(){
-            var fixedProduct = new Product(product);
-            fixedProduct.readEl(productView);
-            socket.emit('fixProduct', fixedProduct);
-            hide(productView);
-        });
-
-        editMenu.find('.cancel').click(function(){
-            hide(productView);
-        });
-        //hide(productView);
-    }
-
-
-    var productViewTemp = $('<div>')
-        .append($('<div>')
-            .append($('<button>').addClass('add btn item btn-xs btn-default').append(utils.icons.add.clone()))
-            .append(utils.DropdownButton.clone())
-            .append($('<div>').addClass('description item disableForInput'))
-            .append($('<input>').addClass('proteins'))
-            .append($('<input>').addClass('triglyceride'))
-            .append($('<input>').addClass('carbohydrate'))
-            .append($('<input>').addClass('calorie')))
-        .append($('<div>')
-            //.append($('<button>').addClass('edit item'))
-            .append($('<div>').addClass('blankDescription blankItem'))
-            .append($('<div>').addClass('blankItem'))
-            .append($('<div>').addClass('blankItem'))
-            .append($('<div>').addClass('blankItem'))
-            .append($('<button>').addClass('save item hidden btn btn-xs btn-default').append(utils.icons.confirm.clone()))
-            .append($('<button>').addClass('cancel item hidden btn btn-xs btn-default').append(utils.icons.cancel.clone()))
-            .addClass('edit-menu'));
-
-
-    function addToList(newProduct){
-        var product = new Product(newProduct);
-
-        var productView = productViewTemp.clone();
-
-        var root = $('<div>').append(productView);
-
-        productView.addClass('product inline-block');
-
-        root.find('input').addClass('item');
-        hide(root);
-        product.writeEl(root);
-
-        root.find('.edit').click(editProduct.bind(null, root, product));
-        root.find('.add').click(copyToDishProducts.bind(null, product));
-        root.find('.remove').click(removeProduct.bind(null, root, product));
-
-        productsList.append(root).trigger('append');
-
-        return product;
-    }
-    function updateList(callback) {
-        async.waterfall([
-            function(cb){
-                return cb(null, searchBox.val());
-            },
-            function(searchStr, cb){
-                filterBySearchString(searchStr.toLowerCase(), cb);
-            },
-            function(searchedProducts, cb){
-                reorder(searchedProducts, cb)
-            },
-            function(reorderProducts, cb){
-                productsList.empty();
-                reorderProducts.map(addToList);
-                return cb();
-            }
-        ], function(err){
-            if(err)
-                console.error(err);
-            else
-                console.log("List updated");
-
-            return callback && callback(err);
         });
     }
 })(socket);

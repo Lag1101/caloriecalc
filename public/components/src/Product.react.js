@@ -3,7 +3,7 @@
  */
 
 
-var Product = React.createClass({
+var ReactProduct = React.createClass({
     getProduct: function(){
         var refs = this.refs;
         return {
@@ -65,13 +65,13 @@ var Product = React.createClass({
         var hide = this.props.hide;
         return (
             <div>
-                <TextInput    enabled={this.state.enabled} css='description item'   changeHandle={this.changeHandle} value={this.props.description}      hidden={hide.description}          ref='description'></TextInput>
-                <NumericInput enabled={this.state.enabled} css='proteins item'      changeHandle={this.changeHandle} value={this.props.proteins}         hidden={hide.proteins}             ref='proteins'></NumericInput>
-                <NumericInput enabled={this.state.enabled} css='triglyceride item'  changeHandle={this.changeHandle} value={this.props.triglyceride}     hidden={hide.triglyceride}         ref='triglyceride'></NumericInput>
-                <NumericInput enabled={this.state.enabled} css='carbohydrate item'  changeHandle={this.changeHandle} value={this.props.carbohydrate}     hidden={hide.carbohydrate}         ref='carbohydrate'></NumericInput>
-                <NumericInput enabled={this.state.enabled} css='calorie item'       changeHandle={this.changeHandle} value={this.props.calorie}          hidden={hide.calorie}              ref='calorie'></NumericInput>
-                <NumericInput enabled={this.state.enabled} css='mass item'          changeHandle={this.changeHandle} value={this.props.mass || 100.0}    hidden={hide.mass}                 ref='mass'></NumericInput>
-                <TextInput    enabled={this.state.enabled} css='details item'       changeHandle={this.changeHandle} value={this.props.details}          hidden={hide.details}              ref='details'></TextInput>
+                <ReactTextInput    enabled={this.state.enabled} css='description item'   changeHandle={this.changeHandle} value={this.props.description}      hidden={hide.description}          ref='description'></ReactTextInput>
+                <ReactNumericInput enabled={this.state.enabled} css='proteins item'      changeHandle={this.changeHandle} value={this.props.proteins}         hidden={hide.proteins}             ref='proteins'></ReactNumericInput>
+                <ReactNumericInput enabled={this.state.enabled} css='triglyceride item'  changeHandle={this.changeHandle} value={this.props.triglyceride}     hidden={hide.triglyceride}         ref='triglyceride'></ReactNumericInput>
+                <ReactNumericInput enabled={this.state.enabled} css='carbohydrate item'  changeHandle={this.changeHandle} value={this.props.carbohydrate}     hidden={hide.carbohydrate}         ref='carbohydrate'></ReactNumericInput>
+                <ReactNumericInput enabled={this.state.enabled} css='calorie item'       changeHandle={this.changeHandle} value={this.props.calorie}          hidden={hide.calorie}              ref='calorie'></ReactNumericInput>
+                <ReactNumericInput enabled={this.state.enabled} css='mass item'          changeHandle={this.changeHandle} value={this.props.mass || 100.0}    hidden={hide.mass}                 ref='mass'></ReactNumericInput>
+                <ReactTextInput    enabled={this.state.enabled} css='details item'       changeHandle={this.changeHandle} value={this.props.details}          hidden={hide.details}              ref='details'></ReactTextInput>
             </div>
         );
     }

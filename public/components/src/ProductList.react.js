@@ -2,7 +2,7 @@
  * Created by vasiliy.lomanov on 16.06.2015.
  */
 
-var ProductList = React.createClass({
+var ReactProductList = React.createClass({
     getInitialState: function() {
         return {
             id: null,
@@ -96,7 +96,7 @@ var ProductList = React.createClass({
     render: function() {
         var products = this.state.products.map(function (product) {
             return (
-                <div className='product'>
+                <div className='product' key =             {product._id}>
 
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.addHandle.bind(this, product._id)}></input>
                     <div className="btn-group btn-group-xs">
@@ -117,12 +117,11 @@ var ProductList = React.createClass({
                         </ul>
                     </div>
                     <div className='inline-block'>
-                        <Product
+                        <ReactProduct
                                 hide=             {{details: true, mass: true}}
                                 enabled =         {false}
                                 ref =             {product._id}
                                 changeHandle=     {this.changeHandle}
-                                key =             {product._id}
                                 id =              {product._id}
                                 description =     {product.description}
                                 proteins =        {product.proteins}
@@ -131,7 +130,7 @@ var ProductList = React.createClass({
                                 calorie =         {product.calorie}
                                 mass =            {product.mass}
                                 details =         {product.details}>
-                        </Product>
+                        </ReactProduct>
                     </div>
                 </div>
             );
@@ -142,7 +141,7 @@ var ProductList = React.createClass({
                 <div className='product newProduct'>
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.newProduct}></input>
                     <div className='inline-block'>
-                        <Product
+                        <ReactProduct
                             enabled={true}
                             ref='newProduct'
                             hide=             {{details: true, mass: true}}/>
@@ -153,3 +152,7 @@ var ProductList = React.createClass({
         );
     }
 });
+React.render(
+    <ReactProductList />,
+    document.getElementById('productList')
+);

@@ -12,7 +12,9 @@ block content
         div
             div(class='myTable')
                 include resultView
-        include productsView
+
+        div(class='currentDishProducts myTable')
+        div(id='productList' class='myTable allProducts inline-block')
 
 
 
@@ -23,9 +25,15 @@ block content
         script(src='utils.js')
         script(src='js/PrefixTree.js')
         script(src='js/DeferredCaller.js')
+
+
+        script( src='components/build/Input.react.js')
+        script( src='components/build/Sorting.react.js')
+        script( src='components/build/Product.react.js')
+        script( src='components/build/ProductList.react.js')
+
         script(src='product.js')
         script(src='dish.js')
         script(src='day.js')
         script(src='dailyView.js')
         script(src='products.js')
-
