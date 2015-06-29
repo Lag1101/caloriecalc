@@ -11,15 +11,13 @@ var ReactProductList = React.createClass({
     },
     getDefaultProps: function() {
         return {
-            compareFunction: Sorting.defaultCompare,
             originProducts: [],
             searchStr: ''
         };
     },
     newProduct: function(){
         var newProduct = this.refs.newProduct.getProduct();
-        console.log('Added', newProduct);
-        socket.emit('newProduct', newProduct);
+        this.worker.postMessage({cmd:'newProduct', newProduct: newProduct});
     },
     changeHandle: function(product){
 
@@ -29,18 +27,7 @@ var ReactProductList = React.createClass({
         socket.emit('newDishProduct', id);
     },
     removeHandle: function(id){
-        var products = this.props.originProducts;
-        for(var i = products.length; i--; )
-        {
-            var product = products[i];
-            if(id === products[i]._id){
-                this.prefixTree.removeString(product.description, product);
-                products.splice(i, 1);
-                this.setState({products: this.getSearchResults()});
-                socket.emit('removeProduct', id);
-                return;
-            }
-        }
+        this.worker.postMessage({cmd:'removeProduct', id: id});
     },
     editHandle: function(id){
         this.refs[id].makeEnabled();
@@ -48,48 +35,25 @@ var ReactProductList = React.createClass({
     endEditHandle: function(id){
         this.refs[id].makeDisabled();
     },
-    getSearchResults: function(){
-        var choosedProducts = this.props.searchStr ? this.prefixTree.getLinksByString(this.props.searchStr) : this.props.originProducts;
-        return choosedProducts.sort(this.props.compareFunction);
-    },
-    buildPrefix: function(){
-        console.time("buildPrefixTree");
-        this.props.originProducts.map(function(product){
-            this.prefixTree.addString(product.description, product);
-        }.bind(this));
-        console.timeEnd("buildPrefixTree");
-    },
     componentDidMount: function() {
-        socket.on('list', function(data){
-            this.props.originProducts = data;
-            this.buildPrefix();
-            this.setState({products: this.getSearchResults()})
-        }.bind(this));
 
-        socket.on('newProduct', function(newProduct){
-            var products = this.props.originProducts;
-            products.push(newProduct);
-            this.prefixTree.addString(newProduct.description, newProduct);
-
-            this.setState({products: this.getSearchResults()})
-        }.bind(this));
-
-        socket.emit('list');
-
-        this.prefixTree = new PrefixTree.Node();
+        this.worker = new Worker('js/backgroundWorker.js');
+        this.worker.postMessage({cmd:'list'});
+        this.worker.addEventListener('message', function(e) {
+            switch(e.data.cmd){
+                case 'list':
+                    this.props.originProducts = e.data.data;
+                    this.setState({products: this.props.originProducts});
+                    break;
+            }
+        }.bind(this), false);
 
     },
-    changeSorting: function(sortingFunction){
-        this.props.compareFunction = this.refs.sortBar.getSortFunction();
-        this.setState({
-            products: this.getSearchResults()
-        });
+    changeSorting: function(sortBy, sortOrder){
+        this.worker.postMessage({cmd:'changeSorting', sortBy: sortBy, sortOrder: sortOrder});
     },
     searchHandle: function(str){
-        this.props.searchStr = str;
-        this.setState({
-            products: this.getSearchResults()
-        });
+        this.worker.postMessage({cmd:'searchStr', searchStr: str});
     },
     render: function() {
         var products = this.state.products.map(function (product) {

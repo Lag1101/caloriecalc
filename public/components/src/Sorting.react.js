@@ -3,32 +3,6 @@
  */
 
 var Sorting = React.createClass({
-    statics: {
-        greater: function (sortBy, p1, p2) {
-            if (p1[sortBy] < p2[sortBy]) return -1;
-            if (p1[sortBy] > p2[sortBy]) return 1;
-            return 0;
-        },
-        defaultCompare: function (sortBy, p1, p2) {
-            if (p1[sortBy] < p2[sortBy]) return -1;
-            if (p1[sortBy] > p2[sortBy]) return 1;
-            return 0;
-        }.bind(null, 'description'),
-        less: function (sortBy, p1, p2) {
-            if (p1[sortBy] < p2[sortBy]) return 1;
-            if (p1[sortBy] > p2[sortBy]) return -1;
-            return 0;
-        }
-    },
-    getSortFunction: function(){
-        var SortBy = this.props.SortBy;
-        var SortOrder = this.props.SortOrder;
-
-        if(SortOrder === "greater")
-            return Sorting.greater.bind(null, SortBy);
-        else
-            return Sorting.less.bind(null, SortBy);
-    },
     getDefaultProps: function() {
         return {
             SortBy:         'description',
@@ -58,7 +32,7 @@ var Sorting = React.createClass({
             SortOrder: sortOrder
         });
 
-        this.props.changeHandle && this.props.changeHandle(this.getSortFunction());
+        this.props.changeHandle && this.props.changeHandle(sortBy, sortOrder);
 
     },
     componentDidMount: function(){

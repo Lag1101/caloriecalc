@@ -28,7 +28,6 @@
     <file url="file://$PROJECT_DIR$/views/layout/page.jade" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/login.jade" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/partials/topNavigation.jade" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/views/productsView.jade" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/registration.jade" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/resultView.jade" charset="UTF-8" />
   </component>
