@@ -6,13 +6,12 @@ var ReactProductList = React.createClass({
     getInitialState: function() {
         return {
             id: null,
-            products: this.props.originProducts
+            products: []
         }
     },
     getDefaultProps: function() {
         return {
-            originProducts: [],
-            searchStr: ''
+
         };
     },
     newProduct: function(){
@@ -42,8 +41,8 @@ var ReactProductList = React.createClass({
         this.worker.addEventListener('message', function(e) {
             switch(e.data.cmd){
                 case 'list':
-                    this.props.originProducts = e.data.data;
-                    this.setState({products: this.props.originProducts});
+                    var products = e.data.data;
+                    this.setState({products: products});
                     break;
             }
         }.bind(this), false);
