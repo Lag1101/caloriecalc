@@ -5,10 +5,13 @@
 
 importScripts('../bower_components/socket.io-client/socket.io.js');
 importScripts('PrefixTree.js');
+importScripts('DeferredCaller.js');
+
 
 var socket = io.connect('', {
     reconnect: true
 });
+var deferredCaller = new DeferredCaller(300);
 var searchStr = '';
 var originProducts = [];
 var prefixTree = new PrefixTree.Node();
@@ -53,7 +56,7 @@ self.onmessage = function(e) {
             break;
         case 'searchStr':
             searchStr = e.data.searchStr;
-            sendProducts();
+            deferredCaller.tryToCall(sendProducts);
             break;
         case 'newProduct':
             socket.emit('newProduct', e.data.newProduct);
