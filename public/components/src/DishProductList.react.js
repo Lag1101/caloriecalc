@@ -6,8 +6,13 @@ var DishProductList = React.createClass({
     getInitialState: function() {
         return {
             id: null,
-            products: []
+            products: this.props.originProducts
         }
+    },
+    getDefaultProps: function() {
+        return {
+            originProducts: []
+        };
     },
     newProduct: function(){
         var newProduct = this.refs.newProduct.getProduct();
@@ -17,9 +22,17 @@ var DishProductList = React.createClass({
     changeHandle: function(product){
 
         socket.emit('fixDishProduct', product);
+        var products = this.originProducts.products;
+        for(var i = products.length; i--; )
+        {
+            if(id === products[i]._id){
+                products[i] = product;
+                return;
+            }
+        }
     },
     removeHandle: function(id){
-        var products = this.state.products;
+        var products = this.originProducts.products;
         for(var i = products.length; i--; )
         {
             if(id === products[i]._id){
@@ -64,7 +77,7 @@ var DishProductList = React.createClass({
                                 ref =             {product._id}
                                 changeHandle=     {this.changeHandle}
                                 key =             {product._id}
-                                id =              {product._id}
+                                _id =              {product._id}
                                 description =     {product.description}
                                 proteins =        {product.proteins}
                                 triglyceride =    {product.triglyceride}
@@ -79,7 +92,16 @@ var DishProductList = React.createClass({
         }.bind(this));
         return (
             <div className="dishList">
-                <Dish/>
+                <p>Full</p>
+                <ReactProduct
+                    enabled =         {true}
+                    ref='full'
+                    hide=             {{description: true, details: true}}/>
+                <p>Portion</p>
+                <ReactProduct
+                    enabled =         {true}
+                    ref='portion'
+                    hide=             {{description: true, details: true}}/>
                 {products}
             </div>
         );

@@ -2,31 +2,52 @@
  * Created by vasiliy.lomanov on 16.06.2015.
  */
 
+function greater (sortBy, p1, p2) {
+    if (p1[sortBy] < p2[sortBy]) return -1;
+    if (p1[sortBy] > p2[sortBy]) return 1;
+    return 0;
+}
+function less(sortBy, p1, p2) {
+    if (p1[sortBy] < p2[sortBy]) return 1;
+    if (p1[sortBy] > p2[sortBy]) return -1;
+    return 0;
+}
+
 var ReactProductList = React.createClass({
     getInitialState: function() {
         return {
             id: null,
-            products: []
+            products: this.props.originProducts
         }
     },
     getDefaultProps: function() {
         return {
-
+            originProducts: []
         };
     },
     newProduct: function(){
         var newProduct = this.refs.newProduct.getProduct();
-        this.worker.postMessage({cmd:'newProduct', newProduct: newProduct});
+        socket.emit('newProduct', newProduct);
     },
     changeHandle: function(product){
-
         socket.emit('fixProduct', product);
     },
     addHandle: function(id){
         socket.emit('newDishProduct', id);
     },
     removeHandle: function(id){
-        this.worker.postMessage({cmd:'removeProduct', id: id});
+        var originsProducts = this.props.originProducts;
+        for(var i = originsProducts.length; i--; )
+        {
+            var product = originsProducts[i];
+            if(id === product._id){
+                this.prefixTree.removeString(product.description, product);
+                originsProducts.splice(i, 1);
+                this.updateProducts();
+                socket.emit('removeProduct', id);
+                return;
+            }
+        }
     },
     editHandle: function(id){
         this.refs[id].makeEnabled();
@@ -35,24 +56,39 @@ var ReactProductList = React.createClass({
         this.refs[id].makeDisabled();
     },
     componentDidMount: function() {
+        this.deferredCaller = new DeferredCaller(300);
+        this.prefixTree = new PrefixTree.Node();
+        this.sortingFun = greater.bind(null, 'description');
 
-        this.worker = new Worker('js/backgroundWorker.js');
-        this.worker.postMessage({cmd:'list'});
-        this.worker.addEventListener('message', function(e) {
-            switch(e.data.cmd){
-                case 'list':
-                    var products = e.data.data;
-                    this.setState({products: products});
-                    break;
-            }
-        }.bind(this), false);
+        socket.emit('list');
+        socket.on('list', function(list) {
+            this.props.originProducts = list;
+            this.buildPrefixTree();
+            this.updateProducts();
+        }.bind(this));
 
     },
     changeSorting: function(sortBy, sortOrder){
-        this.worker.postMessage({cmd:'changeSorting', sortBy: sortBy, sortOrder: sortOrder});
+        this.sortingFun = (sortOrder === 'greater' ? greater : less).bind(null, sortBy);
+        this.updateProducts();
     },
     searchHandle: function(str){
-        this.worker.postMessage({cmd:'searchStr', searchStr: str});
+        this.props.searchStr = str;
+        this.updateProducts();
+    },
+    updateProducts: function(){
+        this.deferredCaller.tryToCall(function(){
+            var choosenProducts = this.props.searchStr ? this.prefixTree.getLinksByString(this.props.searchStr) : this.props.originProducts;
+            this.setState({products: choosenProducts.sort(this.sortingFun)});
+        }.bind(this));
+        //return choosedProducts.sort(this.props.compareFunction);
+    },
+    buildPrefixTree: function(){
+        console.time("buildPrefixTree");
+        this.props.originProducts.map(function(product){
+            this.prefixTree.addString(product.description, product);
+        }.bind(this));
+        console.timeEnd("buildPrefixTree");
     },
     render: function() {
         var products = this.state.products.map(function (product) {
