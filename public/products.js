@@ -131,11 +131,11 @@
             dishView.find('input').addClass('item');
             dishView.find('input:not(.mass)').attr('disabled', true);
 
-            dishView.find('.description').html(dish.description).on('input change', function(){
+            dishView.find('.description').html(dish.description).on('input paste', function(){
                 dish.description = $(this).html();
                 fixDish(dish);
             });
-            portionViewClone.find('.mass').on('input change', function(){
+            portionViewClone.find('.mass').on('input paste', function(){
                 utils.validateField($(this));
                 calcPortion(dishView, function(){
                     var p = new Product();
@@ -144,7 +144,7 @@
                     fixDish(dish);
                 });
             });
-            fullViewClone.find('.mass').on('input change', function(){
+            fullViewClone.find('.mass').on('input paste', function(){
                 utils.validateField($(this));
                 calcPortion(dishView, function(){
                     var p = new Product();
