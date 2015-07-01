@@ -66,7 +66,11 @@ var ReactProductList = React.createClass({
             this.buildPrefixTree();
             this.updateProducts();
         }.bind(this));
-
+        socket.on('newProduct', function(product) {
+            this.props.originProducts.push(product);
+            this.prefixTree.addString(product.description, product);
+            this.updateProducts();
+        }.bind(this));
     },
     changeSorting: function(sortBy, sortOrder){
         this.sortingFun = (sortOrder === 'greater' ? greater : less).bind(null, sortBy);
@@ -133,7 +137,7 @@ var ReactProductList = React.createClass({
             );
         }.bind(this));
         return (
-            <div className="productList">
+            <div>
                 <Sorting ref='sortBar' searchHandle={this.searchHandle} changeHandle={this.changeSorting}/>
                 <div className='product newProduct'>
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.newProduct}></input>
@@ -144,7 +148,9 @@ var ReactProductList = React.createClass({
                             hide=             {{details: true, mass: true}}/>
                     </div>
                 </div>
-                {products}
+                <div className='productList'>
+                    {products}
+                </div>
             </div>
         );
     }
