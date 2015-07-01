@@ -147,9 +147,14 @@
             fullViewClone.find('.mass').on('input paste', function(){
                 utils.validateField($(this));
                 calcPortion(dishView, function(){
+                    var f = new Product();
+                    f.readEl(fullViewClone);
+                    dish.full = f;
+
                     var p = new Product();
-                    p.readEl(fullViewClone);
-                    dish.full = p;
+                    p.readEl(portionViewClone);
+                    dish.portion = p;
+
                     fixDish(dish);
                 });
             });
