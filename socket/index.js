@@ -367,9 +367,11 @@ function socketSetupHandles(socket, user){
     socket
         .on('error', function(err){
             logger.error(err);
+            save();
         })
         .on('disconnect', function () {
             console.info('disconnected');
+            save();
         })
         .on('list',                     list.bind(null, socket, user))
         .on('newProduct',               newProduct.bind(null, socket, user, save))
