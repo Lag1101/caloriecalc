@@ -92,17 +92,21 @@ var DishProductList = React.createClass({
         }.bind(this));
         return (
             <div className="dishList">
-                <p>Full</p>
-                <ReactProduct
-                    enabled =         {true}
-                    ref='full'
-                    hide=             {{description: true, details: true}}/>
-                <p>Portion</p>
-                <ReactProduct
-                    enabled =         {true}
-                    ref='portion'
-                    hide=             {{description: true, details: true}}/>
-                {products}
+                <div className="product">
+                    <p>Full</p>
+                    <ReactProduct
+                        enabled =         {true}
+                        ref='full'
+                        hide=             {{description: true, details: true}}/>
+                </div>
+                <div className="product">
+                    <p>Portion</p>
+                    <ReactProduct
+                        enabled =         {true}
+                        ref='portion'
+                        hide=             {{description: true, details: true}}/>
+                </div>
+                    {products}
             </div>
         );
     }

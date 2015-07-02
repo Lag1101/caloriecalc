@@ -56,25 +56,30 @@ var ReactProductList = React.createClass({
         this.refs[id].makeDisabled();
     },
     componentDidMount: function() {
-        this.deferredCaller = new DeferredCaller(300);
+        this.deferredCaller = new DeferredCaller(100);
         this.prefixTree = new PrefixTree.Node();
         this.sortingFun = greater.bind(null, 'description');
 
         socket.emit('list');
         socket.on('list', function(list) {
             this.props.originProducts = list;
+            this.reorder();
             this.buildPrefixTree();
             this.updateProducts();
         }.bind(this));
         socket.on('newProduct', function(product) {
             this.props.originProducts.push(product);
             this.prefixTree.addString(product.description, product);
+            this.reorder();
             this.updateProducts();
         }.bind(this));
     },
     changeSorting: function(sortBy, sortOrder){
         this.sortingFun = (sortOrder === 'greater' ? greater : less).bind(null, sortBy);
         this.updateProducts();
+    },
+    reorder: function(){
+        this.props.originProducts = this.props.originProducts.sort(this.sortingFun);
     },
     searchHandle: function(str){
         this.props.searchStr = str;
@@ -83,7 +88,14 @@ var ReactProductList = React.createClass({
     updateProducts: function(){
         this.deferredCaller.tryToCall(function(){
             var choosenProducts = this.props.searchStr ? this.prefixTree.getLinksByString(this.props.searchStr) : this.props.originProducts;
-            this.setState({products: choosenProducts.sort(this.sortingFun)});
+            this.props.originProducts.map(function(p){
+                p.hidden = true;
+            });
+            choosenProducts.map(function(p){
+                p.hidden = false;
+            });
+
+            this.setState({products: this.props.originProducts});
         }.bind(this));
         //return choosedProducts.sort(this.props.compareFunction);
     },
@@ -96,8 +108,12 @@ var ReactProductList = React.createClass({
     },
     render: function() {
         var products = this.state.products.map(function (product) {
+            var css = 'product';
+            if(product.hidden)
+                css += ' hidden ';
             return (
-                <div className='product' key =             {product._id}>
+
+                <div className={css} key =             {product._id}>
 
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.addHandle.bind(this, product._id)}></input>
                     <div className="btn-group btn-group-xs">
