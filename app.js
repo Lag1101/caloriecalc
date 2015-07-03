@@ -23,11 +23,12 @@ var session = Session({
     //cookie: { secure: true },
     store: sessionStore
 });
-var options = {
-  //setHeaders: function (res, path, stat) {
-  //  res.setHeader('Cache-Control', 'public, max-age=' + config.get('cacheExpireTimeSecs'));
-  //}
-};
+
+var options = config.get('production')? {
+  setHeaders: function (res, path, stat) {
+    res.setHeader('Cache-Control', 'public, max-age=' + config.get('cacheExpireTimeSecs'));
+  }
+} : {};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
