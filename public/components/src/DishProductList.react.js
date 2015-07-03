@@ -4,9 +4,9 @@
 
 "use strict";
 var DishProductList = React.createClass({
-    getInitialState: function() {
+    getDefaultProps: function() {
         return {
-            products: this.props.originProducts,
+            originProducts: [],
             full: {
                 proteins: 0.0,
                 triglyceride: 0.0,
@@ -21,21 +21,12 @@ var DishProductList = React.createClass({
                 calorie: 0.0,
                 mass: 100
             }
-        }
-    },
-    getDefaultProps: function() {
-        return {
-            originProducts: []
-
         };
     },
     newProduct: function(){
         var newProduct = this.refs.newProduct.getProduct();
         console.log('Added', newProduct);
         socket.emit('newProduct', newProduct);
-    },
-    dishChanged: function(full){
-        this.calcResultDish();
     },
     changeHandle: function(product){
 
@@ -52,7 +43,7 @@ var DishProductList = React.createClass({
                 break;
             }
         }
-        this.calcResultDish();
+        this.calcDish();
     },
     removeHandle: function(id){
         var products = this.props.originProducts;
@@ -60,30 +51,52 @@ var DishProductList = React.createClass({
         {
             if(id === products[i]._id){
                 products.splice(i, 1);
-                this.setState({products: products});
+                this.setState();
                 socket.emit('removeDishProduct', id);
                 break;
             }
         }
-        this.calcResultDish();
+        this.calcDish();
     },
     componentDidMount: function() {
         socket.emit('getCurrentDishProducts');
         socket.on('getCurrentDishProducts', function(data){
             this.props.originProducts = data;
-            this.calcResultDish();
-            this.setState({products: data})
+            this.calcDish();
         }.bind(this));
 
         socket.on('newDishProduct', function(newProduct){
             var products = this.props.originProducts;
             products.push(newProduct);
-            this.calcResultDish();
-            this.setState({products: products})
+            this.calcDish();
         }.bind(this));
     },
-    calcResultDish: function(){
-        "use strict";
+    portionChanged: function(portion){
+        this.calcPortion();
+        this.setState();
+    },
+    fullChanged: function(portion){
+        this.calcFull();
+        this.setState();
+    },
+    calcDish: function(){
+        this.calcFull();
+        this.calcPortion();
+        this.setState();
+    },
+    calcPortion(){
+        var fullP =     this.props.full;
+        var portionP =  this.refs.portion.getProduct();;
+        var k = portionP.mass / fullP.mass;
+        this.props.portion = {
+            proteins:       fullP.proteins * k,
+            triglyceride:   fullP.triglyceride * k,
+            carbohydrate:   fullP.carbohydrate * k,
+            calorie:        fullP.calorie * k,
+            mass:           portionP.mass
+        };
+    },
+    calcFull: function(){
         var res = {
             proteins: 0.0,
             triglyceride: 0.0,
@@ -98,31 +111,24 @@ var DishProductList = React.createClass({
            res.carbohydrate += p.carbohydrate / mass;
            res.calorie += p.calorie / mass;
        });
-
         var fullP = this.refs.full.getProduct();
-        var portionP = this.refs.portion.getProduct();
 
-        var k = 1;//portionP.mass / fullP.mass;
+        res.proteins *= fullP.mass;
+        res.triglyceride *= fullP.mass;
+        res.carbohydrate *= fullP.mass;
+        res.calorie *= fullP.mass;
 
-        this.setState({
-            full: {
-                proteins:       res.proteins,
-                triglyceride:   res.triglyceride,
-                carbohydrate:   res.carbohydrate,
-                calorie:        res.calorie
-            },
-            portion: {
-                proteins:       res.proteins * k,
-                triglyceride:   res.triglyceride * k,
-                carbohydrate:   res.carbohydrate * k,
-                calorie:        res.calorie * k
-            }
-        });
-
+        this.props.full = {
+            proteins:       res.proteins,
+            triglyceride:   res.triglyceride,
+            carbohydrate:   res.carbohydrate,
+            calorie:        res.calorie,
+            mass:           fullP.mass
+        };
     },
     render: function() {
 
-        var products = this.state.products.map(function (product) {
+        var products = this.props.originProducts.map(function (product) {
             return (
                 <div className='product'
                      key =             {product._id}>
@@ -148,33 +154,48 @@ var DishProductList = React.createClass({
             );
         }.bind(this));
 
-        this.state.full._id = 'full';
-        this.state.portion._id = 'portion';
-        var dish = [this.state.full, this.state.portion].map(function(f){
-            return (
-                <div className="product" key =             {f._id}>
-                    <p>{f._id}</p>
-                    <ReactProduct
-                        hide=             {{details: true}}
-                        enabled =         {true}
-                        ref =             {f._id}
-                        changeHandle=     {this.dishChanged}
-                        id =              {f._id}
-                        description =     {f.description}
-                        proteins =        {f.proteins}
-                        triglyceride =    {f.triglyceride}
-                        carbohydrate =    {f.carbohydrate}
-                        calorie =         {f.calorie}
-                        mass =            {f.mass}
-                        details =         {f.details}>
-                    </ReactProduct>
-                </div>
-            );
-        }.bind(this));
+        var f = this.props.full;
+        var full = (
+            <div className="product" key =             {f._id}>
+                <p>Полное блюдо</p>
+                <ReactProduct
+                    hide=             {{details: true}}
+                    enabled =         {true}
+                    ref =             {'full'}
+                    changeHandle=     {this.fullChanged}
+                    description =     {f.description}
+                    proteins =        {f.proteins}
+                    triglyceride =    {f.triglyceride}
+                    carbohydrate =    {f.carbohydrate}
+                    calorie =         {f.calorie}
+                    mass =            {f.mass}>
+                </ReactProduct>
+            </div>
+        );
+
+        var p = this.props.portion;
+        var portion = (
+            <div className="product" key =             {f._id}>
+                <p>Порция</p>
+                <ReactProduct
+                    hide=             {{details: true}}
+                    enabled =         {true}
+                    ref =             {'portion'}
+                    changeHandle=     {this.portionChanged}
+                    description =     {p.description}
+                    proteins =        {p.proteins}
+                    triglyceride =    {p.triglyceride}
+                    carbohydrate =    {p.carbohydrate}
+                    calorie =         {p.calorie}
+                    mass =            {p.mass}>
+                </ReactProduct>
+            </div>
+        );
 
         return (
             <div className="dishList">
-                {dish}
+                {full}
+                {portion}
                 {products}
             </div>
         );
