@@ -76,7 +76,7 @@ var DishProductList = React.createClass({
         this.setState();
     },
     fullChanged: function(portion){
-        this.calcFull();
+        this.calcDish();
         this.setState();
     },
     calcDish: function(){
@@ -106,18 +106,12 @@ var DishProductList = React.createClass({
 
        this.props.originProducts.map(function(p){
            var mass = p.mass || 1.0;
-           res.proteins += p.proteins / mass;
-           res.triglyceride += p.triglyceride / mass;
-           res.carbohydrate += p.carbohydrate / mass;
-           res.calorie += p.calorie / mass;
+           res.proteins += p.proteins * mass / 100;
+           res.triglyceride += p.triglyceride * mass / 100;
+           res.carbohydrate += p.carbohydrate * mass / 100;
+           res.calorie += p.calorie * mass / 100;
        });
         var fullP = this.refs.full.getProduct();
-
-        res.proteins *= fullP.mass;
-        res.triglyceride *= fullP.mass;
-        res.carbohydrate *= fullP.mass;
-        res.calorie *= fullP.mass;
-
         this.props.full = {
             proteins:       res.proteins,
             triglyceride:   res.triglyceride,
