@@ -3,13 +3,27 @@
 
 extends layout/page
 block content
-   div(id='currentDishProducts' class='currentDishProducts myTable')
-   div(id='productList' class='myTable inline-block')
+   div(id='content')
+   script( src="bower_components/react/react.min.js")
    script( src='socket.js')
    script( src='js/PrefixTree.js')
    script( src='js/DeferredCaller.js')
-   script( src='components/build/Input.react.js')
-   script( src='components/build/Sorting.react.js')
-   script( src='components/build/Product.react.js')
-   script( src='components/build/ProductList.react.js')
-   script( src='components/build/DishProductList.react.js')
+   script( src='js/InputCore.js')
+   script.
+       var $content = $('#content');
+       var description = new InputCore.TextInput('description item');
+       var proteins = new InputCore.NumericInput('item');
+       var triglyceride = new InputCore.NumericInput('item');
+       var carbohydrate = new InputCore.NumericInput('item');
+       var calorie = new InputCore.NumericInput('item');
+       var mass = new InputCore.NumericInput('item');
+       var details = new InputCore.TextInput('details item');
+
+
+       $content.append(description.$get())
+       $content.append(proteins.$get())
+       $content.append(triglyceride.$get())
+       $content.append(carbohydrate.$get())
+       $content.append(calorie.$get())
+       $content.append(mass.$get())
+       $content.append(details.$get())
