@@ -131,7 +131,7 @@ var DishProductList = React.createClass({
                     <div className='inline-block'>
                         <ReactProduct
                                 hide=             {{details: true}}
-                                enabled =         {true}
+                                enabled =         {{mass:true}}
                                 ref =             {product._id}
                                 changeHandle=     {this.changeHandle}
                                 id =              {product._id}
@@ -153,8 +153,8 @@ var DishProductList = React.createClass({
             <div className="product" key =             {f._id}>
                 <p>Полное блюдо</p>
                 <ReactProduct
-                    hide=             {{details: true}}
-                    enabled =         {true}
+                    hide=             {{details: true, description: true}}
+                    enabled =         {{mass:true}}
                     ref =             {'full'}
                     changeHandle=     {this.fullChanged}
                     description =     {f.description}
@@ -172,8 +172,8 @@ var DishProductList = React.createClass({
             <div className="product" key =             {f._id}>
                 <p>Порция</p>
                 <ReactProduct
-                    hide=             {{details: true}}
-                    enabled =         {true}
+                    hide=             {{details: true, description: true}}
+                    enabled =         {{mass:true}}
                     ref =             {'portion'}
                     changeHandle=     {this.portionChanged}
                     description =     {p.description}

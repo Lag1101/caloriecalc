@@ -159,7 +159,7 @@ var ReactProductList = React.createClass({
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.newProduct}></input>
                     <div className='inline-block'>
                         <ReactProduct
-                            enabled={true}
+                            enabled= {{all:true}}
                             ref='newProduct'
                             hide=             {{details: true, mass: true}}/>
                     </div>
