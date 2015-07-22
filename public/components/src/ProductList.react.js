@@ -35,16 +35,22 @@ var ReactProductList = React.createClass({
     addHandle: function(id){
         socket.emit('newDishProduct', id);
     },
-    removeHandle: function(id){
+    removeHandle: function(productToRemove){
+        utils.confirmDialog(
+            "Вы уверены, что хотите удалить " + productToRemove.description + " ?",
+            this.removeProduct.bind(this, productToRemove)
+        );
+    },
+    removeProduct(productToRemove){
         var originsProducts = this.props.originProducts;
         for(var i = originsProducts.length; i--; )
         {
             var product = originsProducts[i];
-            if(id === product._id){
+            if(productToRemove._id === product._id){
                 this.prefixTree.removeString(product.description, product);
                 originsProducts.splice(i, 1);
                 this.updateProducts();
-                socket.emit('removeProduct', id);
+                socket.emit('removeProduct', productToRemove._id);
                 return;
             }
         }
@@ -127,7 +133,7 @@ var ReactProductList = React.createClass({
                                 </a>
                             </li>
                             <li>
-                                <a className="btn btn-xs btn-danger remove" data-toggle="dropdown" onClick={this.removeHandle.bind(this, product._id)}>
+                                <a className="btn btn-xs btn-danger remove" data-toggle="dropdown" onClick={this.removeHandle.bind(this, product)}>
                                     <i className="icon-trash">Удалить</i>
                                 </a>
                             </li>

@@ -3,34 +3,12 @@
  */
 (function(socket){
 
-    var products = [];
     var currentDishProducts = [];
     var dishList = [];
 
     var resultDish = $('.resultDish');
     var defaultDish = resultDish.find('.defaultDish');
-    var dishListView = resultDish.find('.dishList');
-
-    var currentDishProductsView = $('.currentDishProducts');
-    var portionView = defaultDish.find('.portion');
-    var fullView = defaultDish.find('.dish');
-
-    resultDish.find('.save').click(function(){
-        var full = new Product();
-        var portion = new Product();
-
-        full.readEl(fullView);
-        portion.readEl(portionView);
-
-        socket.emit('addDish', {
-            full: full,
-            portion: portion
-        });
-    });
-    defaultDish.find('.mass').on('input paste', function(){
-        utils.validateField($(this));
-        calcPortion(defaultDish);
-    });
+    var dishListView = $('.dishList');
 
     socket.on('getDishList', restoreDishList);
 
@@ -44,42 +22,11 @@
         });
     });
 
-    socket.on('getCurrentDishProducts', function (data) {
-        currentDishProductsView.empty();
-        if(data) {
-            async.waterfall([
-                function(cb){
-                    async.map(data, function(rawDishProduct, cb){
-                        var dishProduct = addToCurrentDish(rawDishProduct);
-                        return cb(null, dishProduct)
-                    },cb);
-                },
-                function(res, cb){
-                    currentDishProducts = res;
-                    return reCalc(cb);
-                }
-            ], function(err) {
-                if (err)
-                    console.error(err);
-            });
-        }
-    });
-    socket.on('newDishProduct', function(newDishProduct){
-        var p = addToCurrentDish(newDishProduct);
-        currentDishProducts.push(p);
-        reCalc();
-    });
-
-    responseDishProductList();
     responseDishList();
 
     function responseDishList(){
         socket.emit('getCurrentDishes');
     }
-    function responseDishProductList(){
-        socket.emit('getCurrentDishProducts');
-    }
-
     function fixDish(dish){
         socket.emit('fixDish', dish);
     }
@@ -185,47 +132,6 @@
         });
     }
 
-    function addToCurrentDish(datum){
-        var product = new Product(datum);
-        var productView = $('<div>')
-            .addClass('product')
-            .append($('<div>')
-                .addClass('inline-block')
-                .append($('<button>').addClass('remove btn item btn-xs btn-default').append(utils.icons.remove.clone()))
-                .append($('<div>').addClass('description item disableForInput'))
-                .append($('<input>').addClass('proteins'))
-                .append($('<input>').addClass('triglyceride'))
-                .append($('<input>').addClass('carbohydrate'))
-                .append($('<input>').addClass('calorie'))
-                .append($('<input>').addClass('mass').on('input paste', function(){
-                    if(utils.validateField($(this)))
-                        fixDishProduct(productView, product);
-                    reCalc();
-                })));
-
-        productView.find('input').addClass('item');
-        productView.find('input:not(.mass)').attr('disabled', true);
-
-        product.writeEl(productView);
-        productView.find('.remove').click(function(){
-            var i = currentDishProducts.indexOf(product);
-            if(i >= 0)
-                currentDishProducts.splice(i, 1);
-            productView.detach();
-            reCalc();
-            socket.emit('removeDishProduct', product.id);
-        });
-
-        productView.appendTo(currentDishProductsView);
-
-        return product;
-    }
-
-    function fixDishProduct(productView, product){
-        product.readEl(productView);
-        socket.emit('fixDishProduct', product);
-    }
-
     function calcPortion(el, cb){
 
         async.waterfall([
@@ -264,39 +170,5 @@
                 return cb();
             }
         ], cb);
-    }
-
-    function reCalc(cb){
-        async.series([
-            function(cb){
-                var res = new Product();
-                async.each(currentDishProducts, function(dp, cb){
-                    var mass = dp.mass / 100;
-
-                    res.proteins += +dp.proteins * mass;
-                    res.triglyceride += +dp.triglyceride * mass;
-                    res.carbohydrate += +dp.carbohydrate * mass;
-                    res.calorie += +dp.calorie * mass;
-
-                    return cb();
-                }, function(err){
-                    if(err)
-                        return cb(err);
-                    res.writeEl(fullView, ['mass']);
-                    console.log('calculated  dish products');
-                    return cb();
-                });
-            },
-            function(cb){
-                return calcPortion(defaultDish, cb);
-            }
-        ],function(err){
-            if(err)
-                return cb && cb(err);
-            else {
-                console.log('portion  dish products');
-                return cb && cb();
-            }
-        });
     }
 })(socket);

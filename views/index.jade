@@ -8,12 +8,9 @@ block content
             div(class='myTable')
                 include dailyView
 
+    div(class="dishList myTable")
     div(class='container-fluid')
-        div
-            div(class='myTable')
-                include resultView
-
-        div(class='currentDishProducts myTable')
+        div(id='currentDishProducts' class='currentDishProducts myTable')
         div(id='productList' class='myTable inline-block')
 
 
@@ -31,6 +28,7 @@ block content
         script( src='components/build/Sorting.react.js')
         script( src='components/build/Product.react.js')
         script( src='components/build/ProductList.react.js')
+        script( src='components/build/DishProductList.react.js')
 
         script(src='product.js')
         script(src='dish.js')

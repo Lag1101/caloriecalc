@@ -56,7 +56,8 @@ new compressor.minify({
         './public/components/build/Input.react.js',
         './public/components/build/Sorting.react.js',
         './public/components/build/Product.react.js',
-        './public/components/build/ProductList.react.js'
+        './public/components/build/ProductList.react.js',
+        './public/components/build/DishProductList.react.js'
     ],
     fileOut: './public/Release/index.js',
     callback: function(err, min){

@@ -28,6 +28,13 @@ var DishProductList = React.createClass({
         console.log('Added', newProduct);
         socket.emit('newProduct', newProduct);
     },
+    newDishHandle: function(){
+        socket.emit('addDish', {
+            full: this.refs.full.getProduct(),
+            portion: this.refs.portion.getProduct()
+        });
+        console.log('full', this.refs.full.getProduct(), 'portion', this.refs.portion.getProduct());
+    },
     changeHandle: function(product){
 
         socket.emit('fixDishProduct', product);
@@ -86,7 +93,7 @@ var DishProductList = React.createClass({
     },
     calcPortion(){
         var fullP =     this.props.full;
-        var portionP =  this.refs.portion.getProduct();;
+        var portionP =  this.refs.portion.getProduct();
         var k = portionP.mass / fullP.mass;
         this.props.portion = {
             proteins:       fullP.proteins * k,
@@ -148,48 +155,48 @@ var DishProductList = React.createClass({
             );
         }.bind(this));
 
-        var f = this.props.full;
-        var full = (
-            <div className="product" key =             {f._id}>
-                <p>Полное блюдо</p>
-                <ReactProduct
-                    hide=             {{details: true, description: true}}
-                    enabled =         {{mass:true}}
-                    ref =             {'full'}
-                    changeHandle=     {this.fullChanged}
-                    description =     {f.description}
-                    proteins =        {f.proteins}
-                    triglyceride =    {f.triglyceride}
-                    carbohydrate =    {f.carbohydrate}
-                    calorie =         {f.calorie}
-                    mass =            {f.mass}>
-                </ReactProduct>
-            </div>
-        );
-
-        var p = this.props.portion;
-        var portion = (
-            <div className="product" key =             {f._id}>
-                <p>Порция</p>
-                <ReactProduct
-                    hide=             {{details: true, description: true}}
-                    enabled =         {{mass:true}}
-                    ref =             {'portion'}
-                    changeHandle=     {this.portionChanged}
-                    description =     {p.description}
-                    proteins =        {p.proteins}
-                    triglyceride =    {p.triglyceride}
-                    carbohydrate =    {p.carbohydrate}
-                    calorie =         {p.calorie}
-                    mass =            {p.mass}>
-                </ReactProduct>
-            </div>
-        );
+        var result = [
+            {
+                title: "Полное блюдо",
+                changeHandle: this.fullChanged,
+                ref: 'full',
+                product: this.props.full
+            },
+            {
+                title: "Порция",
+                changeHandle: this.portionChanged,
+                ref: 'portion',
+                product: this.props.portion
+            }
+        ].map(function(v){
+                return (
+                    <div>
+                        <p>{v.title}</p>
+                        <ReactProduct
+                            hide=             {{details: true, description: true}}
+                            enabled =         {{mass:true}}
+                            ref =             {v.ref}
+                            changeHandle=     {v.changeHandle}
+                            description =     {v.product.description}
+                            proteins =        {v.product.proteins}
+                            triglyceride =    {v.product.triglyceride}
+                            carbohydrate =    {v.product.carbohydrate}
+                            calorie =         {v.product.calorie}
+                            mass =            {v.product.mass}>
+                        </ReactProduct>
+                    </div>
+                );
+            });
 
         return (
-            <div className="dishList">
-                {full}
-                {portion}
+            <div>
+                <div className='defaultDish product inline-block'>
+                    <button className='save item btn btn-xs btn-default'
+                            onClick={this.newDishHandle}>
+                        <i className='glyphicon glyphicon-floppy-disk'/>
+                    </button>
+                    {result}
+                </div>
                 {products}
             </div>
         );
