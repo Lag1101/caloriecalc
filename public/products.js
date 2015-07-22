@@ -3,14 +3,9 @@
  */
 (function(socket){
 
-    var currentDishProducts = [];
     var dishList = [];
 
-    var resultDish = $('.resultDish');
-    var defaultDish = resultDish.find('.defaultDish');
     var dishListView = $('.dishList');
-
-    socket.on('getDishList', restoreDishList);
 
     socket.on('getCurrentDishes', function (data) {
         dishListView.empty();
@@ -111,26 +106,6 @@
             return cb(null, dish);
         }
     })();
-
-
-    function restoreDishList(dishListRaw, cb){
-        async.map(dishListRaw, function(rawDish, cb){
-            var dish = {
-                full: new Product(rawDish.full),
-                portion: new Product(rawDish.portion),
-                description: rawDish.description
-            };
-
-            return addToDishList(dish, cb);
-        }, function(err, res){
-            if(err)
-                return cb(err);
-            else{
-                dishList = res;
-                return cb(null, dishList);
-            }
-        });
-    }
 
     function calcPortion(el, cb){
 
