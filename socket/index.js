@@ -109,7 +109,7 @@ function newDishProduct(socket, user, cb, newDishProductId){
         if(err)
             logger.error(err);
         else {
-            logger.info('Copied dishProduct', newProduct);
+            logger.info('New dishProduct', newProduct);
             socket.emit('newDishProduct', newProduct);
         }
         return cb();
@@ -126,7 +126,7 @@ function removeDishProduct(socket, user, cb, id){
         if(err)
             logger.error(err);
         else {
-            logger.info('Removed product', id);
+            logger.info('Removed dish product', id);
         }
         return cb();
     });
@@ -192,7 +192,7 @@ function fixDish(socket, user, cb, fixedDish){
         if(err)
             logger.error(err);
         else
-            logger.info('Saved', fixedDish, err);
+            logger.info('Fixed dish', fixedDish);
         return cb();
     });
 }
@@ -213,7 +213,7 @@ function fixDaily(socket, user, cb, date, fixedProduct){
         if(err)
             logger.error(err);
         else
-            logger.info('Saved', fixedProduct, err);
+            logger.info('Fixed daily', fixedProduct);
         return cb();
     });
 }
@@ -234,7 +234,7 @@ function fixDishProduct(socket, user, cb, fixedProduct){
         if(err)
             logger.error(err);
         else
-            logger.info('Saved', fixedProduct, err);
+            logger.info('Fixed dish product', fixedProduct);
         return cb();
     });
 }
@@ -255,7 +255,7 @@ function fixProduct(socket, user, cb, fixedProduct){
         if(err)
             logger.error(err);
         else
-            logger.info('Saved', fixedProduct, err);
+            logger.info('Fixed product', fixedProduct);
         return cb();
     });
 }
@@ -372,7 +372,7 @@ function socketSetupHandles(socket, user){
             });
         })
         .on('disconnect', function () {
-            console.info('disconnected');
+            logger.info('disconnected');
             saveUser(user, function(err){
                 if(err) logger.error(err);
             });
@@ -433,7 +433,7 @@ module.exports = function(server, session){
     io.use(ios(session)); // session support
 
     io.on('connection', function(socket){
-        console.info(socket.id, 'socket connected', 'session', socket.handshake.session);
+        logger.info(socket.id, 'socket connected', 'session', socket.handshake.session);
         var username = socket.handshake.session.username;
         
         if(userCache[username])

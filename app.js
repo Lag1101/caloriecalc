@@ -1,7 +1,7 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
+var logger = require('./lib/logger').getLogger('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var compression = require('compression');
@@ -36,7 +36,6 @@ app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
-app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -45,9 +44,13 @@ app.use(express.static(path.join(__dirname, 'public'), options));
 app.use(session);
 app.use(compression());
 
+
+app.use(function(req, res, next){
+    logger.info(req.method, req.url);
+    next();
+});
+
 require('./routes')(app);
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
