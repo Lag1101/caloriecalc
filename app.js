@@ -65,7 +65,7 @@ app.use(function(req, res, next) {
 // will print stacktrace
 app.use(function(err, req, res, next) {
 
-    if(err instanceof AuthError) {
+    if(err instanceof AuthError ||  (app.get('env') === 'production')) {
         res.status(403);
         res.send({
             message: err.message,
@@ -75,7 +75,7 @@ app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
             message: err.message,
-            error: (app.get('env') !== 'production' ? err : {})
+            error: err
         });
     }
 });

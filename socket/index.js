@@ -9,25 +9,6 @@ var async = require('async');
 var logger = require('../lib/logger');
 
 
-var DeferredCaller = (function(){
-    function DeferredCaller(time, call){
-        this.timeoutToCall = null;
-        this.time = time;
-
-        this.call = call;
-    }
-    DeferredCaller.prototype.tryToCall = function(){
-        if(this.timeoutToCall)
-            clearTimeout(this.timeoutToCall);
-
-        this.timeoutToCall = setTimeout(function(){
-            this.call();
-            this.timeoutToCall = null;
-        }.bind(this), this.time);
-    };
-    return DeferredCaller;
-})();
-
 function getCurrentDishes(socket, user){
     async.waterfall([
         function(cb){
@@ -357,25 +338,15 @@ function saveUser(user, cb){
 }
 
 function socketSetupHandles(socket, user){
-    var saver = new DeferredCaller(10*1000, function(){
-        saveUser(user, function(err){
-            if(err) logger.error(err);
-        });
-    });
-    var save = saver.tryToCall.bind(saver);
+    var save = saveUser.bind(null, user);
 
     socket
         .on('error', function(err){
             logger.error(err);
-            saveUser(user, function(err){
-                if(err) logger.error(err);
-            });
         })
         .on('disconnect', function () {
             logger.info('disconnected');
-            saveUser(user, function(err){
-                if(err) logger.error(err);
-            });
+            save();
         })
         .on('list',                     list.bind(null, socket, user))
         .on('newProduct',               newProduct.bind(null, socket, user, save))
@@ -408,25 +379,6 @@ function socketSetupHandles(socket, user){
         .on('setNorm', setNorm.bind(null, socket, user, save))
 }
 
-var CacheDatum = (function(){
-    var expirationTime = 1000*60*60*24*7;
-    function CacheDatum(val){
-        this.val = val;
-        this.lastUpdate = Date.now();
-    }
-    CacheDatum.prototype.expired = function(){
-        var now = Date.now();
-        return now - this.lastUpdate > expirationTime;
-    };
-    CacheDatum.prototype.get = function(){
-        this.lastUpdate = Date.now();
-        return this.val;
-    };
-    return CacheDatum;
-})();
-
-var userCache = Object.create(null);
-
 module.exports = function(server, session){
     var ios = require('socket.io-express-session');
     var io = require('socket.io').listen(server);
@@ -435,17 +387,12 @@ module.exports = function(server, session){
     io.on('connection', function(socket){
         logger.info(socket.id, 'socket connected', 'session', socket.handshake.session);
         var username = socket.handshake.session.username;
-        
-        if(userCache[username])
-            socketSetupHandles(socket, userCache[username].get());
-        else {
-            User.findOne({username: username}, function (err, user) {
-                if (err || !user)
-                    return new Error(err);
-                userCache[username] = new CacheDatum(user);
-                socketSetupHandles(socket, userCache[username].val);
-            });
-        }
+
+        User.findOne({username: username}, function (err, user) {
+            if (err || !user)
+                return new Error(err);
+            socketSetupHandles(socket, user);
+        });
 
     });
 };
