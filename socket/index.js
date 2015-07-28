@@ -7,7 +7,7 @@ var Product = require('../models/product').Product;
 var Dish = require('../models/dish').Dish;
 var async = require('async');
 var logger = require('../lib/logger');
-
+var DeferredCaller = require('../public/js/DeferredCaller');
 
 function getCurrentDishes(socket, user){
     async.waterfall([
@@ -338,7 +338,10 @@ function saveUser(user, cb){
 }
 
 function socketSetupHandles(socket, user){
-    var save = saveUser.bind(null, user);
+
+    var save = function(deferredCaller, user){
+        //deferredCaller.tryToCall(saveUser.bind(null, user))
+    }.bind(null, new DeferredCaller(5000), user);
 
     socket
         .on('error', function(err){
@@ -346,7 +349,7 @@ function socketSetupHandles(socket, user){
         })
         .on('disconnect', function () {
             logger.info('disconnected');
-            save();
+            saveUser(user)
         })
         .on('list',                     list.bind(null, socket, user))
         .on('newProduct',               newProduct.bind(null, socket, user, save))

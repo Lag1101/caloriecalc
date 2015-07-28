@@ -4,7 +4,7 @@
 
 
 var socket = io.connect('', {
-    reconnect: true
+    reconnect: false
 });
 socket
     .on('connect', function () {
