@@ -21,3 +21,6 @@ var DeferredCaller = (function(){
     };
     return DeferredCaller;
 })();
+
+if(module && module.exports)
+    module.exports = DeferredCaller;
