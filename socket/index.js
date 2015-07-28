@@ -380,6 +380,12 @@ function socketSetupHandles(socket, user){
 
         .on('getNorm', getNorm.bind(null, socket, user))
         .on('setNorm', setNorm.bind(null, socket, user, save))
+
+        .on('save', function(){
+            saveUser(user, function(err, user){
+                socket.emit('save');
+            })
+        })
 }
 
 module.exports = function(server, session){

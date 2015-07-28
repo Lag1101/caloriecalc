@@ -12,4 +12,18 @@ socket
     })
     .on('disconnect', function () {
         console.log("disconnected");
+        BootstrapDialog.show({
+            type: BootstrapDialog.TYPE_WARNING,
+            title: 'Warning',
+            message: 'Соединение разорвано. Попробуйте перезагрузить страницу',
+            closable: false
+        });
+    })
+    .on('error', function(err){
+        BootstrapDialog.show({
+            type: BootstrapDialog.TYPE_DANGER,
+            title: 'DANGER',
+            message: err.body + '\n' + 'Попробуйте перезагрузить страницу',
+            closable: false
+        });
     });

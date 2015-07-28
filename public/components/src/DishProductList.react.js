@@ -29,11 +29,9 @@ var DishProductList = React.createClass({
         socket.emit('newProduct', newProduct);
     },
     newDishHandle: function(){
-        socket.emit('addDish', {
-            full: this.refs.full.getProduct(),
-            portion: this.refs.portion.getProduct()
-        });
-        console.log('full', this.refs.full.getProduct(), 'portion', this.refs.portion.getProduct());
+        var newDish = this.refs.dish.getDish()
+        socket.emit('addDish', newDish);
+        console.log(newDish);
     },
     changeHandle: function(product){
 
@@ -78,30 +76,9 @@ var DishProductList = React.createClass({
             this.calcDish();
         }.bind(this));
     },
-    portionChanged: function(portion){
-        this.calcPortion();
-        this.setState();
-    },
-    fullChanged: function(portion){
-        this.calcDish();
-        this.setState();
-    },
     calcDish: function(){
         this.calcFull();
-        this.calcPortion();
         this.setState();
-    },
-    calcPortion(){
-        var fullP =     this.props.full;
-        var portionP =  this.refs.portion.getProduct();
-        var k = portionP.mass / fullP.mass;
-        this.props.portion = {
-            proteins:       fullP.proteins * k,
-            triglyceride:   fullP.triglyceride * k,
-            carbohydrate:   fullP.carbohydrate * k,
-            calorie:        fullP.calorie * k,
-            mass:           portionP.mass
-        };
     },
     calcFull: function(){
         var res = {
@@ -118,13 +95,12 @@ var DishProductList = React.createClass({
            res.carbohydrate += p.carbohydrate * mass / 100;
            res.calorie += p.calorie * mass / 100;
        });
-        var fullP = this.refs.full.getProduct();
-        this.props.full = {
-            proteins:       res.proteins,
-            triglyceride:   res.triglyceride,
-            carbohydrate:   res.carbohydrate,
-            calorie:        res.calorie,
-            mass:           fullP.mass
+
+        this.props.sum = {
+            proteins:       res.proteins.toFixed(2),
+            triglyceride:   res.triglyceride.toFixed(2),
+            carbohydrate:   res.carbohydrate.toFixed(2),
+            calorie:        res.calorie.toFixed(2)
         };
     },
     render: function() {
@@ -155,39 +131,6 @@ var DishProductList = React.createClass({
             );
         }.bind(this));
 
-        var result = [
-            {
-                title: "Полное блюдо",
-                changeHandle: this.fullChanged,
-                ref: 'full',
-                product: this.props.full
-            },
-            {
-                title: "Порция",
-                changeHandle: this.portionChanged,
-                ref: 'portion',
-                product: this.props.portion
-            }
-        ].map(function(v){
-                return (
-                    <div>
-                        <p>{v.title}</p>
-                        <ReactProduct
-                            hide=             {{details: true, description: true}}
-                            enabled =         {{mass:true}}
-                            ref =             {v.ref}
-                            changeHandle=     {v.changeHandle}
-                            description =     {v.product.description}
-                            proteins =        {v.product.proteins}
-                            triglyceride =    {v.product.triglyceride}
-                            carbohydrate =    {v.product.carbohydrate}
-                            calorie =         {v.product.calorie}
-                            mass =            {v.product.mass}>
-                        </ReactProduct>
-                    </div>
-                );
-            });
-
         return (
             <div>
                 <div className='defaultDish product inline-block'>
@@ -195,7 +138,12 @@ var DishProductList = React.createClass({
                             onClick={this.newDishHandle}>
                         <i className='glyphicon glyphicon-floppy-disk'/>
                     </button>
-                    {result}
+                    <ReactDish
+                        hideDescription = {true}
+                        ref = 'dish'
+                        description = {""}
+                        full={this.props.sum}
+                        portion={this.props.sum}/>
                 </div>
                 {products}
             </div>

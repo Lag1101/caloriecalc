@@ -13,7 +13,7 @@ block content
         div(id='currentDishProducts' class='currentDishProducts myTable')
         div(id='productList' class='myTable inline-block')
 
-
+    button(id type="button" class="btn btn-primary hardSaveButton" data-loading-text="Сохранение ...") Сохранить
 
     if( !devel )
         script(src='Release/index.js')
@@ -27,6 +27,7 @@ block content
         script( src='components/build/Input.react.js')
         script( src='components/build/Sorting.react.js')
         script( src='components/build/Product.react.js')
+        script( src='components/build/Dish.react.js')
         script( src='components/build/ProductList.react.js')
         script( src='components/build/DishProductList.react.js')
 
@@ -35,3 +36,14 @@ block content
         script(src='day.js')
         script(src='dailyView.js')
         script(src='products.js')
+        script.
+            (function () {
+                var b = $('.hardSaveButton');
+                socket.on('save', function(){
+                    b.button('reset');
+                });
+                b.click(function () {
+                    b.button('loading');
+                    socket.emit('save');
+                });
+            })();
