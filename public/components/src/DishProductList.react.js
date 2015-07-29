@@ -97,10 +97,10 @@ var DishProductList = React.createClass({
        });
 
         this.props.sum = {
-            proteins:       res.proteins.toFixed(2),
-            triglyceride:   res.triglyceride.toFixed(2),
-            carbohydrate:   res.carbohydrate.toFixed(2),
-            calorie:        res.calorie.toFixed(2)
+            proteins:       res.proteins,
+            triglyceride:   res.triglyceride,
+            carbohydrate:   res.carbohydrate,
+            calorie:        res.calorie
         };
     },
     render: function() {
