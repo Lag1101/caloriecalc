@@ -123,7 +123,7 @@ var DishProductList = React.createClass({
         }.bind(this));
 
         return (
-            <div>
+            <div className={this.props.className}>
                 <div className='defaultDish product inline-block'>
                     <button className='save item btn btn-xs btn-default'
                             onClick={this.newDishHandle}>
@@ -142,7 +142,7 @@ var DishProductList = React.createClass({
     }
 });
 
-React.render(
-    <DishProductList />,
-    document.getElementById('currentDishProducts')
-);
+//React.render(
+//    <DishProductList />,
+//    document.getElementById('currentDishProducts')
+//);

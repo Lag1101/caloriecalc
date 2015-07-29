@@ -70,7 +70,7 @@ var ReactDishList = React.createClass({
             );
         }.bind(this));
         return (
-            <div>
+            <div className={this.props.className}>
                 <div className='dishList'>
                     {dishes}
                 </div>
@@ -79,7 +79,7 @@ var ReactDishList = React.createClass({
     }
 });
 
-React.render(
-    <ReactDishList />,
-    document.getElementById('dishList')
-);
+//React.render(
+//    <ReactDishList />,
+//    document.getElementById('dishList')
+//);

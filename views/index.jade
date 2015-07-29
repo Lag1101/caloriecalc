@@ -8,10 +8,7 @@ block content
             div(class='myTable')
                 include dailyView
 
-    div(id='dishList' class="dishList myTable")
-    div(class='container-fluid')
-        div(id='currentDishProducts' class='currentDishProducts myTable')
-        div(id='productList' class='myTable inline-block')
+    div(id='app')
 
     button(id type="button" class="btn btn-primary hardSaveButton" data-loading-text="Сохранение ...") Сохранить
 
@@ -31,6 +28,7 @@ block content
         script( src='components/build/ProductList.react.js')
         script( src='components/build/DishProductList.react.js')
         script( src='components/build/DishList.react.js')
+        script( src='components/build/App.react.js')
 
         script(src='product.js')
         script(src='day.js')

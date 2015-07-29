@@ -3,10 +3,7 @@
 
 extends layout/page
 block content
-   div(id='dishList' class='myTable')
-   div(id='dish' class='myTable')
-   div(id='currentDishProducts' class='currentDishProducts myTable')
-   div(id='productList' class='myTable inline-block')
+   div(id='app')
    script( src='socket.js')
    script( src='utils.js')
    script( src='js/PrefixTree.js')
@@ -18,3 +15,4 @@ block content
    script( src='components/build/Dish.react.js')
    script( src='components/build/DishProductList.react.js')
    script( src='components/build/DishList.react.js')
+   script( src='components/build/App.react.js')

@@ -159,7 +159,7 @@ var ReactProductList = React.createClass({
             );
         }.bind(this));
         return (
-            <div>
+            <div className={this.props.className}>
                 <Sorting ref='sortBar' searchHandle={this.searchHandle} changeHandle={this.changeSorting}/>
                 <div className='product newProduct'>
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.newProduct}></input>
@@ -177,7 +177,7 @@ var ReactProductList = React.createClass({
         );
     }
 });
-React.render(
-    <ReactProductList />,
-    document.getElementById('productList')
-);
+//React.render(
+//    <ReactProductList />,
+//    document.getElementById('productList')
+//);
