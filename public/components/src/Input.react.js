@@ -25,7 +25,7 @@ var ReactNumericInput = React.createClass({
         this.setState({
             valid: valid
         });
-        this.props.changeHandle();
+        this.props.changeHandle(this.props.value);
     },
     getInitialState(){
         return {
@@ -84,7 +84,7 @@ var ReactTextInput = React.createClass({
         var str = React.findDOMNode(this.refs.div).innerHTML;
         this.props.value = str;
         this.setState();
-        this.props.changeHandle();
+        this.props.changeHandle(this.props.value);
     },
     makeDisabled: function(){
         this.props.enabled = false;

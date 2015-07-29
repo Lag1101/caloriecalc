@@ -18,36 +18,38 @@ var ReactDish = React.createClass({
     },
     getInitialState: function() {
         return {
-            full: this.props.full,
-            portion: this.props.portion
+            //full: this.props.full,
+            //portion: this.props.portion
         }
     },
-    portionChangeHandle: function(){
-        this.setState({
-            portion: this.refs.portion.getProduct()
-        });
-        console.log(this.getDish())
+    descriptionChangeHandle: function(description){
+        this.props.description = description;
+        this.props.changeHandle && this.props.changeHandle(this.getDish());
     },
-    fullChangeHandle: function(){
-        this.setState({
-            full: this.refs.full.getProduct()
-        });
-        console.log(this.getDish())
+    portionChangeHandle: function(portion){
+        this.props.portion = portion;
+        this.setState();
+        this.props.changeHandle && this.props.changeHandle(this.getDish());
+    },
+    fullChangeHandle: function(full){
+        this.props.full = full;
+        this.setState();
+        this.props.changeHandle && this.props.changeHandle(this.getDish());
     },
     componentDidMount: function() {
 
     },
     render: function() {
-        var fullP =     this.state.full;
-        var portionP =  this.state.portion;
+        var fullP =     this.props.full;
+        var portionP =  this.props.portion;
 
         var description = this.props.description;
 
         var full = {
-            proteins:       (this.props.full.proteins || 0).toFixed(2),
-            triglyceride:   (this.props.full.triglyceride || 0).toFixed(2),
-            carbohydrate:   (this.props.full.carbohydrate || 0).toFixed(2),
-            calorie:        (this.props.full.calorie || 0).toFixed(2),
+            proteins:       parseFloat(this.props.full.proteins || 0).toFixed(2),
+            triglyceride:   parseFloat(this.props.full.triglyceride || 0).toFixed(2),
+            carbohydrate:   parseFloat(this.props.full.carbohydrate || 0).toFixed(2),
+            calorie:        parseFloat(this.props.full.calorie || 0).toFixed(2),
             mass:           fullP.mass
         };
 
@@ -65,7 +67,7 @@ var ReactDish = React.createClass({
             descriptionCSS += ' hidden ';
         return (
             <div>
-                <ReactTextInput  enabled={true}  css={descriptionCSS}   changeHandle={this.changeHandle} value={description}        ref='description'></ReactTextInput>
+                <ReactTextInput  enabled={true}  css={descriptionCSS}   changeHandle={this.descriptionChangeHandle} value={description}        ref='description'></ReactTextInput>
                 <ReactProduct
                     hide=             {{details: true, description: true}}
                     enabled =         {{mass:true}}

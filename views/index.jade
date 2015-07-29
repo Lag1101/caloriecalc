@@ -8,7 +8,7 @@ block content
             div(class='myTable')
                 include dailyView
 
-    div(class="dishList myTable")
+    div(id='dishList' class="dishList myTable")
     div(class='container-fluid')
         div(id='currentDishProducts' class='currentDishProducts myTable')
         div(id='productList' class='myTable inline-block')
@@ -30,12 +30,13 @@ block content
         script( src='components/build/Dish.react.js')
         script( src='components/build/ProductList.react.js')
         script( src='components/build/DishProductList.react.js')
+        script( src='components/build/DishList.react.js')
 
         script(src='product.js')
-        script(src='dish.js')
+        //script(src='dish.js')
         script(src='day.js')
         script(src='dailyView.js')
-        script(src='products.js')
+        //script(src='products.js')
         script.
             (function () {
                 var b = $('.hardSaveButton');

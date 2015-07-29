@@ -7,14 +7,7 @@ var DishProductList = React.createClass({
     getDefaultProps: function() {
         return {
             originProducts: [],
-            full: {
-                proteins: 0.0,
-                triglyceride: 0.0,
-                carbohydrate: 0.0,
-                calorie: 0.0,
-                mass: 100
-            },
-            portion: {
+            sum: {
                 proteins: 0.0,
                 triglyceride: 0.0,
                 carbohydrate: 0.0,
@@ -96,12 +89,10 @@ var DishProductList = React.createClass({
            res.calorie += p.calorie * mass / 100;
        });
 
-        this.props.sum = {
-            proteins:       res.proteins,
-            triglyceride:   res.triglyceride,
-            carbohydrate:   res.carbohydrate,
-            calorie:        res.calorie
-        };
+        this.props.sum.proteins = res.proteins;
+        this.props.sum.triglyceride = res.triglyceride;
+        this.props.sum.carbohydrate = res.carbohydrate;
+        this.props.sum.calorie = res.calorie;
     },
     render: function() {
 

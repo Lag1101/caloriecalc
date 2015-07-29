@@ -62,7 +62,8 @@ var ReactDishList = React.createClass({
                             id =              {dish._id}
                             description =     {dish.description}
                             full =            {dish.contain[0]}
-                            portion =         {dish.contain[1]}>
+                            portion =         {dish.contain[1]}
+                            changeHandle =    {this.changeHandle.bind(this)}>
                         </ReactDish>
                     </div>
                 </div>
