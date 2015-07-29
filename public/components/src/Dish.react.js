@@ -44,10 +44,10 @@ var ReactDish = React.createClass({
         var description = this.props.description;
 
         var full = {
-            proteins:       this.props.full.proteins.toFixed(2),
-            triglyceride:   this.props.full.triglyceride.toFixed(2),
-            carbohydrate:   this.props.full.carbohydrate.toFixed(2),
-            calorie:        this.props.full.calorie.toFixed(2),
+            proteins:       (this.props.full.proteins || 0).toFixed(2),
+            triglyceride:   (this.props.full.triglyceride || 0).toFixed(2),
+            carbohydrate:   (this.props.full.carbohydrate || 0).toFixed(2),
+            calorie:        (this.props.full.calorie || 0).toFixed(2),
             mass:           fullP.mass
         };
 
