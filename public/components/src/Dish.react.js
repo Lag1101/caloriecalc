@@ -66,7 +66,7 @@ var ReactDish = React.createClass({
         if(this.props.hideDescription)
             descriptionCSS += ' hidden ';
         return (
-            <div>
+            <div className={this.props.className}>
                 <ReactTextInput  enabled={true}  css={descriptionCSS}   changeHandle={this.descriptionChangeHandle} value={description}        ref='description'></ReactTextInput>
                 <ReactProduct
                     hide=             {{details: true, description: true}}

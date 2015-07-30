@@ -11,8 +11,35 @@ var ReactDishList = React.createClass({
     },
     getDefaultProps: function() {
         return {
-            originDishes: []
+            originDishes: [],
+            full: {
+                proteins: 0.0,
+                triglyceride: 0.0,
+                carbohydrate: 0.0,
+                calorie: 0.0,
+                mass: 100
+            },
+            portion: {
+                proteins: 0.0,
+                triglyceride: 0.0,
+                carbohydrate: 0.0,
+                calorie: 0.0,
+                mass: 100
+            }
         };
+    },
+    defaultDishChanged: function(dish){
+        this.props.full = dish.full;
+        this.props.portion = dish.portion;
+    },
+    setSum: function(sum){
+        this.props.full.proteins = sum.proteins;
+        this.props.full.triglyceride = sum.triglyceride;
+        this.props.full.carbohydrate = sum.carbohydrate;
+        this.props.full.calorie = sum.calorie;
+
+
+        this.setState();
     },
     changeHandle: function(dish){
         socket.emit('fixDish', dish);
@@ -72,6 +99,19 @@ var ReactDishList = React.createClass({
         return (
             <div className={this.props.className}>
                 <div className='dishList'>
+                    <div className='product'>
+                        <button className='save item btn btn-xs btn-default'
+                                onClick={this.newDishHandle}>
+                            <i className='glyphicon glyphicon-floppy-disk'/>
+                        </button>
+                        <ReactDish className='inline-block'
+                            //hideDescription = {true}
+                                   ref = 'dish'
+                                   description = {""}
+                                   full={this.props.full}
+                                   portion={this.props.portion}
+                                   changeHandle={this.defaultDishChanged}/>
+                    </div>
                     {dishes}
                 </div>
             </div>

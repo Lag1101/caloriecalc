@@ -7,19 +7,11 @@ var DishProductList = React.createClass({
     getDefaultProps: function() {
         return {
             originProducts: [],
-            full: {
+            sum: {
                 proteins: 0.0,
                 triglyceride: 0.0,
                 carbohydrate: 0.0,
-                calorie: 0.0,
-                mass: 100
-            },
-            portion: {
-                proteins: 0.0,
-                triglyceride: 0.0,
-                carbohydrate: 0.0,
-                calorie: 0.0,
-                mass: 100
+                calorie: 0.0
             }
         };
     },
@@ -78,6 +70,7 @@ var DishProductList = React.createClass({
     },
     calcDish: function(){
         this.calcFull();
+        this.props.sumChanged && this.props.sumChanged(this.props.sum);
         this.setState();
     },
     calcFull: function(){
@@ -96,14 +89,10 @@ var DishProductList = React.createClass({
            res.calorie += p.calorie * mass / 100;
        });
 
-        this.props.full.proteins = res.proteins;
-        this.props.full.triglyceride = res.triglyceride;
-        this.props.full.carbohydrate = res.carbohydrate;
-        this.props.full.calorie = res.calorie;
-    },
-    defaultDishChanged: function(dish){
-        this.props.full = dish.full;
-        this.props.portion = dish.portion;
+        this.props.sum.proteins = res.proteins;
+        this.props.sum.triglyceride = res.triglyceride;
+        this.props.sum.carbohydrate = res.carbohydrate;
+        this.props.sum.calorie = res.calorie;
     },
     render: function() {
 
@@ -135,19 +124,6 @@ var DishProductList = React.createClass({
 
         return (
             <div className={this.props.className}>
-                <div className='defaultDish product inline-block'>
-                    <button className='save item btn btn-xs btn-default'
-                            onClick={this.newDishHandle}>
-                        <i className='glyphicon glyphicon-floppy-disk'/>
-                    </button>
-                    <ReactDish
-                        hideDescription = {true}
-                        ref = 'dish'
-                        description = {""}
-                        full={this.props.full}
-                        portion={this.props.portion}
-                        changeHandle={this.defaultDishChanged}/>
-                </div>
                 {products}
             </div>
         );

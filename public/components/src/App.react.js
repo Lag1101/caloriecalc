@@ -4,12 +4,18 @@
 
 
 var App = React.createClass({
+    sumChanged: function(sum){
+        this.refs.dishList.setSum(sum);
+    },
     render: function() {
         return (
             <div >
-                <ReactDishList className="dishList myTable"/>
+                <ReactDishList ref='dishList' className="dishList myTable"/>
                 <div className='container-fluid'>
-                    <DishProductList className='currentDishProducts myTable'/>
+                    <DishProductList
+                        className='currentDishProducts myTable'
+                        sumChanged={this.sumChanged}
+                        />
                     <ReactProductList className='myTable inline-block'/>
                 </div>
             </div>
