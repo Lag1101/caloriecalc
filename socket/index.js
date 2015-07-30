@@ -19,9 +19,10 @@ function getCurrentDishes(socket, user){
             return cb();
         }
     ], function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else {
+            socket.emit('error', err);
+        }else{
             logger.info('Got dishes');
             //return getCurrentDishes(socket, username);
         }
@@ -35,9 +36,10 @@ function addDish(socket, user, cb, newDish){
             user.addDish(newDish, cb);
         }
     ], function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else {
+            socket.emit('error', err);
+        }else{
             logger.info('Added dish', newDish);
             return getCurrentDishes(socket, user);
         }
@@ -53,9 +55,10 @@ function removeDish(socket, user, cb, id){
             user.removeDish(id, cb);
         }
     ], function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else {
+            socket.emit('error', err);
+        }else{
             logger.info('Removed dish', id);
         }
         return cb();
@@ -72,9 +75,10 @@ function getCurrentDishProducts(socket, user){
             return cb();
         }
     ], function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else
+            socket.emit('error', err);
+        }else
         {
             logger.info('Got current dish products');
         }
@@ -87,9 +91,10 @@ function newDishProduct(socket, user, cb, newDishProductId){
             user.addDishProduct(newDishProductId, cb);
         }
     ], function(err, newProduct){
-        if(err)
+        if(err) {
             logger.error(err);
-        else {
+            socket.emit('error', err);
+        }else{
             logger.info('New dishProduct', newProduct);
             socket.emit('newDishProduct', newProduct);
         }
@@ -104,9 +109,10 @@ function removeDishProduct(socket, user, cb, id){
             user.removeDishProduct(id, cb);
         }
     ], function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else {
+            socket.emit('error', err);
+        }else{
             logger.info('Removed dish product', id);
         }
         return cb();
@@ -170,9 +176,10 @@ function fixDish(socket, user, cb, fixedDish){
             dish.setFromRaw(fixedDish, cb);
         }
     ],function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else
+            socket.emit('error', err);
+        }else
             logger.info('Fixed dish', fixedDish);
         return cb();
     });
@@ -191,9 +198,10 @@ function fixDaily(socket, user, cb, date, fixedProduct){
             daily.fixProduct(fixedProduct, cb);
         }
     ],function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else
+            socket.emit('error', err);
+        }else
             logger.info('Fixed daily', fixedProduct);
         return cb();
     });
@@ -212,9 +220,10 @@ function fixDishProduct(socket, user, cb, fixedProduct){
             return cb();
         }
     ],function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else
+            socket.emit('error', err);
+        }else
             logger.info('Fixed dish product', fixedProduct);
         return cb();
     });
@@ -233,9 +242,10 @@ function fixProduct(socket, user, cb, fixedProduct){
             return cb();
         }
     ],function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else
+            socket.emit('error', err);
+        }else
             logger.info('Fixed product', fixedProduct);
         return cb();
     });
@@ -251,10 +261,10 @@ function list(socket, user){
             cb();
         }
     ],function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else
-        {
+            socket.emit('error', err);
+        }else{
             logger.info('Got list');
         }
     });
@@ -262,9 +272,10 @@ function list(socket, user){
 
 function newProduct(socket, user, cb, newProductRaw){
     user.addProduct(newProductRaw,  function(err, newProduct){
-        if(err)
+        if(err) {
             logger.error(err);
-        else {
+            socket.emit('error', err);
+        }else{
             logger.info('Added product', newProduct);
             socket.emit('newProduct', newProduct);
         }
@@ -273,9 +284,10 @@ function newProduct(socket, user, cb, newProductRaw){
 }
 function removeProduct(socket, user, cb, id){
     user.removeProduct(id, function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else {
+            socket.emit('error', err);
+        }else{
             logger.info('Removed product', id);
         }
         return cb();
@@ -291,9 +303,10 @@ function getDaily(socket, user, date){
             cb();
         }
     ], function(err){
-        if(err)
+        if(err) {
             logger.error(err);
-        else {
+            socket.emit('error', err);
+        }else{
             logger.info('Got daily', date);
         }
     });
@@ -302,9 +315,10 @@ function getDaily(socket, user, date){
 function removeDailyProduct(socket, user, cb, date, dailyItemId){
 
     user.removeDailyItem(date, dailyItemId, function(err, user){
-        if(err)
+        if(err) {
             logger.error(err);
-        else {
+            socket.emit('error', err);
+        }else{
             logger.info('Removed daily product', dailyItemId);
         }
         return cb();
@@ -312,9 +326,10 @@ function removeDailyProduct(socket, user, cb, date, dailyItemId){
 }
 function addDailyProduct(socket, user, cb, date, newDailyItem){
     user.newDailyItem(date, newDailyItem, function(err, dailyItem){
-        if(err)
+        if(err) {
             logger.error(err);
-        else {
+            socket.emit('error', err);
+        }else{
             logger.info('Added daily product', dailyItem);
             socket.emit('addDailyProduct', date, dailyItem);
             //return getDaily(socket, user, date);
@@ -328,9 +343,10 @@ function saveUser(user, cb){
     if(!user)
         return cb && cb(new Error("Such user doesn't exist"));
     return user.save(function(err, user){
-        if(err)
+        if(err) {
             logger.error('Some problem with saving', user && user.username, err);
-        else
+            socket.emit('error', err);
+        }else
             logger.info(user && user.username, 'saved');
 
         return cb && cb(err, user);
