@@ -7,7 +7,14 @@ var DishProductList = React.createClass({
     getDefaultProps: function() {
         return {
             originProducts: [],
-            sum: {
+            full: {
+                proteins: 0.0,
+                triglyceride: 0.0,
+                carbohydrate: 0.0,
+                calorie: 0.0,
+                mass: 100
+            },
+            portion: {
                 proteins: 0.0,
                 triglyceride: 0.0,
                 carbohydrate: 0.0,
@@ -89,10 +96,14 @@ var DishProductList = React.createClass({
            res.calorie += p.calorie * mass / 100;
        });
 
-        this.props.sum.proteins = res.proteins;
-        this.props.sum.triglyceride = res.triglyceride;
-        this.props.sum.carbohydrate = res.carbohydrate;
-        this.props.sum.calorie = res.calorie;
+        this.props.full.proteins = res.proteins;
+        this.props.full.triglyceride = res.triglyceride;
+        this.props.full.carbohydrate = res.carbohydrate;
+        this.props.full.calorie = res.calorie;
+    },
+    defaultDishChanged: function(dish){
+        this.props.full = dish.full;
+        this.props.portion = dish.portion;
     },
     render: function() {
 
@@ -133,8 +144,9 @@ var DishProductList = React.createClass({
                         hideDescription = {true}
                         ref = 'dish'
                         description = {""}
-                        full={this.props.sum}
-                        portion={this.props.sum}/>
+                        full={this.props.full}
+                        portion={this.props.portion}
+                        changeHandle={this.defaultDishChanged}/>
                 </div>
                 {products}
             </div>
