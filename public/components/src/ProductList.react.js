@@ -170,6 +170,7 @@ var ReactProductList = React.createClass({
                             hide=             {{details: true, mass: true}}/>
                     </div>
                 </div>
+                <p className='product inline-block'>Список продуктов</p>
                 <div className='productList'>
                     {products}
                 </div>

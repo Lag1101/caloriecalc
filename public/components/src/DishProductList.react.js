@@ -124,6 +124,7 @@ var DishProductList = React.createClass({
 
         return (
             <div className={this.props.className}>
+                <p className='product inline-block'>Компоненты блюда</p>
                 {products}
             </div>
         );
