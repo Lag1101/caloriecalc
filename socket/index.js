@@ -342,15 +342,7 @@ function saveUser(user, cb){
     logger.info('Try to save', user && user.username);
     if(!user)
         return cb && cb(new Error("Such user doesn't exist"));
-    return user.save(function(err, user){
-        if(err) {
-            logger.error('Some problem with saving', user && user.username, err);
-            socket.emit('error', err);
-        }else
-            logger.info(user && user.username, 'saved');
-
-        return cb && cb(err, user);
-    });
+    return user.save(cb);
 }
 
 function socketSetupHandles(socket, user){
@@ -399,7 +391,13 @@ function socketSetupHandles(socket, user){
 
         .on('save', function(){
             saveUser(user, function(err, user){
-                socket.emit('save');
+                if(err) {
+                    logger.error('Some problem with saving', user && user.username, err);
+                    socket.emit('error', err);
+                }else{
+                    logger.info(user && user.username, 'saved');
+                    socket.emit('save');
+                }
             })
         })
 }
