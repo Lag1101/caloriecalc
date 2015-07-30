@@ -184,9 +184,7 @@ schema.methods.getDailyByDate = function(date, callback){
             if(!day) {
                 var newDay = Day.clearCreate(date);
                 user.daily.push(newDay);
-                user.save(function(err){
-                    return cb(err, newDay);
-                });
+                return cb(null, newDay);
             }
             else return cb(null, day);
         }

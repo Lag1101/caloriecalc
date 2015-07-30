@@ -15,6 +15,7 @@ socket
         BootstrapDialog.show({
             type: BootstrapDialog.TYPE_WARNING,
             title: 'Warning',
+            draggable: true,
             message: 'Соединение разорвано. Попробуйте перезагрузить страницу',
             closable: false
         });
@@ -23,6 +24,7 @@ socket
         BootstrapDialog.show({
             type: BootstrapDialog.TYPE_DANGER,
             title: 'DANGER',
+            draggable: true,
             message: err.body + '\n' + 'Попробуйте перезагрузить страницу',
             closable: false
         });
