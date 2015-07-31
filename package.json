@@ -6,7 +6,9 @@
     "start": "node ./bin/www.js",
     "postinstall": "cd ./public; bower install;",
     "jsx-watch": "jsx --watch ./public/components/src ./public/components/build",
-    "jsx-build": "jsx ./public/components/src ./public/components/build"
+    "jsx-build": "jsx ./public/components/src ./public/components/build",
+    "bfy-build": "browserify ./public/components/build/App.react.js > ./public/main.js",
+    "all-build": "npm run jsx-build & npm run bfy-build"
   },
   "dependencies": {
     "bower": "*",
@@ -33,6 +35,7 @@
     "connect-mongo": "*"
   },
   "devDependencies":{
-    "react-tools": "latest"
+    "react-tools": "latest",
+    "browserify": "latest"
   }
 }

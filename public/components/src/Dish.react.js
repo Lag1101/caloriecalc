@@ -1,5 +1,8 @@
 
-var ReactDish = React.createClass({
+var TextInput = require('./Input.react').TextInput;
+var Product = require('./Product.react');
+
+var Dish = React.createClass({
     getDish: function(){
         return {
             id: this.props.id,
@@ -67,8 +70,8 @@ var ReactDish = React.createClass({
             descriptionCSS += ' hidden ';
         return (
             <div className={this.props.className}>
-                <ReactTextInput  enabled={true}  css={descriptionCSS}   changeHandle={this.descriptionChangeHandle} value={description}        ref='description'></ReactTextInput>
-                <ReactProduct
+                <TextInput  enabled={true}  css={descriptionCSS}   changeHandle={this.descriptionChangeHandle} value={description}        ref='description'></TextInput>
+                <Product
                     hide=             {{details: true, description: true}}
                     enabled =         {{mass:true}}
                     ref =             {'full'}
@@ -78,8 +81,8 @@ var ReactDish = React.createClass({
                     carbohydrate =    {full.carbohydrate}
                     calorie =         {full.calorie}
                     mass =            {full.mass}>
-                </ReactProduct>
-                <ReactProduct
+                </Product>
+                <Product
                     hide=             {{details: true, description: true}}
                     enabled =         {{mass:true}}
                     ref =             {'portion'}
@@ -89,8 +92,9 @@ var ReactDish = React.createClass({
                     carbohydrate =    {portion.carbohydrate}
                     calorie =         {portion.calorie}
                     mass =            {portion.mass}>
-                </ReactProduct>
+                </Product>
             </div>
         );
     }
 });
+module.exports = Dish;

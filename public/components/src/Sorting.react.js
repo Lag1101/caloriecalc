@@ -57,3 +57,5 @@ var Sorting = React.createClass({
         );
     }
 });
+
+module.exports = Sorting;

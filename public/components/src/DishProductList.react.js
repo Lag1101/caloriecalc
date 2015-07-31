@@ -3,6 +3,9 @@
  */
 
 "use strict";
+
+var Product = require('./Product.react');
+
 var DishProductList = React.createClass({
     getDefaultProps: function() {
         return {
@@ -98,7 +101,7 @@ var DishProductList = React.createClass({
 
                     <input type='button' className='btn btn-xs btn-danger inline-block item' value='-' onClick={this.removeHandle.bind(this, product._id)}></input>
                     <div className='inline-block'>
-                        <ReactProduct
+                        <Product
                                 hide=             {{details: true}}
                                 enabled =         {{mass:true}}
                                 ref =             {product._id}
@@ -111,7 +114,7 @@ var DishProductList = React.createClass({
                                 calorie =         {product.calorie}
                                 mass =            {product.mass}
                                 details =         {product.details}>
-                        </ReactProduct>
+                        </Product>
                     </div>
                 </div>
             );
@@ -126,7 +129,9 @@ var DishProductList = React.createClass({
     }
 });
 
-//React.render(
+//.render(
 //    <DishProductList />,
 //    document.getElementById('currentDishProducts')
 //);
+
+module.exports = DishProductList;

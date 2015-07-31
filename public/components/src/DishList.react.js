@@ -2,7 +2,10 @@
  * Created by vasiliy.lomanov on 23.07.2015.
  */
 
-var ReactDishList = React.createClass({
+var Product = require('./Product.react');
+var Dish = require('./Dish.react');
+
+var DishList = React.createClass({
     getInitialState: function() {
         return {
             id: null,
@@ -88,7 +91,7 @@ var ReactDishList = React.createClass({
                 <div className={css} key =             {dish._id}>
                     <input type='button' className='btn btn-xs btn-danger inline-block item remove' value='-' onClick={this.removeHandle.bind(this, dish)}></input>
                     <div className='inline-block'>
-                        <ReactDish
+                        <Dish
                             hide=             {{details: true, mass: true}}
                             ref =             {dish._id}
                             id =              {dish._id}
@@ -96,7 +99,7 @@ var ReactDishList = React.createClass({
                             full =            {dish.contain[0]}
                             portion =         {dish.contain[1]}
                             changeHandle =    {this.changeHandle.bind(this)}>
-                        </ReactDish>
+                        </Dish>
                     </div>
                 </div>
             );
@@ -110,7 +113,7 @@ var ReactDishList = React.createClass({
                                 onClick={this.newDishHandle}>
                             <i className='glyphicon glyphicon-floppy-disk'/>
                         </button>
-                        <ReactDish className='inline-block'
+                        <Dish className='inline-block'
                             //hideDescription = {true}
                                    ref = 'dish'
                                    description = {""}
@@ -126,7 +129,8 @@ var ReactDishList = React.createClass({
     }
 });
 
-//React.render(
-//    <ReactDishList />,
+//.render(
+//    <DishList />,
 //    document.getElementById('dishList')
 //);
+module.exports = DishList;

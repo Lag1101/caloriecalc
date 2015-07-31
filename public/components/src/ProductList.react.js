@@ -2,6 +2,11 @@
  * Created by vasiliy.lomanov on 16.06.2015.
  */
 
+var Product = require('./Product.react');
+var Sorting = require('./Sorting.react');
+var PrefixTree = require('../../js/PrefixTree');
+var DeferredCaller = require('../../js/DeferredCaller');
+
 function greater (sortBy, p1, p2) {
     if (p1[sortBy] < p2[sortBy]) return -1;
     if (p1[sortBy] > p2[sortBy]) return 1;
@@ -13,7 +18,7 @@ function less(sortBy, p1, p2) {
     return 0;
 }
 
-var ReactProductList = React.createClass({
+var ProductList = React.createClass({
     getInitialState: function() {
         return {
             id: null,
@@ -140,7 +145,7 @@ var ReactProductList = React.createClass({
                         </ul>
                     </div>
                     <div className='inline-block'>
-                        <ReactProduct
+                        <Product
                                 hide=             {{details: true, mass: true}}
                                 enabled =         {false}
                                 ref =             {product._id}
@@ -153,7 +158,7 @@ var ReactProductList = React.createClass({
                                 calorie =         {product.calorie}
                                 mass =            {product.mass}
                                 details =         {product.details}>
-                        </ReactProduct>
+                        </Product>
                     </div>
                 </div>
             );
@@ -164,7 +169,7 @@ var ReactProductList = React.createClass({
                 <div className='product newProduct'>
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.newProduct}></input>
                     <div className='inline-block'>
-                        <ReactProduct
+                        <Product
                             enabled= {{all:true}}
                             ref='newProduct'
                             hide=             {{details: true, mass: true}}/>
@@ -178,7 +183,8 @@ var ReactProductList = React.createClass({
         );
     }
 });
-//React.render(
-//    <ReactProductList />,
+//.render(
+//    <ProductList />,
 //    document.getElementById('productList')
 //);
+module.exports = ProductList;

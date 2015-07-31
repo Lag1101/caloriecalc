@@ -2,8 +2,10 @@
  * Created by vasiliy.lomanov on 16.06.2015.
  */
 
+var TextInput = require('./Input.react').TextInput;
+var NumericInput = require('./Input.react').NumericInput;
 
-var ReactProduct = React.createClass({
+var Product = React.createClass({
     getProduct: function(){
         var refs = this.refs;
         return {
@@ -67,14 +69,16 @@ var ReactProduct = React.createClass({
         var enabled = this.props.enabled;
         return (
             <div className='inline-block'>
-                <ReactTextInput    enabled={enabled.all || enabled.description}     css='description item'   changeHandle={this.changeHandle} value={this.props.description}      hidden={hide.description}          ref='description'></ReactTextInput>
-                <ReactNumericInput enabled={enabled.all || enabled.proteins}        css='proteins item'      changeHandle={this.changeHandle} value={this.props.proteins}         hidden={hide.proteins}             ref='proteins'></ReactNumericInput>
-                <ReactNumericInput enabled={enabled.all || enabled.triglyceride}    css='triglyceride item'  changeHandle={this.changeHandle} value={this.props.triglyceride}     hidden={hide.triglyceride}         ref='triglyceride'></ReactNumericInput>
-                <ReactNumericInput enabled={enabled.all || enabled.carbohydrate}    css='carbohydrate item'  changeHandle={this.changeHandle} value={this.props.carbohydrate}     hidden={hide.carbohydrate}         ref='carbohydrate'></ReactNumericInput>
-                <ReactNumericInput enabled={enabled.all || enabled.calorie}         css='calorie item'       changeHandle={this.changeHandle} value={this.props.calorie}          hidden={hide.calorie}              ref='calorie'></ReactNumericInput>
-                <ReactNumericInput enabled={enabled.all || enabled.mass}            css='mass item'          changeHandle={this.changeHandle} value={this.props.mass}             hidden={hide.mass}                 ref='mass'></ReactNumericInput>
-                <ReactTextInput    enabled={enabled.all || enabled.details}         css='details item'       changeHandle={this.changeHandle} value={this.props.details}          hidden={hide.details}              ref='details'></ReactTextInput>
+                <TextInput    enabled={enabled.all || enabled.description}     css='description item'   changeHandle={this.changeHandle} value={this.props.description}      hidden={hide.description}          ref='description'></TextInput>
+                <NumericInput enabled={enabled.all || enabled.proteins}        css='proteins item'      changeHandle={this.changeHandle} value={this.props.proteins}         hidden={hide.proteins}             ref='proteins'></NumericInput>
+                <NumericInput enabled={enabled.all || enabled.triglyceride}    css='triglyceride item'  changeHandle={this.changeHandle} value={this.props.triglyceride}     hidden={hide.triglyceride}         ref='triglyceride'></NumericInput>
+                <NumericInput enabled={enabled.all || enabled.carbohydrate}    css='carbohydrate item'  changeHandle={this.changeHandle} value={this.props.carbohydrate}     hidden={hide.carbohydrate}         ref='carbohydrate'></NumericInput>
+                <NumericInput enabled={enabled.all || enabled.calorie}         css='calorie item'       changeHandle={this.changeHandle} value={this.props.calorie}          hidden={hide.calorie}              ref='calorie'></NumericInput>
+                <NumericInput enabled={enabled.all || enabled.mass}            css='mass item'          changeHandle={this.changeHandle} value={this.props.mass}             hidden={hide.mass}                 ref='mass'></NumericInput>
+                <TextInput    enabled={enabled.all || enabled.details}         css='details item'       changeHandle={this.changeHandle} value={this.props.details}          hidden={hide.details}              ref='details'></TextInput>
             </div>
         );
     }
 });
+
+module.exports = Product;

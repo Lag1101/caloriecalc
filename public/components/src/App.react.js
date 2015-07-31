@@ -2,6 +2,10 @@
  * Created by vasiliy.lomanov on 29.07.2015.
  */
 
+var DishList = require('./DishList.react');
+var ProductList = require('./ProductList.react');
+var DishProductList = require('./DishProductList.react');
+
 
 var App = React.createClass({
     sumChanged: function(sum){
@@ -10,13 +14,13 @@ var App = React.createClass({
     render: function() {
         return (
             <div >
-                <ReactDishList ref='dishList' className="dishList myTable"/>
+                <DishList ref='dishList' className="dishList myTable"/>
                 <div className='container-fluid'>
                     <DishProductList
                         className='currentDishProducts myTable'
                         sumChanged={this.sumChanged}
                         />
-                    <ReactProductList className='myTable inline-block'/>
+                    <ProductList className='myTable inline-block'/>
                 </div>
             </div>
         );

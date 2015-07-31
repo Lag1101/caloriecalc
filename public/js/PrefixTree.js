@@ -91,3 +91,5 @@ PrefixTree.Node = (function(){
 
     return Node;
 })();
+
+module.exports = PrefixTree;
