@@ -20,11 +20,6 @@ var DishProductList = React.createClass({
         console.log('Added', newProduct);
         socket.emit('newProduct', newProduct);
     },
-    newDishHandle: function(){
-        var newDish = this.refs.dish.getDish()
-        socket.emit('addDish', newDish);
-        console.log(newDish);
-    },
     changeHandle: function(product){
 
         socket.emit('fixDishProduct', product);

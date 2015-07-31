@@ -63,6 +63,11 @@ var ReactDishList = React.createClass({
             }
         }
     },
+    newDishHandle: function(){
+        var newDish = this.refs.dish.getDish()
+        socket.emit('addDish', newDish);
+        console.log(newDish);
+    },
     componentDidMount: function() {
         socket.emit('getCurrentDishes');
         socket.on('getCurrentDishes', function(list) {
