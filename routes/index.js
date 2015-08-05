@@ -14,5 +14,5 @@ module.exports = function(app){
 
     app.use('/testPage',checkAuth, require('./testPage'));
 
-    app.use('_ah/', require('./appengine-handlers'));
+    app.use('/_ah', require('./appengine-handlers'));
 };

@@ -8,7 +8,10 @@
     "jsx-watch": "jsx --watch ./public/components/src ./public/components/build",
     "jsx-build": "jsx ./public/components/src ./public/components/build",
     "bfy-build": "browserify ./public/components/build/App.react.js > ./public/main.js",
-    "all-build": "npm run jsx-build & npm run bfy-build"
+    "all-build": "npm run jsx-build & npm run bfy-build",
+	
+    "monitor": "nodemon ./bin/www.js",
+    "deploy": "gcloud preview app deploy app.yaml"
   },
   "dependencies": {
     "bower": "*",
@@ -31,8 +34,7 @@
     "mongoose-redis-cache": "*",
     "compression": "*",
     "express-session": "*",
-    "socket.io-express-session": "*",
-    "connect-mongo": "*"
+    "socket.io-express-session": "*"
   },
   "devDependencies":{
     "react-tools": "latest",
