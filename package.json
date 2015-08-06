@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www.js",
-    "postinstall": "bower install ; rm -rf ./public/bower_components ; mv -fu ./bower_components ./public",
+    "postinstall": "bower install ; rm -rf ./public/bower_components ; cp ./bower_components ./public",
     "jsx-watch": "jsx --watch ./public/components/src ./public/components/build",
     "jsx-build": "jsx ./public/components/src ./public/components/build",
     "bfy-build": "browserify ./public/components/build/App.react.js > ./public/main.js",
@@ -34,7 +34,8 @@
     "mongoose-redis-cache": "*",
     "compression": "*",
     "express-session": "*",
-    "socket.io-express-session": "*"
+    "socket.io-express-session": "*",
+    "connect-mongo": "latest"
   },
   "devDependencies":{
     "react-tools": "latest",
