@@ -6,6 +6,7 @@
     "socket.io-client": "*",
     "bootstrap-dialog": "*",
     "async": "*",
-    "react": "*"
+    "react": "*",
+    "mathjs": "latest"
   }
 }

@@ -4,6 +4,7 @@
 
 var Product = require('./Product.react');
 var Dish = require('./Dish.react');
+var Calculator = require('./Calculator.react');
 
 var DishList = React.createClass({
     getInitialState: function() {
@@ -123,6 +124,7 @@ var DishList = React.createClass({
                     </div>
                     <p className='product inline-block'>Список блюд</p>
                     {dishes}
+                    <Calculator className="product"/>
                 </div>
             </div>
         );
