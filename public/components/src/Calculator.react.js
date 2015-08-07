@@ -32,13 +32,8 @@ var Calculator = React.createClass({
         });
     },
     calcExp: function(e){
-        var result;
-        try{
-            result = math.eval(e);
-        } catch(e){
-            result = e.message;
-        }
-        return result;
+        var result = math.eval(e);
+        return (typeof result === 'number') ? [result] : result;
     },
     changeHandle: function(v){
 
@@ -47,9 +42,7 @@ var Calculator = React.createClass({
         var input = dom.value;
         var expressions= input.split('\n');
 
-        var result = expressions.map(function(e){
-            return this.calcExp(e);
-        }.bind(this));
+        var result = this.calcExp(expressions);
 
         this.setState({
             result: result
