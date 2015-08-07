@@ -35,26 +35,39 @@ var Calculator = React.createClass({
         var result = math.eval(e);
         return (typeof result === 'number') ? [result] : result;
     },
+    update: function(input){
+
+
+        var expressions= input.split('\n');
+
+        localStorage.setItem('calcInner', input);
+
+        this.setState({
+            result: this.calcExp(expressions)
+        });
+    },
     changeHandle: function(v){
 
         var dom = React.findDOMNode(this.refs.input);
-        console.log(dom.selectionStart);
+
         var input = dom.value;
-        var expressions= input.split('\n');
 
-        var result = this.calcExp(expressions);
-
-        this.setState({
-            result: result
-        });
+        this.update(input);
     },
     componentDidMount: function(){
         function resize(){
-            this.style.overflow = 'hidden';
-            this.style.height = 0;
             this.style.height = this.scrollHeight + 'px';
         }
-        React.findDOMNode(this.refs.input).addEventListener('keyup', resize, false);
+
+        var dom = React.findDOMNode(this.refs.input);
+        dom.addEventListener('keyup', resize, false);
+
+        var input = localStorage.getItem("calcInner");
+
+        dom.value = input;
+        resize.bind(dom)();
+
+        this.update(input);
     },
     render: function() {
         var results = this.state.result.map(function(r){
