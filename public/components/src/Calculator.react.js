@@ -58,7 +58,7 @@ var Calculator = React.createClass({
     },
     render: function() {
         var results = this.state.result.map(function(r){
-            return <div>{r}</div>
+            return <div>{r || '|'}</div>
         });
         return (
             <div className={"input-group input-group-sm calculator " + this.props.className}>
