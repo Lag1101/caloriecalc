@@ -12,29 +12,65 @@ var Calculator = React.createClass({
             result: []
         }
     },
-    changeHandle: function(v){
+    parseExpressions: function(){
         var input = React.findDOMNode(this.refs.input).value;
-        //console.log();
+        var expressions= input.split('\n');
+
+        return expressions.map(function(e){
+            var result;
+            try{
+                result =math.eval(input);
+
+                if(typeof result === "number")
+                    result = [result];
+                else
+                    result = result.entires;
+            } catch(e){
+                result = e.message;
+            }
+            return result;
+        });
+    },
+    calcExp: function(e){
         var result;
         try{
-            result = '= ' + math.eval(input);
+            result = math.eval(e);
         } catch(e){
             result = e.message;
         }
+        return result;
+    },
+    changeHandle: function(v){
+
+        var dom = React.findDOMNode(this.refs.input);
+        console.log(dom.selectionStart);
+        var input = dom.value;
+        var expressions= input.split('\n');
+
+        var result = expressions.map(function(e){
+            return this.calcExp(e);
+        }.bind(this));
+
         this.setState({
             result: result
         });
     },
     componentDidMount: function(){
-
+        function resize(){
+            this.style.overflow = 'hidden';
+            this.style.height = 0;
+            this.style.height = this.scrollHeight + 'px';
+        }
+        React.findDOMNode(this.refs.input).addEventListener('keyup', resize, false);
     },
     render: function() {
-        var result = this.state.result;
-
+        var results = this.state.result.map(function(r){
+            return <div>{r}</div>
+        });
         return (
             <div className={"input-group input-group-sm calculator " + this.props.className}>
-                <input ref='input' type="text" className="form-control" placeholder="Посчитай меня" onInput={this.changeHandle}/>
-                <span className="input-group-addon">{result}</span>
+                <textarea ref='input' type="text" className="form-control" placeholder="Посчитай меня" onInput={this.changeHandle}/>
+                <span className="input-group-addon">{results}</span>
             </div>
         );
     }
