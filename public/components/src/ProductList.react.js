@@ -2,6 +2,7 @@
  * Created by vasiliy.lomanov on 16.06.2015.
  */
 
+var socket = require('../../socket');
 var Product = require('./Product.react');
 var Sorting = require('./Sorting.react');
 var PrefixTree = require('../../js/PrefixTree');

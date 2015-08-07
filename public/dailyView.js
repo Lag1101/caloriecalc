@@ -2,7 +2,14 @@
  * Created by vasiliy.lomanov on 13.05.2015.
  */
 
-(function(socket){
+
+
+(function(){
+
+    var socket = require('./socket');
+    var utils = require('./utils');
+    var Product = require('./product');
+    var Day = require('./day');
 
     var msToSendChanges = 1 * 1000;
     var timeOutToSendChanges = null;
@@ -23,8 +30,8 @@
         max: $('.maximum')
     };
 
-    this.socket.emit('getNorm');
-    this.socket.on('getNorm', function(norm){
+    socket.emit('getNorm');
+    socket.on('getNorm', function(norm){
         var minimum = daily.find('.minimum');
         var maximum = daily.find('.maximum');
 
@@ -254,4 +261,4 @@
         });
         //newItem.find('.daily').val(daily.find('.newItem').find('.daily').val())
     }
-})(socket);
+})();

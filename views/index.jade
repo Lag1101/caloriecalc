@@ -12,25 +12,5 @@ block content
 
     button(id type="button" class="btn btn-primary hardSaveButton" data-loading-text="Сохранение ...") Сохранить
 
-    if( !devel )
-        script(src='Release/index.js')
-    else
-        script(src='socket.js')
-        script(src='utils.js')
 
-        script( src='main.js')
-
-        script(src='product.js')
-        script(src='day.js')
-        script(src='dailyView.js')
-        script.
-            (function () {
-                var b = $('.hardSaveButton');
-                socket.on('save', function(){
-                    b.button('reset');
-                });
-                b.click(function () {
-                    b.button('loading');
-                    socket.emit('save');
-                });
-            })();
+    script( src='main.js')

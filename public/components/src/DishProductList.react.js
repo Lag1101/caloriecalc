@@ -4,6 +4,7 @@
 
 "use strict";
 
+var socket = require('../../socket');
 var Product = require('./Product.react');
 
 var DishProductList = React.createClass({

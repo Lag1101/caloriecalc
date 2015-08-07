@@ -2,6 +2,9 @@
  * Created by vasiliy.lomanov on 29.07.2015.
  */
 
+
+var socket = require('../../socket');
+var utils = require('../../utils');
 var DishList = require('./DishList.react');
 var ProductList = require('./ProductList.react');
 var DishProductList = require('./DishProductList.react');
@@ -31,3 +34,14 @@ React.render(
     <App />,
     document.getElementById('app')
 );
+
+(function () {
+    var b = $('.hardSaveButton');
+    socket.on('save', function(){
+        b.button('reset');
+    });
+    b.click(function () {
+        b.button('loading');
+        socket.emit('save');
+    });
+})();

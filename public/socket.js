@@ -29,3 +29,5 @@ socket
             closable: false
         });
     });
+
+module.exports = socket;

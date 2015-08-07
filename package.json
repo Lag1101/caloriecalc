@@ -7,7 +7,7 @@
     "postinstall": "bower install ; rm -rf ./public/bower_components ; cp ./bower_components ./public",
     "jsx-watch": "jsx --watch ./public/components/src ./public/components/build",
     "jsx-build": "jsx ./public/components/src ./public/components/build",
-    "bfy-build": "browserify ./public/components/build/App.react.js > ./public/main.js",
+    "bfy-build": "browserify  ./public/dailyView.js ./public/components/build/App.react.js --outfile ./public/main.js",
     "all-build": "npm run jsx-build & npm run bfy-build",
 	
     "monitor": "nodemon ./bin/www.js",
