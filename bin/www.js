@@ -11,9 +11,6 @@ var http = require('http');
 var config = require('../config');
 
 
-//if(config.get('NODE_ENV') === 'production')
-require('./concantenateFiles');
-
 /**
  * Get port from environment and store in Express.
  */
