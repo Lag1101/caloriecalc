@@ -2,6 +2,7 @@
  * Created by vasiliy.lomanov on 23.07.2015.
  */
 
+var utils = require('../../utils');
 var socket = require('../../socket');
 var Product = require('./Product.react');
 var Dish = require('./Dish.react');
