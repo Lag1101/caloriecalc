@@ -25,7 +25,7 @@ var session = Session({
     store: sessionStore
 });
 
-var options = config.get('production')? {
+var options = (app.get('env') === 'production') ? {
   setHeaders: function (res, path, stat) {
     res.setHeader('Cache-Control', 'public, max-age=' + config.get('cacheExpireTimeSecs'));
   }
