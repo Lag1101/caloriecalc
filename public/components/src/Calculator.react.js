@@ -62,7 +62,7 @@ var Calculator = React.createClass({
         var dom = React.findDOMNode(this.refs.input);
         dom.addEventListener('keyup', resize, false);
 
-        var input = localStorage.getItem("calcInner");
+        var input = localStorage.getItem("calcInner") || "";
 
         dom.value = input;
         resize.bind(dom)();
