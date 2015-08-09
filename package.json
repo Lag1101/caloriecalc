@@ -8,7 +8,7 @@
     "jsx-watch": "jsx --watch ./public/components/src ./public/components/build",
     "jsx-build": "jsx ./public/components/src ./public/components/build",
     "bfy-build": "browserify  ./public/js/app.js --outfile ./public/main.js",
-    "3rd-build": "uglifyjs  ./public/bower_components/jquery/dist/jquery.min.js ./public/js/socket.io.zip.js ./public/bower_components/async/lib/async.js ./public/bower_components/bootstrap/dist/js/bootstrap.min.js ./public/bower_components/bootstrap-dialog/dist/js/bootstrap-dialog.min.js ./public/bower_components/react/react.min.js ./public/bower_components/mathjs/dist/math.min.js -o ./public/3rd.js",
+    "3rd-build": "uglifyjs  ./public/bower_components/jquery/dist/jquery.min.js ./public/bower_components/socket.io-client/socket.io.js ./public/bower_components/async/lib/async.js ./public/bower_components/bootstrap/dist/js/bootstrap.min.js ./public/bower_components/bootstrap-dialog/dist/js/bootstrap-dialog.min.js ./public/bower_components/react/react.min.js ./public/bower_components/mathjs/dist/math.min.js -o ./public/3rd.js",
     "all-build": "npm run jsx-build & npm run bfy-build | npm run 3rd-build",
 
     "monitor": "nodemon ./bin/www.js",
