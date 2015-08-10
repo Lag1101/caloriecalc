@@ -5,7 +5,16 @@ html
 
         link(rel='stylesheet', href='/stylesheets/main.css')
 
-        script(src="3rd.js")
+        if(devel)
+            script(src="bower_components/jquery/dist/jquery.js")
+            script(src="bower_components/socket.io-client/socket.io.js")
+            script(src="bower_components/async/lib/async.js")
+            script(src="bower_components/bootstrap/dist/js/bootstrap.js")
+            script(src="bower_components/bootstrap-dialog/dist/js/bootstrap-dialog.js")
+            script(src="bower_components/react/react.js")
+            script(src="bower_components/mathjs/dist/math.js")
+        else
+            script(src="3rd.js")
 
     body(class='container-fluid')
         include ../partials/topNavigation

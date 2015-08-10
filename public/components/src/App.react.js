@@ -8,6 +8,7 @@ var utils = require('../../utils');
 var DishList = require('./DishList.react');
 var ProductList = require('./ProductList.react');
 var DishProductList = require('./DishProductList.react');
+var Daily = require('./Daily.react');
 
 
 var App = React.createClass({
@@ -17,6 +18,9 @@ var App = React.createClass({
     render: function() {
         return (
             <div >
+                <div className='container-fluid'>
+                    <Daily className="myTable daily"/>
+                </div>
                 <DishList ref='dishList' className="dishList myTable"/>
                 <div className='container-fluid'>
                     <DishProductList

@@ -36,7 +36,8 @@ var NumericInput = React.createClass({
         return {
             value: 0,
             enabled: false,
-            hidden: false
+            hidden: false,
+            danger: false
         };
     },
     makeDisabled: function(){
@@ -48,19 +49,22 @@ var NumericInput = React.createClass({
         this.setState();
     },
     render: function() {
-        if(this.props.hidden) return (<div/>);
+        if(this.props.hidden) return (<div className = {this.props.css + " hidden"}/>);
 
         var value = this.props.value;
         var enabled = this.props.enabled;
 
-        var className = this.props.css + " ";
-        if(!enabled)
-            className += "disabled ";
-        else if(!this.state.valid)
-            className += "label-danger ";
-        else
-            className += "label-success ";
+        var className = "";
 
+        if(!this.state.valid || this.props.danger)
+            className += " label-danger ";
+        else if(!enabled)
+            className += " disableForInput ";
+        else
+            className += " label-success ";
+
+
+        className += this.props.css;
 
 
         if(enabled) return (
@@ -101,7 +105,7 @@ var TextInput = React.createClass({
         };
     },
     render: function() {
-        if(this.props.hidden) return (<div/>);
+        if(this.props.hidden) return (<div className = {this.props.css + " hidden"}/>);
 
         var value = this.props.value;
         var enabled = this.props.enabled;

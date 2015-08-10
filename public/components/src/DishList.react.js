@@ -45,7 +45,7 @@ var DishList = React.createClass({
         this.props.full.calorie = sum.calorie;
 
 
-        this.setState();
+        this.forceUpdate();
     },
     changeHandle: function(dish){
         socket.emit('fixDish', dish);
@@ -101,7 +101,7 @@ var DishList = React.createClass({
                             description =     {dish.description}
                             full =            {dish.contain[0]}
                             portion =         {dish.contain[1]}
-                            changeHandle =    {this.changeHandle.bind(this)}>
+                            changeHandle =    {this.changeHandle}>
                         </Dish>
                     </div>
                 </div>
