@@ -2,10 +2,10 @@
  * Created by vasiliy.lomanov on 16.06.2015.
  */
 
-var utils = require('../../utils');
-var socket = require('../../socket');
-var TextInput = require('./Input.react').TextInput;
-var NumericInput = require('./Input.react').NumericInput;
+var utils = require('../utils');
+var socket = require('../socket');
+var TextInput = require('./Input.react.js').TextInput;
+var NumericInput = require('./Input.react.js').NumericInput;
 
 var Product = React.createClass({
     getProduct: function(){

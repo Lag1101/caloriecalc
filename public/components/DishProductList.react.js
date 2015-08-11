@@ -4,8 +4,8 @@
 
 "use strict";
 
-var socket = require('../../socket');
-var Product = require('./Product.react');
+var socket = require('../socket');
+var Product = require('./Product.react.js');
 
 var DishProductList = React.createClass({
     getDefaultProps: function() {

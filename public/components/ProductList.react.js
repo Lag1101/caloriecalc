@@ -2,12 +2,12 @@
  * Created by vasiliy.lomanov on 16.06.2015.
  */
 
-var utils = require('../../utils');
-var socket = require('../../socket');
-var Product = require('./Product.react');
-var Sorting = require('./Sorting.react');
-var PrefixTree = require('../../js/PrefixTree');
-var DeferredCaller = require('../../js/DeferredCaller');
+var utils = require('../utils');
+var socket = require('../socket');
+var Product = require('./Product.react.js');
+var Sorting = require('./Sorting.react.js');
+var PrefixTree = require('../js/PrefixTree');
+var DeferredCaller = require('../js/DeferredCaller');
 
 function greater (sortBy, p1, p2) {
     if (p1[sortBy] < p2[sortBy]) return -1;

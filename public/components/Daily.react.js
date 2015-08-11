@@ -2,10 +2,10 @@
  * Created by vasiliy.lomanov on 10.08.2015.
  */
 
-var utils = require('../../utils');
-var socket = require('../../socket');
-var Product = require('./Product.react');
-var NumericInput = require('./Input.react').NumericInput;
+var utils = require('../utils');
+var socket = require('../socket');
+var Product = require('./Product.react.js');
+var NumericInput = require('./Input.react.js').NumericInput;
 
 var Daily = React.createClass({
     getDefaultProps: function() {

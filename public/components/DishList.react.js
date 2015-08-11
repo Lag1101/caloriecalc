@@ -2,11 +2,11 @@
  * Created by vasiliy.lomanov on 23.07.2015.
  */
 
-var utils = require('../../utils');
-var socket = require('../../socket');
-var Product = require('./Product.react');
-var Dish = require('./Dish.react');
-var Calculator = require('./Calculator.react');
+var utils = require('../utils');
+var socket = require('../socket');
+var Product = require('./Product.react.js');
+var Dish = require('./Dish.react.js');
+var Calculator = require('./Calculator.react.js');
 
 var DishList = React.createClass({
     getInitialState: function() {

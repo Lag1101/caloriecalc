@@ -13,4 +13,7 @@ block content
     button(id type="button" class="btn btn-primary hardSaveButton" data-loading-text="Сохранение ...") Сохранить
 
 
-    script( src='main.js')
+    if(devel)
+        script( src='bundle.dev.js')
+    else
+        script( src='bundle.min.js')

@@ -3,12 +3,12 @@
  */
 
 
-var socket = require('../../socket');
-var utils = require('../../utils');
-var DishList = require('./DishList.react');
-var ProductList = require('./ProductList.react');
-var DishProductList = require('./DishProductList.react');
-var Daily = require('./Daily.react');
+var socket = require('../socket');
+var utils = require('../utils');
+var DishList = require('./DishList.react.js');
+var ProductList = require('./ProductList.react.js');
+var DishProductList = require('./DishProductList.react.js');
+var Daily = require('./Daily.react.js');
 
 
 var App = React.createClass({
