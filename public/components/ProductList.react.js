@@ -48,7 +48,7 @@ var ProductList = React.createClass({
             this.removeProduct.bind(this, productToRemove)
         );
     },
-    removeProduct(productToRemove){
+    removeProduct: function(productToRemove){
         var originsProducts = this.props.originProducts;
         for(var i = originsProducts.length; i--; )
         {

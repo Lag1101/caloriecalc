@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www.js",
-    "postinstall": "bower install ; rm -rf ./public/bower_components ; cp -R ./bower_components ./public",
+    "postinstall": "bower install ; rm -rf ./public/bower_components ; cp -R ./bower_components ./public; npm run all-build",
     "build-dev": "browserify -e ./public/js/app.js -t reactify -o ./public/bundle.dev.js -d",
-    "build-min": "browserify -e ./public/js/app.js -t reactify -o ./public/bundle.min.js",
+    "build-min": "browserify -e ./public/js/app.js -t reactify -t uglifyify -o ./public/bundle.min.js",
     "3rd-build": "uglifyjs ./public/bower_components/pubsub-js/src/pubsub.js  ./public/bower_components/jquery/dist/jquery.min.js ./public/bower_components/socket.io-client/socket.io.js ./public/bower_components/async/lib/async.js ./public/bower_components/bootstrap/dist/js/bootstrap.min.js ./public/bower_components/bootstrap-dialog/dist/js/bootstrap-dialog.min.js ./public/bower_components/react/react.min.js ./public/bower_components/mathjs/dist/math.min.js -o ./public/3rd.js",
     "all-build": "npm run build-min | npm run build-dev | npm run 3rd-build",
     "monitor": "nodemon ./bin/www.js",

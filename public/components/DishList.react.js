@@ -30,7 +30,7 @@ var DishList = React.createClass({
             this.removeDish.bind(this, dishToRemove)
         );
     },
-    removeDish(dishToRemove){
+    removeDish: function(dishToRemove){
         var originDishes = this.props.originDishes;
         for(var i = originDishes.length; i--; )
         {

@@ -12,10 +12,14 @@
     <file url="file://$PROJECT_DIR$/public/components/DishList.react.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/components/DishListHead.react.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/components/DishProductList.react.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/public/components/Input.react.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/components/Product.react.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/components/ProductList.react.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/components/Sorting.react.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/public/js/DeferredCaller.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/js/PrefixTree.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/public/js/app.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/public/js/socket.io.zip.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/socket.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/utils.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/routes/calculator.js" charset="UTF-8" />
