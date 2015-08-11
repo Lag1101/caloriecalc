@@ -36,6 +36,9 @@ var Product = React.createClass({
     changeHandle: function(){
         this.props.changeHandle && this.props.changeHandle(this.getProduct());
     },
+    componentDidMount: function(){
+
+    },
     makeDisabled: function(){
         var refs = this.refs;
         [
@@ -63,9 +66,6 @@ var Product = React.createClass({
         ].map(function(ref){
                 ref.makeEnabled();
             });
-    },
-    componentDidMount: function(){
-
     },
     render: function() {
         var hide = this.props.hide;

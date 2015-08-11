@@ -7,6 +7,7 @@ var socket = require('../socket');
 var Product = require('./Product.react.js');
 var Dish = require('./Dish.react.js');
 var Calculator = require('./Calculator.react.js');
+var DishListHead = require('./DishListHead.react.js');
 
 var DishList = React.createClass({
     getInitialState: function() {
@@ -17,35 +18,8 @@ var DishList = React.createClass({
     },
     getDefaultProps: function() {
         return {
-            originDishes: [],
-            full: {
-                proteins: 0.0,
-                triglyceride: 0.0,
-                carbohydrate: 0.0,
-                calorie: 0.0,
-                mass: 100
-            },
-            portion: {
-                proteins: 0.0,
-                triglyceride: 0.0,
-                carbohydrate: 0.0,
-                calorie: 0.0,
-                mass: 100
-            }
+            originDishes: []
         };
-    },
-    defaultDishChanged: function(dish){
-        this.props.full = dish.full;
-        this.props.portion = dish.portion;
-    },
-    setSum: function(sum){
-        this.props.full.proteins = sum.proteins;
-        this.props.full.triglyceride = sum.triglyceride;
-        this.props.full.carbohydrate = sum.carbohydrate;
-        this.props.full.calorie = sum.calorie;
-
-
-        this.forceUpdate();
     },
     changeHandle: function(dish){
         socket.emit('fixDish', dish);
@@ -69,13 +43,9 @@ var DishList = React.createClass({
             }
         }
     },
-    newDishHandle: function(){
-        var newDish = this.refs.dish.getDish()
-        socket.emit('addDish', newDish);
-        console.log(newDish);
-    },
     componentDidMount: function() {
         socket.emit('getCurrentDishes');
+
         socket.on('getCurrentDishes', function(list) {
             this.props.originDishes = list;
             this.setState({dishes: this.props.originDishes});
@@ -110,20 +80,7 @@ var DishList = React.createClass({
         return (
             <div className={this.props.className}>
                 <div className='dishList'>
-                    <p className='product inline-block'>Новое блюдо</p>
-                    <div className='product'>
-                        <button className='save item btn btn-xs btn-default'
-                                onClick={this.newDishHandle}>
-                            <i className='glyphicon glyphicon-floppy-disk'/>
-                        </button>
-                        <Dish className='inline-block'
-                            //hideDescription = {true}
-                                   ref = 'dish'
-                                   description = {""}
-                                   full={this.props.full}
-                                   portion={this.props.portion}
-                                   changeHandle={this.defaultDishChanged}/>
-                    </div>
+                    <DishListHead/>
                     <p className='product inline-block'>Список блюд</p>
                     {dishes}
                     <Calculator className="product"/>

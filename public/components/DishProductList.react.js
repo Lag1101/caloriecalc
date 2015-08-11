@@ -10,19 +10,8 @@ var Product = require('./Product.react.js');
 var DishProductList = React.createClass({
     getDefaultProps: function() {
         return {
-            originProducts: [],
-            sum: {
-                proteins: 0.0,
-                triglyceride: 0.0,
-                carbohydrate: 0.0,
-                calorie: 0.0
-            }
+            originProducts: []
         };
-    },
-    newProduct: function(){
-        var newProduct = this.refs.newProduct.getProduct();
-        console.log('Added', newProduct);
-        socket.emit('newProduct', newProduct);
     },
     changeHandle: function(product){
 
@@ -39,7 +28,7 @@ var DishProductList = React.createClass({
                 break;
             }
         }
-        this.calcDish();
+        this.calcFull();
     },
     removeHandle: function(id){
         var products = this.props.originProducts;
@@ -52,25 +41,22 @@ var DishProductList = React.createClass({
                 break;
             }
         }
-        this.calcDish();
+        this.calcFull();
     },
     componentDidMount: function() {
         socket.emit('getCurrentDishProducts');
         socket.on('getCurrentDishProducts', function(data){
             this.props.originProducts = data;
-            this.calcDish();
+            this.calcFull();
+            this.setState();
         }.bind(this));
 
         socket.on('newDishProduct', function(newProduct){
             var products = this.props.originProducts;
             products.push(newProduct);
-            this.calcDish();
+            this.calcFull();
+            this.setState();
         }.bind(this));
-    },
-    calcDish: function(){
-        this.calcFull();
-        this.props.sumChanged && this.props.sumChanged(this.props.sum);
-        this.setState();
     },
     calcFull: function(){
         var res = {
@@ -88,10 +74,7 @@ var DishProductList = React.createClass({
            res.calorie += p.calorie * mass / 100;
        });
 
-        this.props.sum.proteins = res.proteins;
-        this.props.sum.triglyceride = res.triglyceride;
-        this.props.sum.carbohydrate = res.carbohydrate;
-        this.props.sum.calorie = res.calorie;
+        PubSub.publish('ProductDishesChanged', res);
     },
     render: function() {
 

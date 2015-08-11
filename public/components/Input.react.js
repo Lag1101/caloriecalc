@@ -5,40 +5,17 @@ var NumericInput = React.createClass({
     getValue: function(){
         return this.props.value;
     },
-    setValue: function(str){
-        str = str.replace(/[^\d\.]/g, '');
-
-        var valid = !isNaN(parseFloat(str));
-        this.props.value = str;
-        this.setState({
-            valid: valid
-        });
-    },
     changeHandle: function(event){
         var str = this.refs.input.getDOMNode().value;
         str = str.replace(',','.');
         str = str.replace(/[^\d\.]/g, '');
 
-        var valid = !isNaN(parseFloat(str));
 
         this.props.value = str;
-        this.setState({
-            valid: valid
-        });
+        this.props.valid = !isNaN(parseFloat(str));
         this.props.changeHandle(this.props.value);
-    },
-    getInitialState(){
-        return {
-            valid: true
-        }
-    },
-    getDefaultProps: function() {
-        return {
-            value: 0,
-            enabled: false,
-            hidden: false,
-            danger: false
-        };
+
+        this.setState();
     },
     makeDisabled: function(){
         this.props.enabled = false;
@@ -48,7 +25,17 @@ var NumericInput = React.createClass({
         this.props.enabled = true;
         this.setState();
     },
+    getDefaultProps: function() {
+        return {
+            value: 0,
+            enabled: false,
+            hidden: false,
+            danger: false,
+            valid: true
+        };
+    },
     render: function() {
+        console.log('NumericInput rendered');
         if(this.props.hidden) return (<div className = {this.props.css + " hidden"}/>);
 
         var value = this.props.value;
@@ -56,7 +43,7 @@ var NumericInput = React.createClass({
 
         var className = "";
 
-        if(!this.state.valid || this.props.danger)
+        if(!this.props.valid || this.props.danger)
             className += " label-danger ";
         else if(!enabled)
             className += " disableForInput ";
@@ -80,15 +67,16 @@ var TextInput = React.createClass({
     getValue: function(){
         return this.props.value;
     },
-    setValue: function(str){
-        this.props.value = str;
+    changeHandle: function(event){
+        this.props.value = this.refs.div.getDOMNode().innerHTML;
+        this.props.changeHandle(this.props.value);
         this.setState();
     },
-    changeHandle: function(event){
-        var str = this.refs.div.getDOMNode().innerHTML;
-        this.props.value = str;
-        this.setState();
-        this.props.changeHandle(this.props.value);
+    getDefaultProps: function() {
+        return {
+            value: '',
+            enabled: false
+        };
     },
     makeDisabled: function(){
         this.props.enabled = false;
@@ -97,12 +85,6 @@ var TextInput = React.createClass({
     makeEnabled: function(){
         this.props.enabled = true;
         this.setState();
-    },
-    getDefaultProps: function() {
-        return {
-            value: '',
-            enabled: false
-        };
     },
     render: function() {
         if(this.props.hidden) return (<div className = {this.props.css + " hidden"}/>);

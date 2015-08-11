@@ -12,9 +12,6 @@ var Daily = require('./Daily.react.js');
 
 
 var App = React.createClass({
-    sumChanged: function(sum){
-        this.refs.dishList.setSum(sum);
-    },
     render: function() {
         return (
             <div >
@@ -23,10 +20,7 @@ var App = React.createClass({
                 </div>
                 <DishList ref='dishList' className="dishList myTable"/>
                 <div className='container-fluid'>
-                    <DishProductList
-                        className='currentDishProducts myTable'
-                        sumChanged={this.sumChanged}
-                        />
+                    <DishProductList className='currentDishProducts myTable' />
                     <ProductList className='myTable inline-block'/>
                 </div>
             </div>
