@@ -15,7 +15,7 @@ var NumericInput = React.createClass({
         });
     },
     changeHandle: function(event){
-        var str = React.findDOMNode(this.refs.input).value;
+        var str = this.refs.input.getDOMNode().value;
         str = str.replace(',','.');
         str = str.replace(/[^\d\.]/g, '');
 
@@ -85,7 +85,7 @@ var TextInput = React.createClass({
         this.setState();
     },
     changeHandle: function(event){
-        var str = React.findDOMNode(this.refs.div).innerHTML;
+        var str = this.refs.div.getDOMNode().innerHTML;
         this.props.value = str;
         this.setState();
         this.props.changeHandle(this.props.value);

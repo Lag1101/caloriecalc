@@ -89,6 +89,7 @@ var ProductList = React.createClass({
     },
     changeSorting: function(sortBy, sortOrder){
         this.sortingFun = (sortOrder === 'greater' ? greater : less).bind(null, sortBy);
+        this.reorder();
         this.updateProducts();
     },
     reorder: function(){
