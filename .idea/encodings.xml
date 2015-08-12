@@ -7,6 +7,7 @@
     <file url="file://$PROJECT_DIR$/public/components/App.react.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/components/Calculator.react.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/components/Daily.react.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/public/components/DailyHead.react.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/components/DailyNorm.react.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/components/Dish.react.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/public/components/DishList.react.js" charset="UTF-8" />
