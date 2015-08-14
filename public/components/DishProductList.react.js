@@ -31,17 +31,14 @@ var DishProductList = React.createClass({
         }
         this.calcFull();
     },
-    removeHandle: function(id){
+    removeHandle: function(i){
         var products = this.props.originProducts;
-        for(var i = products.length; i--; )
-        {
-            if(id === products[i]._id){
-                products.splice(i, 1);
-                this.setState();
-                socket.emit('removeDishProduct', id);
-                break;
-            }
-        }
+        var product = products[i];
+
+        products.splice(i, 1);
+        this.setState();
+        socket.emit('removeDishProduct', product._id);
+
         this.calcFull();
     },
     componentDidMount: function() {
@@ -79,12 +76,12 @@ var DishProductList = React.createClass({
     },
     render: function() {
 
-        var products = this.props.originProducts.map(function (product) {
+        var products = this.props.originProducts.map(function (product, i) {
             return (
                 <div className='product'
                      key =             {product._id}>
 
-                    <input type='button' className='btn btn-xs btn-danger inline-block item' value='-' onClick={this.removeHandle.bind(this, product._id)}></input>
+                    <input type='button' className='btn btn-xs btn-danger inline-block item' value='-' onClick={this.removeHandle.bind(this, i)}></input>
                     <div className='inline-block'>
                         <Product
                                 hide=             {{details: true}}

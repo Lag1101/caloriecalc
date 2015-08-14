@@ -46,12 +46,6 @@ var Daily = React.createClass({
         socket.emit('fixDailyProduct', this.props.date, product);
     },
     removeHandle: function(i, productToRemove){
-        utils.confirmDialog(
-            "Вы уверены, что хотите удалить " + productToRemove.description + " ?",
-            this.removeProduct.bind(this, i, productToRemove)
-        );
-    },
-    removeProduct: function(i, productToRemove){
         var additionalParts = this.props.additionalParts;
         additionalParts.splice(i, 1);
         this.update();
@@ -154,14 +148,7 @@ var Daily = React.createClass({
                                 enabled =         {{all:true}}
                                 //ref =             {dayPart.ref}
                                 changeHandle=     {this.addChangeHandle.bind(this, i)}
-                                id =              {product._id}
-                                description =     {product.description}
-                                proteins =        {product.proteins}
-                                triglyceride =    {product.triglyceride}
-                                carbohydrate =    {product.carbohydrate}
-                                calorie =         {product.calorie}
-                                mass =            {product.mass}
-                                details =         {product.details}>
+                                product={product}>
                             </Product>
                         </div>
                     </div>

@@ -25,24 +25,21 @@ var DishList = React.createClass({
     changeHandle: function(dish){
         socket.emit('fixDish', dish);
     },
-    removeHandle: function(dishToRemove){
+    removeHandle: function(i){
         utils.confirmDialog(
-            "Вы уверены, что хотите удалить " + dishToRemove.description + " ?",
-            this.removeDish.bind(this, dishToRemove)
+            "Вы уверены, что хотите удалить " + this.props.originDishes[i].description + " ?",
+            this.removeDish.bind(this, i)
         );
     },
-    removeDish: function(dishToRemove){
+    removeDish: function(i){
         var originDishes = this.props.originDishes;
-        for(var i = originDishes.length; i--; )
-        {
-            var dish = originDishes[i];
-            if(dishToRemove._id === dish._id){
-                originDishes.splice(i, 1);
-                this.setState({dishes: this.props.originDishes});
-                socket.emit('removeDish', dishToRemove._id);
-                return;
-            }
-        }
+
+        var dish = originDishes[i];
+
+        originDishes.splice(i, 1);
+        this.setState({dishes: originDishes});
+        socket.emit('removeDish', dish._id);
+
     },
     componentDidMount: function() {
         socket.emit('getCurrentDishes');
@@ -57,13 +54,13 @@ var DishList = React.createClass({
         }.bind(this));
     },
     render: function() {
-        var dishes = this.state.dishes.map(function (dish) {
+        var dishes = this.state.dishes.map(function (dish, i) {
             var css = 'product';
 
             return (
 
                 <div className={css} key =             {dish._id}>
-                    <input type='button' className='btn btn-xs btn-danger inline-block item remove' value='-' onClick={this.removeHandle.bind(this, dish)}></input>
+                    <input type='button' className='btn btn-xs btn-danger inline-block item remove' value='-' onClick={this.removeHandle.bind(this, i)}></input>
                     <div className='inline-block'>
                         <Dish
                             hide=             {{details: true, mass: true}}

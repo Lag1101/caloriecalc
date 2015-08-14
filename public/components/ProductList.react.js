@@ -43,25 +43,22 @@ var ProductList = React.createClass({
     addHandle: function(id){
         socket.emit('newDishProduct', id);
     },
-    removeHandle: function(productToRemove){
+    removeHandle: function(i){
         utils.confirmDialog(
-            "Вы уверены, что хотите удалить " + productToRemove.description + " ?",
-            this.removeProduct.bind(this, productToRemove)
+            "Вы уверены, что хотите удалить " + this.props.originProducts[i].description + " ?",
+            this.removeProduct.bind(this, i)
         );
     },
-    removeProduct: function(productToRemove){
+    removeProduct: function(i){
         var originsProducts = this.props.originProducts;
-        for(var i = originsProducts.length; i--; )
-        {
-            var product = originsProducts[i];
-            if(productToRemove._id === product._id){
-                this.prefixTree.removeString(product.description, product);
-                originsProducts.splice(i, 1);
-                this.updateProducts();
-                socket.emit('removeProduct', productToRemove._id);
-                return;
-            }
-        }
+
+        var product = originsProducts[i];
+
+        this.prefixTree.removeString(product.description, product);
+        originsProducts.splice(i, 1);
+        this.updateProducts();
+        socket.emit('removeProduct', product._id);
+
     },
     editHandle: function(id){
         this.refs[id].makeEnabled();
@@ -122,7 +119,7 @@ var ProductList = React.createClass({
         console.timeEnd("buildPrefixTree");
     },
     render: function() {
-        var products = this.state.products.map(function (product) {
+        var products = this.state.products.map(function (product, i) {
             var css = 'product';
             if(product.hidden)
                 css += ' hidden ';
@@ -142,7 +139,7 @@ var ProductList = React.createClass({
                                 </a>
                             </li>
                             <li>
-                                <a className="btn btn-xs btn-danger remove" data-toggle="dropdown" onClick={this.removeHandle.bind(this, product)}>
+                                <a className="btn btn-xs btn-danger remove" data-toggle="dropdown" onClick={this.removeHandle.bind(this, i)}>
                                     <i className="icon-trash">Удалить</i>
                                 </a>
                             </li>

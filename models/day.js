@@ -54,7 +54,7 @@ schema.statics.clearCreate = function(date){
 schema.methods.fixProduct = function(newProduct, cb){
     var day = this;
 
-    var id = newProduct.id;
+    var id = newProduct._id;
     Product.prepareProduct(newProduct);
 
     var product = day.additional.id(id) || day.main.id(id);
