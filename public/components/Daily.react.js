@@ -72,7 +72,12 @@ var Daily = React.createClass({
             res.calorie += parseFloat(p.calorie);
         });
 
-        PubSub.publish('DailyChanged', res);
+        PubSub.publish('DailyChanged', {
+            proteins: res.proteins.toFixed(2),
+            triglyceride: res.triglyceride.toFixed(2),
+            carbohydrate: res.carbohydrate.toFixed(2),
+            calorie: res.calorie.toFixed(2)
+        });
     },
     componentDidMount: function() {
 
