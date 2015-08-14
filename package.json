@@ -32,7 +32,9 @@
     "compression": "*",
     "express-session": "*",
     "socket.io-express-session": "*",
-    "connect-mongo": "latest"
+    "connect-mongo": "latest",
+    "react": "latest",
+    "react-bootsrtap": "latest"
   },
   "devDependencies": {
     "browserify": "^11.0.1",
