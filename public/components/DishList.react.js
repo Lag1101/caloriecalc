@@ -68,7 +68,7 @@ var DishList = React.createClass({
                         <Dish
                             hide=             {{details: true, mass: true}}
                             ref =             {dish._id}
-                            id =              {dish._id}
+                            _id =              {dish._id}
                             description =     {dish.description}
                             full =            {dish.contain[0]}
                             portion =         {dish.contain[1]}

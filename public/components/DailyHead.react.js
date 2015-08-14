@@ -74,6 +74,8 @@ var DailyHead = React.createClass({
     render: function(){
         var norm = this.props.norm;
         var result = this.props.result;
+        result.description = "Описание";
+        result.details = "Детали";
 
         return (
             <div className={this.props.className}>
@@ -84,20 +86,14 @@ var DailyHead = React.createClass({
                         <Product ref="minimum"
                                  hide=             {{mass: true, details: true, description: true}}
                                  enabled =         {{}}
-                                 proteins =        {norm.min.proteins}
-                                 triglyceride =    {norm.min.triglyceride}
-                                 carbohydrate =    {norm.min.carbohydrate}
-                                 calorie =         {norm.min.calorie}/>
+                                 product =         {norm.min}/>
                     </div>
                     <div>
                         <input disabled className='description item' value='Максимум'/>
                         <Product ref="maximum"
                                  hide=             {{mass: true, details: true, description: true}}
                                  enabled =         {{}}
-                                 proteins =        {norm.max.proteins}
-                                 triglyceride =    {norm.max.triglyceride}
-                                 carbohydrate =    {norm.max.carbohydrate}
-                                 calorie =         {norm.max.calorie}/>
+                                 product = {norm.max}/>
                     </div>
                 </div>
                 <div className="result product">
@@ -113,12 +109,7 @@ var DailyHead = React.createClass({
                         enabled =         {{}}
                         ref =             {"result"}
                         description =     {"Описание"}
-                        proteins =        {result.proteins}
-                        triglyceride =    {result.triglyceride}
-                        carbohydrate =    {result.carbohydrate}
-                        calorie =         {result.calorie}
-                        mass =            {result.mass}
-                        details =         {"Детали"}/>
+                        product =         {result}/>
                 </div>
             </div>
         );

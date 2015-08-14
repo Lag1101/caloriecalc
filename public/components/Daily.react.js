@@ -133,14 +133,7 @@ var Daily = React.createClass({
                                 enabled =         {{all:true}}
                                 //ref =             {dayPart.ref}
                                 changeHandle=     {this.mainChangeHandle.bind(this, i)}
-                                id =              {product._id}
-                                description =     {product.description}
-                                proteins =        {product.proteins}
-                                triglyceride =    {product.triglyceride}
-                                carbohydrate =    {product.carbohydrate}
-                                calorie =         {product.calorie}
-                                mass =            {product.mass}
-                                details =         {product.details}>
+                                product=          {product}>
                             </Product>
                         </div>
                     </div>

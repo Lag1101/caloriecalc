@@ -6,7 +6,7 @@ var React = require('react');
 var Dish = React.createClass({
     getDish: function(){
         return {
-            id: this.props.id,
+            _id: this.props._id,
             description: this.props.description,
             portion: this.refs.portion.getProduct(),
             full: this.refs.full.getProduct()
@@ -77,22 +77,14 @@ var Dish = React.createClass({
                     enabled =         {{mass:true}}
                     ref =             {'full'}
                     changeHandle=     {this.fullChangeHandle}
-                    proteins =        {full.proteins}
-                    triglyceride =    {full.triglyceride}
-                    carbohydrate =    {full.carbohydrate}
-                    calorie =         {full.calorie}
-                    mass =            {full.mass}>
+                    product={full}>
                 </Product>
                 <Product
                     hide=             {{details: true, description: true}}
                     enabled =         {{mass:true}}
                     ref =             {'portion'}
                     changeHandle=     {this.portionChangeHandle}
-                    proteins =        {portion.proteins}
-                    triglyceride =    {portion.triglyceride}
-                    carbohydrate =    {portion.carbohydrate}
-                    calorie =         {portion.calorie}
-                    mass =            {portion.mass}>
+                    product={full}>
                 </Product>
             </div>
         );

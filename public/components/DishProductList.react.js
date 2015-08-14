@@ -91,14 +91,7 @@ var DishProductList = React.createClass({
                                 enabled =         {{mass:true}}
                                 ref =             {product._id}
                                 changeHandle=     {this.changeHandle}
-                                id =              {product._id}
-                                description =     {product.description}
-                                proteins =        {product.proteins}
-                                triglyceride =    {product.triglyceride}
-                                carbohydrate =    {product.carbohydrate}
-                                calorie =         {product.calorie}
-                                mass =            {product.mass}
-                                details =         {product.details}>
+                                product={product}>
                         </Product>
                     </div>
                 </div>

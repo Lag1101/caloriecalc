@@ -166,7 +166,7 @@ function fixDish(socket, user, cb, fixedDish){
     if(!fixedDish) return;
     async.waterfall([
         function(cb){
-            var dish = user.dishes.id(fixedDish.id);
+            var dish = user.dishes.id(fixedDish._id);
             if(!dish)
                 return cb(new Error("Dish doesn't exist"));
             else
@@ -210,7 +210,7 @@ function fixDishProduct(socket, user, cb, fixedProduct){
     if(!fixedProduct) return;
     async.waterfall([
         function(cb){
-            var product = user.currentDishProducts.id(fixedProduct.id);
+            var product = user.currentDishProducts.id(fixedProduct._id);
             return cb(null, product)
         },
         function(product, cb){
@@ -232,7 +232,7 @@ function fixProduct(socket, user, cb, fixedProduct){
     if(!fixedProduct) return;
     async.waterfall([
         function(cb){
-            var product =user.products.id(fixedProduct.id);
+            var product =user.products.id(fixedProduct._id);
             return cb(null, product)
         },
         function(product, cb){
