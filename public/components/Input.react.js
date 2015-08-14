@@ -1,6 +1,7 @@
 /**
  * Created by vasiliy.lomanov on 16.06.2015.
  */
+var React = require('react');
 var NumericInput = React.createClass({
     getValue: function(){
         return this.props.value;

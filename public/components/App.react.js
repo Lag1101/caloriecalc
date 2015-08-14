@@ -5,6 +5,7 @@
 
 var socket = require('../socket');
 var utils = require('../utils');
+var React = require('react');
 var DishList = require('./DishList.react.js');
 var ProductList = require('./ProductList.react.js');
 var DishProductList = require('./DishProductList.react.js');

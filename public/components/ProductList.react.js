@@ -8,6 +8,7 @@ var Product = require('./Product.react.js');
 var Sorting = require('./Sorting.react.js');
 var PrefixTree = require('../js/PrefixTree');
 var DeferredCaller = require('../js/DeferredCaller');
+var React = require('react');
 
 function greater (sortBy, p1, p2) {
     if (p1[sortBy] < p2[sortBy]) return -1;

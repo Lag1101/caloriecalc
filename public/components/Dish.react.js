@@ -1,6 +1,7 @@
 
 var TextInput = require('./Input.react.js').TextInput;
 var Product = require('./Product.react.js');
+var React = require('react');
 
 var Dish = React.createClass({
     getDish: function(){

@@ -2,6 +2,7 @@
  * Created by vasiliy.lomanov on 06.08.2015.
  */
 
+var React = require('react');
 
 var Calculator = React.createClass({
     getDefaultProps: function() {

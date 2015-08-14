@@ -4,6 +4,7 @@
 
 var socket = require('../socket');
 var Dish = require('./Dish.react.js');
+var React = require('react');
 
 var DishListHead = React.createClass({
     getInitialState: function() {

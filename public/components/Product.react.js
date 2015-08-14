@@ -4,8 +4,10 @@
 
 var utils = require('../utils');
 var socket = require('../socket');
+var React = require('react');
 var TextInput = require('./Input.react.js').TextInput;
 var NumericInput = require('./Input.react.js').NumericInput;
+var React = require('react');
 
 var Product = React.createClass({
     getProduct: function(){

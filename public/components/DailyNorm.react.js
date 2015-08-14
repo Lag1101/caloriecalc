@@ -2,6 +2,8 @@
  * Created by vasiliy.lomanov on 11.06.2015.
  */
 
+var React = require('react');
+
 function Bound(bound){
     bound = bound || {};
     this.min = bound.min || 0;

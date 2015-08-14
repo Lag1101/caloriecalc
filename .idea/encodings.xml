@@ -31,7 +31,6 @@
     <file url="file://$PROJECT_DIR$/routes/logout.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/routes/registration.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/dailyNorm.jade" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/views/dailyView.jade" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/error.jade" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/frontpage.jade" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/index.jade" charset="UTF-8" />
@@ -39,6 +38,5 @@
     <file url="file://$PROJECT_DIR$/views/login.jade" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/partials/topNavigation.jade" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/views/registration.jade" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/views/resultView.jade" charset="UTF-8" />
   </component>
 </project>
