@@ -106,12 +106,12 @@ var Daily = React.createClass({
     },
     render: function(){
         var dayPartName = [
-            'Завтрак У40-50',
-            'Ланч У20-30',
-            'Обед У20-30',
-            'Перекус У15',
-            'Ужин У10',
-            'Перед сном У10'];
+            'Завтрак',
+            'Ланч',
+            'Обед',
+            'Перекус',
+            'Ужин',
+            'Перед сном'];
         var norm = this.props.norm;
         var result = this.props.result;
 
