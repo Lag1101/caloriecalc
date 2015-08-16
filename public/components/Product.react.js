@@ -36,7 +36,6 @@ var Product = React.createClass({
     },
     changeHandle: function(){
         this.props.changeHandle && this.props.changeHandle(this.getProduct());
-        this.setState();
     },
     componentDidMount: function(){
 

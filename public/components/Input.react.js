@@ -71,7 +71,6 @@ var TextInput = React.createClass({
     changeHandle: function(event){
         this.props.value = this.refs.div.getDOMNode().innerHTML;
         this.props.changeHandle(this.props.value);
-        this.setState();
     },
     getDefaultProps: function() {
         return {
