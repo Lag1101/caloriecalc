@@ -74,10 +74,11 @@ var Daily = React.createClass({
         });
 
         PubSub.publish('DailyChanged', {
-            proteins: res.proteins.toFixed(2),
-            triglyceride: res.triglyceride.toFixed(2),
-            carbohydrate: res.carbohydrate.toFixed(2),
-            calorie: res.calorie.toFixed(2)
+            proteins: parseFloat(res.proteins.toFixed(2)),
+            triglyceride: parseFloat(res.triglyceride.toFixed(2))
+            ,
+            carbohydrate: parseFloat(res.carbohydrate.toFixed(2)),
+            calorie: parseFloat(res.calorie.toFixed(2))
         });
     },
     componentDidMount: function() {
