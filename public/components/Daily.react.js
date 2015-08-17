@@ -49,7 +49,7 @@ var Daily = React.createClass({
         this.update();
         //socket.emit('removeDailyProduct', this.props.date, productToRemove._id);
     },
-    currentDay(){
+    currentDay: function(){
         return this.props.daily[this.props.date];
     },
     recalc: function(){
@@ -112,7 +112,7 @@ var Daily = React.createClass({
         this.recalc();
         this.setState();
     },
-    getValue(){
+    getValue: function(){
         return this.props.daily;
     },
     render: function(){

@@ -50,7 +50,7 @@ var DishList = React.createClass({
             this.forceUpdate();
         }.bind(this));
     },
-    getValue(){
+    getValue: function(){
         return this.props.dishes;
     },
     render: function() {
