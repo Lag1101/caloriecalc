@@ -11,13 +11,13 @@ var React = require('react');
 var DishProductList = React.createClass({
     getDefaultProps: function() {
         return {
-            originProducts: []
+            dishProducts: []
         };
     },
     changeHandle: function(product){
 
         socket.emit('fixDishProduct', product);
-        var products = this.props.originProducts;
+        var products = this.props.dishProducts;
         for(var i = products.length; i--; )
         {
             if(product.id === products[i]._id){
@@ -32,7 +32,7 @@ var DishProductList = React.createClass({
         this.calcFull();
     },
     removeHandle: function(i){
-        var products = this.props.originProducts;
+        var products = this.props.dishProducts;
         var product = products[i];
 
         products.splice(i, 1);
@@ -44,13 +44,13 @@ var DishProductList = React.createClass({
     componentDidMount: function() {
         socket.emit('getCurrentDishProducts');
         socket.on('getCurrentDishProducts', function(data){
-            this.props.originProducts = data;
+            this.props.dishProducts = data;
             this.calcFull();
             this.setState();
         }.bind(this));
 
         socket.on('newDishProduct', function(newProduct){
-            var products = this.props.originProducts;
+            var products = this.props.dishProducts;
             products.push(newProduct);
             this.calcFull();
             this.setState();
@@ -64,7 +64,7 @@ var DishProductList = React.createClass({
             calorie: 0.0
         };
 
-       this.props.originProducts.map(function(p){
+       this.props.dishProducts.map(function(p){
            var mass = p.mass || 1.0;
            res.proteins += p.proteins * mass / 100;
            res.triglyceride += p.triglyceride * mass / 100;
@@ -76,7 +76,7 @@ var DishProductList = React.createClass({
     },
     render: function() {
 
-        var products = this.props.originProducts.map(function (product, i) {
+        var products = this.props.dishProducts.map(function (product, i) {
             return (
                 <div className='product'
                      key =             {product._id}>

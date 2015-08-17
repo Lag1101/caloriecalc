@@ -22,15 +22,9 @@ function less(sortBy, p1, p2) {
 }
 
 var ProductList = React.createClass({
-    getInitialState: function() {
-        return {
-            id: null,
-            products: this.props.originProducts
-        }
-    },
     getDefaultProps: function() {
         return {
-            originProducts: []
+            products: []
         };
     },
     newProduct: function(){
@@ -45,12 +39,12 @@ var ProductList = React.createClass({
     },
     removeHandle: function(i){
         utils.confirmDialog(
-            "Вы уверены, что хотите удалить " + this.props.originProducts[i].description + " ?",
+            "Вы уверены, что хотите удалить " + this.props.products[i].description + " ?",
             this.removeProduct.bind(this, i)
         );
     },
     removeProduct: function(i){
-        var originsProducts = this.props.originProducts;
+        var originsProducts = this.props.products;
 
         var product = originsProducts[i];
 
@@ -73,13 +67,13 @@ var ProductList = React.createClass({
 
         socket.emit('list');
         socket.on('list', function(list) {
-            this.props.originProducts = list;
+            this.props.products = list;
             this.reorder();
             this.buildPrefixTree();
             this.updateProducts();
         }.bind(this));
         socket.on('newProduct', function(product) {
-            this.props.originProducts.push(product);
+            this.props.products.push(product);
             this.prefixTree.addString(product.description, product);
             this.reorder();
             this.updateProducts();
@@ -91,7 +85,7 @@ var ProductList = React.createClass({
         this.updateProducts();
     },
     reorder: function(){
-        this.props.originProducts = this.props.originProducts.sort(this.sortingFun);
+        this.props.products = this.props.products.sort(this.sortingFun);
     },
     searchHandle: function(str){
         this.props.searchStr = str;
@@ -99,27 +93,27 @@ var ProductList = React.createClass({
     },
     updateProducts: function(){
         this.deferredCaller.tryToCall(function(){
-            var choosenProducts = this.props.searchStr ? this.prefixTree.getLinksByString(this.props.searchStr) : this.props.originProducts;
-            this.props.originProducts.map(function(p){
+            var choosenProducts = this.props.searchStr ? this.prefixTree.getLinksByString(this.props.searchStr) : this.props.products;
+            this.props.products.map(function(p){
                 p.hidden = true;
             });
             choosenProducts.map(function(p){
                 p.hidden = false;
             });
 
-            this.setState({products: this.props.originProducts});
+            this.setState();
         }.bind(this));
         //return choosedProducts.sort(this.props.compareFunction);
     },
     buildPrefixTree: function(){
         console.time("buildPrefixTree");
-        this.props.originProducts.map(function(product){
+        this.props.products.map(function(product){
             this.prefixTree.addString(product.description, product);
         }.bind(this));
         console.timeEnd("buildPrefixTree");
     },
     render: function() {
-        var products = this.state.products.map(function (product, i) {
+        var products = this.props.products.map(function (product, i) {
             var css = 'product';
             if(product.hidden)
                 css += ' hidden ';

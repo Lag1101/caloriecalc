@@ -11,34 +11,28 @@ var DishListHead = require('./DishListHead.react.js');
 var React = require('react');
 
 var DishList = React.createClass({
-    getInitialState: function() {
-        return {
-            id: null,
-            dishes: this.props.originDishes
-        }
-    },
     getDefaultProps: function() {
         return {
-            originDishes: []
+            dishes: []
         };
     },
     changeHandle: function(i, dish){
-        this.props.originDishes[i] = dish;
+        this.props.dishes[i] = dish;
         socket.emit('fixDish', dish);
     },
     removeHandle: function(i){
         utils.confirmDialog(
-            "Вы уверены, что хотите удалить " + this.props.originDishes[i].description + " ?",
+            "Вы уверены, что хотите удалить " + this.props.dishes[i].description + " ?",
             this.removeDish.bind(this, i)
         );
     },
     removeDish: function(i){
-        var originDishes = this.props.originDishes;
+        var dishes = this.props.dishes;
 
-        var dish = originDishes[i];
+        var dish = dishes[i];
 
-        originDishes.splice(i, 1);
-        this.setState({dishes: originDishes});
+        dishes.splice(i, 1);
+        this.setState();
         socket.emit('removeDish', dish._id);
 
     },
@@ -46,16 +40,16 @@ var DishList = React.createClass({
         socket.emit('getCurrentDishes');
 
         socket.on('getCurrentDishes', function(list) {
-            this.props.originDishes = list;
-            this.setState({dishes: this.props.originDishes});
+            this.props.dishes = list;
+            this.setState();
         }.bind(this));
         socket.on('newDish', function(dish) {
-            this.props.originDishes.push(dish);
-            this.setState({dishes: this.props.originDishes});
+            this.props.dishes.push(dish);
+            this.setState();
         }.bind(this));
     },
     render: function() {
-        var dishes = this.state.dishes.map(function (dish, i) {
+        var dishes = this.props.dishes.map(function (dish, i) {
             var css = 'product';
 
             return (
