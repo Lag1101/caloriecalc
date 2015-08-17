@@ -22,7 +22,8 @@ var DishList = React.createClass({
             originDishes: []
         };
     },
-    changeHandle: function(dish){
+    changeHandle: function(i, dish){
+        this.props.originDishes[i] = dish;
         socket.emit('fixDish', dish);
     },
     removeHandle: function(i){
@@ -69,7 +70,7 @@ var DishList = React.createClass({
                             description =     {dish.description}
                             full =            {dish.contain[0]}
                             portion =         {dish.contain[1]}
-                            changeHandle =    {this.changeHandle}>
+                            changeHandle =    {this.changeHandle.bind(this, i)}>
                         </Dish>
                     </div>
                 </div>

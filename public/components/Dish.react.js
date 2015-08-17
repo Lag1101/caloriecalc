@@ -84,7 +84,7 @@ var Dish = React.createClass({
                     enabled =         {{mass:true}}
                     ref =             {'portion'}
                     changeHandle=     {this.portionChangeHandle}
-                    product={full}>
+                    product={portion}>
                 </Product>
             </div>
         );
