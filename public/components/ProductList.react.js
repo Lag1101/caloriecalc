@@ -28,14 +28,29 @@ var ProductList = React.createClass({
         };
     },
     newProduct: function(){
-        var newProduct = this.refs.newProduct.getProduct();
-        socket.emit('newProduct', newProduct);
+        var product = this.refs.newProduct.getProduct();
+        //product._id = Math.random().toString();
+        this.props.products.push(product);
+        this.prefixTree.addString(product.description, this.props.products[this.props.products.length-1]);
+        this.reorder();
+        this.updateProducts();
+        //socket.emit('newProduct', product);
     },
     changeHandle: function(product){
-        socket.emit('fixProduct', product);
+        //socket.emit('fixProduct', product);
     },
-    addHandle: function(id){
-        socket.emit('newDishProduct', id);
+    addHandle: function(i){
+        var product = this.props.products[i];
+        PubSub.publish('newDishProduct', {
+                description: product.description,
+                proteins: product.proteins,
+                triglyceride: product.triglyceride,
+                carbohydrate: product.carbohydrate,
+                calorie: product.calorie,
+                mass: product.mass,
+                details: product.details
+            });
+        //socket.emit('newDishProduct', id);
     },
     removeHandle: function(i){
         utils.confirmDialog(
@@ -51,7 +66,7 @@ var ProductList = React.createClass({
         this.prefixTree.removeString(product.description, product);
         originsProducts.splice(i, 1);
         this.updateProducts();
-        socket.emit('removeProduct', product._id);
+        //socket.emit('removeProduct', product._id);
 
     },
     editHandle: function(id){
@@ -72,12 +87,12 @@ var ProductList = React.createClass({
             this.buildPrefixTree();
             this.updateProducts();
         }.bind(this));
-        socket.on('newProduct', function(product) {
-            this.props.products.push(product);
-            this.prefixTree.addString(product.description, product);
-            this.reorder();
-            this.updateProducts();
-        }.bind(this));
+        //socket.on('newProduct', function(product) {
+        //    this.props.products.push(product);
+        //    this.prefixTree.addString(product.description, product);
+        //    this.reorder();
+        //    this.updateProducts();
+        //}.bind(this));
     },
     changeSorting: function(sortBy, sortOrder){
         this.sortingFun = (sortOrder === 'greater' ? greater : less).bind(null, sortBy);
@@ -112,6 +127,9 @@ var ProductList = React.createClass({
         }.bind(this));
         console.timeEnd("buildPrefixTree");
     },
+    getValue: function(cb){
+        return this.props.products
+    },
     render: function() {
         var products = this.props.products.map(function (product, i) {
             var css = 'product';
@@ -121,7 +139,7 @@ var ProductList = React.createClass({
 
                 <div className={css} key =             {product._id}>
 
-                    <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.addHandle.bind(this, product._id)}></input>
+                    <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.addHandle.bind(this, i)}></input>
                     <div className="btn-group btn-group-xs">
                         <a className="btn btn-block btn-default  dropdown-toggle" data-toggle="dropdown">
                             <span className="caret"></span>

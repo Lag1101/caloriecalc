@@ -33,7 +33,13 @@ var DishListHead = React.createClass({
     },
     newDishHandle: function(){
         var newDish = this.refs.dish.getDish();
-        socket.emit('addDish', newDish);
+        PubSub.publish('newDish', {
+            description: newDish.description,
+            contain: [
+                newDish.full,
+                newDish.portion
+            ]
+        });
     },
     componentDidMount: function() {
         PubSub.subscribe( 'ProductDishesChanged', function(msg, newSum){

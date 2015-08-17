@@ -17,8 +17,9 @@ var DishList = React.createClass({
         };
     },
     changeHandle: function(i, dish){
-        this.props.dishes[i] = dish;
-        socket.emit('fixDish', dish);
+        this.props.dishes[i].contain = [dish.full, dish.portion];
+        this.props.dishes[i].description = dish.description;
+        //socket.emit('fixDish', dish);
     },
     removeHandle: function(i){
         utils.confirmDialog(
@@ -33,7 +34,7 @@ var DishList = React.createClass({
 
         dishes.splice(i, 1);
         this.setState();
-        socket.emit('removeDish', dish._id);
+        //socket.emit('removeDish', dish._id);
 
     },
     componentDidMount: function() {
@@ -43,10 +44,14 @@ var DishList = React.createClass({
             this.props.dishes = list;
             this.setState();
         }.bind(this));
-        socket.on('newDish', function(dish) {
+
+        PubSub.subscribe( 'newDish', function(msg, dish){
             this.props.dishes.push(dish);
-            this.setState();
+            this.forceUpdate();
         }.bind(this));
+    },
+    getValue(){
+        return this.props.dishes;
     },
     render: function() {
         var dishes = this.props.dishes.map(function (dish, i) {

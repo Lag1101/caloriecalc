@@ -4,7 +4,7 @@
 var React = require('react');
 var NumericInput = React.createClass({
     getValue: function(){
-        return this.props.value;
+        return parseFloat(this.props.value);
     },
     changeHandle: function(event){
         var str = this.refs.input.getDOMNode().value;
@@ -14,7 +14,7 @@ var NumericInput = React.createClass({
 
         this.props.value = str;
         this.props.valid = !isNaN(parseFloat(str));
-        this.props.changeHandle(this.props.value);
+        this.props.changeHandle(parseFloat(this.props.value));
 
         this.setState();
     },

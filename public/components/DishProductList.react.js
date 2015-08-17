@@ -14,21 +14,18 @@ var DishProductList = React.createClass({
             dishProducts: []
         };
     },
-    changeHandle: function(product){
+    changeHandle: function(i, product){
 
-        socket.emit('fixDishProduct', product);
-        var products = this.props.dishProducts;
-        for(var i = products.length; i--; )
-        {
-            if(product.id === products[i]._id){
-                products[i].proteins =       product.proteins;
-                products[i].triglyceride =   product.triglyceride;
-                products[i].carbohydrate =   product.carbohydrate;
-                products[i].calorie =        product.calorie;
-                products[i].mass =          product.mass;
-                break;
-            }
-        }
+        //socket.emit('fixDishProduct', product);
+
+        var changedProduct = this.props.dishProducts[i];
+
+        changedProduct.proteins =       product.proteins;
+        changedProduct.triglyceride =   product.triglyceride;
+        changedProduct.carbohydrate =   product.carbohydrate;
+        changedProduct.calorie =        product.calorie;
+        changedProduct.mass =          product.mass;
+
         this.calcFull();
     },
     removeHandle: function(i){
@@ -37,7 +34,7 @@ var DishProductList = React.createClass({
 
         products.splice(i, 1);
         this.setState();
-        socket.emit('removeDishProduct', product._id);
+        //socket.emit('removeDishProduct', product._id);
 
         this.calcFull();
     },
@@ -49,12 +46,15 @@ var DishProductList = React.createClass({
             this.setState();
         }.bind(this));
 
-        socket.on('newDishProduct', function(newProduct){
+        PubSub.subscribe( 'newDishProduct', function(msg, newProduct){
             var products = this.props.dishProducts;
             products.push(newProduct);
             this.calcFull();
             this.setState();
         }.bind(this));
+    },
+    getValue: function(cb){
+        return this.props.dishProducts
     },
     calcFull: function(){
         var res = {
@@ -87,7 +87,7 @@ var DishProductList = React.createClass({
                                 hide=             {{details: true}}
                                 enabled =         {{mass:true}}
                                 ref =             {product._id}
-                                changeHandle=     {this.changeHandle}
+                                changeHandle=     {this.changeHandle.bind(this, i)}
                                 product={product}>
                         </Product>
                     </div>

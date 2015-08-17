@@ -184,7 +184,7 @@ schema.methods.getDailyByDate = function(date, callback){
             if(!day) {
                 var newDay = Day.clearCreate(date);
                 user.daily.push(newDay);
-                return cb(null, newDay);
+                return cb(null, user.daily[user.daily.length-1]);
             }
             else return cb(null, day);
         }
@@ -247,7 +247,7 @@ schema.methods.addProduct = function(newProduct, callback){
 
 
     var user = this;
-    Product.prepareProduct(newProduct);
+    //Product.prepareProduct(newProduct);
     user.products.push(newProduct);
     return callback(null, user.products[user.products.length-1]);
 };

@@ -13,17 +13,36 @@ var Daily = require('./Daily.react.js');
 
 
 var App = React.createClass({
+    save: function(){
+
+        $(this.refs.hardSaveButton.getDOMNode()).button('loading');
+
+        var bundle = {
+
+            productList:        this.refs.productList.getValue(),
+            dishProductList:    this.refs.dishProductList.getValue(),
+            dishList:           this.refs.dishList.getValue(),
+            daily:              this.refs.daily.getValue()
+        };
+        socket.emit('save', bundle);
+    },
+    componentDidMount(){
+        socket.on('save', function(){
+            $(this.refs.hardSaveButton.getDOMNode()).button('reset');
+        }.bind(this));
+    },
     render: function() {
         return (
             <div >
                 <div className='container-fluid'>
-                    <Daily className="myTable daily"/>
+                    <Daily ref="daily" className="myTable daily"/>
                 </div>
                 <DishList ref='dishList' className="dishList myTable"/>
                 <div className='container-fluid'>
-                    <DishProductList className='currentDishProducts myTable' />
-                    <ProductList className='myTable inline-block'/>
+                    <DishProductList ref="dishProductList" className='currentDishProducts myTable' />
+                    <ProductList ref="productList" className='myTable inline-block'/>
                 </div>
+                <button ref="hardSaveButton" className="btn btn-primary hardSaveButton" onClick={this.save} data-loading-text="Сохранение ...">Сохранить</button>
             </div>
         );
     }
@@ -33,14 +52,3 @@ React.render(
     <App />,
     document.getElementById('app')
 );
-
-(function () {
-    var b = $('.hardSaveButton');
-    socket.on('save', function(){
-        b.button('reset');
-    });
-    b.click(function () {
-        b.button('loading');
-        socket.emit('save');
-    });
-})();

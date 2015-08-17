@@ -11,7 +11,13 @@ var React = require('react');
 
 var Product = React.createClass({
     getProduct: function(){
-        return this.props.product;
+        var product = this.props.product;
+        product.proteins = parseFloat(product.proteins);
+        product.triglyceride = parseFloat(product.triglyceride);
+        product.carbohydrate = parseFloat(product.carbohydrate);
+        product.calorie = parseFloat(product.calorie);
+        product.mass = parseFloat(product.mass);
+        return product;
     },
     getDefaultProps: function() {
         return {
