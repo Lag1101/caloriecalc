@@ -26,7 +26,7 @@ var App = React.createClass({
         };
         socket.emit('save', bundle);
     },
-    componentDidMount(){
+    componentDidMount: function(){
         socket.on('save', function(){
             $(this.refs.hardSaveButton.getDOMNode()).button('reset');
         }.bind(this));
