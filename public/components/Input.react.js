@@ -16,15 +16,15 @@ var NumericInput = React.createClass({
         this.props.valid = !isNaN(parseFloat(str));
         this.props.changeHandle(parseFloat(this.props.value));
 
-        this.setState();
+        this.forceUpdate();
     },
     makeDisabled: function(){
         this.props.enabled = false;
-        this.setState();
+        this.forceUpdate();
     },
     makeEnabled: function(){
         this.props.enabled = true;
-        this.setState();
+        this.forceUpdate();
     },
     getDefaultProps: function() {
         return {
@@ -36,7 +36,7 @@ var NumericInput = React.createClass({
         };
     },
     render: function() {
-        console.log('NumericInput rendered');
+        //console.log('NumericInput rendered');
         if(this.props.hidden) return (<div className = {this.props.css + " hidden"}/>);
 
         var value = this.props.value;
@@ -69,8 +69,11 @@ var TextInput = React.createClass({
         return this.props.value;
     },
     changeHandle: function(event){
-        this.props.value = this.refs.div.getDOMNode().innerHTML;
+
+        this.props.value = this.refs.div.getDOMNode().value;
+        this.resize();
         this.props.changeHandle(this.props.value);
+        this.forceUpdate();
     },
     getDefaultProps: function() {
         return {
@@ -80,11 +83,20 @@ var TextInput = React.createClass({
     },
     makeDisabled: function(){
         this.props.enabled = false;
-        this.setState();
+        this.forceUpdate();
     },
     makeEnabled: function(){
         this.props.enabled = true;
-        this.setState();
+        this.forceUpdate();
+    },
+    resize: function(){
+        if(this.props.hidden) return;
+        var dom = this.refs.div.getDOMNode();
+        dom.style.height = "1px";
+        dom.style.height = dom.scrollHeight + 'px';
+    },
+    componentDidMount: function(){
+        this.resize();
     },
     render: function() {
         if(this.props.hidden) return (<div className = {this.props.css + " hidden"}/>);
@@ -99,7 +111,7 @@ var TextInput = React.createClass({
             className += "disableForInput";
 
         return (
-            <div contentEditable={enabled} ref='div' className={className}  onInput={this.changeHandle} dangerouslySetInnerHTML={{__html: value}} ></div>
+            <textarea ref='div' type="text" className={className}  onInput={this.changeHandle} value={value} ></textarea>
         );
     }
 });

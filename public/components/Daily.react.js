@@ -22,8 +22,9 @@ var Daily = React.createClass({
         }
     },
     addHandle: function(){
-        var newProduct = this.refs.new.getProduct();
+        var newProduct = this.refs.newProduct.getProduct();
 
+        this.refs.newProduct.clear();
         this.currentDay().additional.push(newProduct);
         this.update();
 
@@ -181,7 +182,7 @@ var Daily = React.createClass({
                     <Product
                         hide=             {{mass: true}}
                         enabled =         {{all:true}}
-                        ref =             {"new"}/>
+                        ref =             {"newProduct"}/>
                 </div>
             </div>
         );

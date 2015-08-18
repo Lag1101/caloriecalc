@@ -101,14 +101,14 @@ var Product = React.createClass({
         var danger = this.props.danger;
         var product = this.props.product;
         return (
-            <div className='inline-block'>
+            <div className=' input-group input-group-sm inline-block'>
                 <TextInput    enabled={enabled.all || enabled.description}  danger={danger['description']}   css={'description item '}   changeHandle={this.descriptionChanged} value={product.description}      hidden={hide.description}          ref='description'></TextInput>
                 <NumericInput enabled={enabled.all || enabled.proteins}     danger={danger['proteins']}   css={'proteins item '}      changeHandle={this.proteinsChanged} value={product.proteins}         hidden={hide.proteins}             ref='proteins'></NumericInput>
                 <NumericInput enabled={enabled.all || enabled.triglyceride} danger={danger['triglyceride']}   css={'triglyceride item '}  changeHandle={this.triglycerideChanged} value={product.triglyceride}     hidden={hide.triglyceride}         ref='triglyceride'></NumericInput>
                 <NumericInput enabled={enabled.all || enabled.carbohydrate} danger={danger['carbohydrate']}   css={'carbohydrate item '}  changeHandle={this.carbohydrateChanged} value={product.carbohydrate}     hidden={hide.carbohydrate}         ref='carbohydrate'></NumericInput>
                 <NumericInput enabled={enabled.all || enabled.calorie}      danger={danger['calorie']}   css={'calorie item '}       changeHandle={this.calorieChanged} value={product.calorie}          hidden={hide.calorie}              ref='calorie'></NumericInput>
                 <NumericInput enabled={enabled.all || enabled.mass}         danger={danger['mass']}   css={'mass item '}          changeHandle={this.massChanged} value={product.mass}             hidden={hide.mass}                 ref='mass'></NumericInput>
-                <TextInput    enabled={enabled.all || enabled.details}      danger={danger['details']}   css={'details item '}      changeHandle={this.detailsChanged} value={product.details}          hidden={hide.details}              ref='details'></TextInput>
+                <TextInput    enabled={enabled.all || enabled.details}      danger={danger['details']}   css={' details item '}      changeHandle={this.detailsChanged} value={product.details}          hidden={hide.details}              ref='details'></TextInput>
             </div>
         );
     }

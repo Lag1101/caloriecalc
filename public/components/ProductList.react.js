@@ -32,6 +32,7 @@ var ProductList = React.createClass({
         //product._id = "";
         this.props.products.push(product);
         this.prefixTree.addString(product.description, this.props.products[this.props.products.length-1]);
+        this.refs.newProduct.clear();
         this.reorder();
         this.updateProducts();
         //socket.emit('newProduct', product);
