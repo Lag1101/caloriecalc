@@ -84,13 +84,15 @@ var Daily = React.createClass({
     },
     componentDidMount: function() {
 
-        socket.emit('getCurrentDaily');
-        socket.on('getCurrentDaily', function(day){
-            this.props.date = day.date;
+        socket.emit('getCurrentDate');
+        socket.on('getCurrentDate', function(date){
+            this.props.date = date;
+            socket.emit('getDaily', date);
+        }.bind(this));
+        socket.on('getDaily', function(day){
             this.props.daily[day.date] = day;
             this.update();
         }.bind(this));
-
         //socket.on('addDailyProduct', function(date, newDailyProduct){
         //    if(date ===  this.props.date){
         //        this.props.additionalParts.push(newDailyProduct);
@@ -99,12 +101,13 @@ var Daily = React.createClass({
         //}.bind(this));
     },
     dateChanged: function(){
-        var date = React.findDOMNode(this.refs.date).value;
+        var date = this.refs.date.getDOMNode().value;
         this.props.date = date;
         console.log(this.props.date);
 
+        socket.emit('setCurrentDate', date);
         if(!this.props.daily[date])
-            socket.emit('setCurrentDate', date);
+            socket.emit('getDaily', date);
         else {
             this.update();
         }

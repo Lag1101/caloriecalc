@@ -51,13 +51,13 @@ function getCurrentDishProducts(socket, user){
 }
 
 
-function getCurrentDaily(socket, user){
+function getDaily(socket, user, date){
     async.waterfall([
         function(cb){
-            user.getRawDailyByDate(user.date, cb);
+            user.getRawDailyByDate(date, cb);
         },
         function(rawDaily, cb){
-            socket.emit('getCurrentDaily', rawDaily);
+            socket.emit('getDaily', rawDaily);
             cb();
         }
     ], function(err){
@@ -65,11 +65,15 @@ function getCurrentDaily(socket, user){
             logger.error(err);
             socket.emit('error', err);
         }else{
-            logger.info('Got daily', user.date);
+            logger.info('Got daily', date);
         }
     });
 }
+function getCurrentDate(socket, user){
+    socket.emit('getCurrentDate', user.date);
 
+    logger.info('got date', user.date);
+}
 function setCurrentDate(socket, user, cb, date){
     if(!date) {
         logger.error('Empty date');
@@ -78,7 +82,6 @@ function setCurrentDate(socket, user, cb, date){
 
     user.date = date;
     logger.info('set date', date);
-    getCurrentDaily(socket, user);
     return cb();
 }
 function getBody(socket, user){
@@ -177,8 +180,9 @@ function socketSetupHandles(socket, user){
 
         .on('list',                     list.bind(null, socket, user))
         .on('getCurrentDishProducts',   getCurrentDishProducts.bind(null, socket, user))
-        .on('getCurrentDaily',          getCurrentDaily.bind(null, socket, user))
+        .on('getDaily',                 getDaily.bind(null, socket, user))
         .on('setCurrentDate',           setCurrentDate.bind(null, socket, user, save))
+        .on('getCurrentDate',           getCurrentDate.bind(null, socket, user))
         .on('getCurrentDishes',         getCurrentDishes.bind(null, socket, user))
 
         .on('getBody', getBody.bind(null, socket, user))
