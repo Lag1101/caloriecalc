@@ -7,7 +7,6 @@
 
 var socket = require('../socket');
 var Product = require('./Product.react.js');
-var React = require('react');
 
 var DailyHead = React.createClass({
     getDefaultProps: function() {

@@ -6,7 +6,6 @@
 
 var socket = require('../socket');
 var Product = require('./Product.react.js');
-var React = require('react');
 
 var DishProductList = React.createClass({
     getDefaultProps: function() {

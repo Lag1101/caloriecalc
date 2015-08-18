@@ -8,7 +8,6 @@ var Product = require('./Product.react.js');
 var Dish = require('./Dish.react.js');
 var Calculator = require('./Calculator.react.js');
 var DishListHead = require('./DishListHead.react.js');
-var React = require('react');
 
 var DishList = React.createClass({
     getDefaultProps: function() {

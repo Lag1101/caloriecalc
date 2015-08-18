@@ -2,7 +2,7 @@
  * Created by vasiliy.lomanov on 17.06.2015.
  */
 
-var React = require('react');
+
 var Sorting = React.createClass({
     searchHandle: function(e){
         var str = e.target.value;

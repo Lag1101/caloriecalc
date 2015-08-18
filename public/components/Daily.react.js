@@ -7,7 +7,6 @@ var socket = require('../socket');
 var Product = require('./Product.react.js');
 var NumericInput = require('./Input.react.js').NumericInput;
 var DailyHead = require('./DailyHead.react.js');
-var React = require('react');
 
 var Daily = React.createClass({
     getDefaultProps: function() {
