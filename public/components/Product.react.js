@@ -7,8 +7,10 @@ var socket = require('../socket');
 var React = require('react');
 var TextInput = require('./Input.react.js').TextInput;
 var NumericInput = require('./Input.react.js').NumericInput;
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 var Product = React.createClass({
+    mixins: [PureRenderMixin],
     getProduct: function(){
         var product = this.props.product;
         return {
