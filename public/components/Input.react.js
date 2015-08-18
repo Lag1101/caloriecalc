@@ -99,19 +99,18 @@ var TextInput = React.createClass({
         this.resize();
     },
     render: function() {
-        if(this.props.hidden) return (<div className = {this.props.css + " hidden"}/>);
+        if(this.props.hidden) return (<textarea className = {this.props.css + " hidden"}/>);
 
         var value = this.props.value;
         var enabled = this.props.enabled;
 
         var className = this.props.css + " ";
-        if(enabled)
-            className += "enableForInput";
-        else
-            className += "disableForInput";
 
-        return (
+        if(enabled) return (
             <textarea ref='div' type="text" className={className}  onInput={this.changeHandle} value={value} ></textarea>
+        );
+        else return (
+            <textarea disabled ref='div' type="text" className={className}  onInput={this.changeHandle} value={value} ></textarea>
         );
     }
 });
