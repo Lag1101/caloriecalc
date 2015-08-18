@@ -29,7 +29,7 @@ var ProductList = React.createClass({
     },
     newProduct: function(){
         var product = this.refs.newProduct.getProduct();
-        //product._id = Math.random().toString();
+        //product._id = "";
         this.props.products.push(product);
         this.prefixTree.addString(product.description, this.props.products[this.props.products.length-1]);
         this.reorder();
@@ -69,11 +69,11 @@ var ProductList = React.createClass({
         //socket.emit('removeProduct', product._id);
 
     },
-    editHandle: function(id){
-        this.refs[id].makeEnabled();
+    editHandle: function(i){
+        this.refs[i].makeEnabled();
     },
-    endEditHandle: function(id){
-        this.refs[id].makeDisabled();
+    endEditHandle: function(i){
+        this.refs[i].makeDisabled();
     },
     componentDidMount: function() {
         this.deferredCaller = new DeferredCaller(100);
@@ -146,7 +146,7 @@ var ProductList = React.createClass({
                         </a>
                         <ul className="dropdown-menu">
                             <li>
-                                <a className="btn btn-xs edit" data-toggle="dropdown dropdown2" onClick={this.editHandle.bind(this, product._id)}>
+                                <a className="btn btn-xs edit" data-toggle="dropdown dropdown2" onClick={this.editHandle.bind(this, i)}>
                                     <i className="icon-pencil">Править</i>
                                 </a>
                             </li>
@@ -161,7 +161,7 @@ var ProductList = React.createClass({
                         <Product
                                 hide=             {{details: true, mass: true}}
                                 enabled =         {false}
-                                ref =             {product._id}
+                                ref =             {i}
                                 changeHandle=     {this.changeHandle}
                                 product={product}>
                         </Product>

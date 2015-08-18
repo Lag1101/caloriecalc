@@ -137,7 +137,7 @@ function saveCurrentDishProducts(user, dishProductList){
     user.currentDishProducts = dishProductList;
 }
 function saveProductList(user, productList){
-    user.productList = productList;
+    user.products = productList;
 }
 function saveDishes(user, dishes){
     user.dishes = dishes;

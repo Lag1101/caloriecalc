@@ -7,17 +7,19 @@ var socket = require('../socket');
 var React = require('react');
 var TextInput = require('./Input.react.js').TextInput;
 var NumericInput = require('./Input.react.js').NumericInput;
-var React = require('react');
 
 var Product = React.createClass({
     getProduct: function(){
         var product = this.props.product;
-        product.proteins = parseFloat(product.proteins);
-        product.triglyceride = parseFloat(product.triglyceride);
-        product.carbohydrate = parseFloat(product.carbohydrate);
-        product.calorie = parseFloat(product.calorie);
-        product.mass = parseFloat(product.mass);
-        return product;
+        return {
+            description: product.description,
+            proteins: parseFloat(product.proteins),
+            triglyceride: parseFloat(product.triglyceride),
+            carbohydrate: parseFloat(product.carbohydrate),
+            calorie: parseFloat(product.calorie),
+            mass: parseFloat(product.mass),
+            details: product.details
+        };
     },
     getDefaultProps: function() {
         return {
@@ -80,6 +82,18 @@ var Product = React.createClass({
         ].map(function(ref){
                 ref.makeEnabled();
             });
+    },
+    clear : function(){
+        var product = this.props.product;
+        product.description = " ";
+        product.proteins = 0;
+        product.triglyceride = 0;
+        product.carbohydrate = 0;
+        product.calorie = 0;
+        product.mass = 0;
+        product.details = " ";
+
+        this.setState();
     },
     render: function() {
         var hide = this.props.hide;
