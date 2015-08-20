@@ -15,8 +15,7 @@ router.get('/', function(req, res, next) {
 
         res.render('testPage', {
             title: config.get('title'),
-            devel: env !== 'production',
-            user: user
+            devel: env !== 'production'
         });
     });
 });
