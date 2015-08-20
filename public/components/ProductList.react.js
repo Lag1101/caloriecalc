@@ -29,6 +29,7 @@ var ProductList = React.createClass({
     newProduct: function(){
         var product = this.refs.newProduct.getProduct();
         //product._id = "";
+        product.reactId = Math.random();
         this.props.products.push(product);
         this.prefixTree.addString(product.description, this.props.products[this.props.products.length-1]);
         this.refs.newProduct.clear();
@@ -82,7 +83,10 @@ var ProductList = React.createClass({
 
         socket.emit('list');
         socket.on('list', function(list) {
-            this.props.products = list;
+            this.props.products = list.map(function(p){
+                p.reactId = Math.random();
+                return p;
+            });
             this.reorder();
             this.buildPrefixTree();
             this.updateProducts();
@@ -137,7 +141,7 @@ var ProductList = React.createClass({
                 css += ' hidden ';
             return (
 
-                <div className={css} key =             {product._id}>
+                <div className={css} key =             {product.reactId}>
 
                     <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.addHandle.bind(this, i)}></input>
                     <div className="btn-group btn-group-xs">
