@@ -56,6 +56,9 @@ var schema = new Schema({
         type: [ProductSchema],
         default: []
     },
+    productsLastUpdate:{
+        type: Schema.Types.Date
+    },
     daily: {
         type: [DaySchema],
         default: []

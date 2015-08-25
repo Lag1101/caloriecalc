@@ -81,8 +81,30 @@ var ProductList = React.createClass({
         this.prefixTree = new PrefixTree.Node();
         this.sortingFun = greater.bind(null, 'description');
 
-        socket.emit('list');
+
+
+        socket.emit('productsLastUpdate');
+        socket.on('productsLastUpdate', function(productsLastUpdate){
+            var localLastUpdate = JSON.parse(localStorage.getItem("localLastUpdate"));
+
+            if(!localLastUpdate || !productsLastUpdate || new Date(localLastUpdate) <= new Date(productsLastUpdate)) {
+                console.log("Try to get products from server");
+                socket.emit('list');
+                return;
+            }
+            console.log("Got local products");
+            var products = JSON.parse(localStorage.getItem("localProducts"));
+            this.props.products = products.map(function(p){
+                p.reactId = Math.random();
+                return p;
+            });
+            this.reorder();
+            this.buildPrefixTree();
+            this.updateProducts();
+        }.bind(this));
+
         socket.on('list', function(list) {
+            console.log("Got products from server");
             this.props.products = list.map(function(p){
                 p.reactId = Math.random();
                 return p;

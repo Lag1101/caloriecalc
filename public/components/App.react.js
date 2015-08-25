@@ -28,6 +28,9 @@ var App = React.createClass({
     componentDidMount: function(){
         socket.on('save', function(){
             $(this.refs.hardSaveButton.getDOMNode()).button('reset');
+
+            localStorage.setItem("localLastUpdate", JSON.stringify(Date.now()));
+            localStorage.setItem("localProducts", JSON.stringify(this.refs.productList.getValue()));
         }.bind(this));
     },
     render: function() {

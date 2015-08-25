@@ -129,6 +129,11 @@ function list(socket, user){
         }
     });
 }
+function productsLastUpdate(socket, user){
+    socket.emit('productsLastUpdate', user.productsLastUpdate);
+    logger.info('Got listLastTouch');
+}
+
 function saveUser(user, cb){
     logger.info('Try to save', user && user.username);
     if(!user)
@@ -140,6 +145,7 @@ function saveCurrentDishProducts(user, dishProductList){
     user.currentDishProducts = dishProductList;
 }
 function saveProductList(user, productList){
+    user.productsLastUpdate = Date.now();
     user.products = productList;
 }
 function saveDishes(user, dishes){
@@ -179,6 +185,7 @@ function socketSetupHandles(socket, user){
         .on('saveDaily',                saveDaily.bind(null, user))
 
         .on('list',                     list.bind(null, socket, user))
+        .on('productsLastUpdate',            productsLastUpdate.bind(null, socket, user))
         .on('getCurrentDishProducts',   getCurrentDishProducts.bind(null, socket, user))
         .on('getDaily',                 getDaily.bind(null, socket, user))
         .on('setCurrentDate',           setCurrentDate.bind(null, socket, user, save))
