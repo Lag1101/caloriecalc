@@ -51,6 +51,7 @@ function Product(product, callbacks){
     product = product || {};
 
     this.callbacks = callbacks;
+    this.$fields = [];
 
     fields.forEach(function(field){
         this[field.name] = product[field.name] || field.default;
@@ -58,12 +59,14 @@ function Product(product, callbacks){
 }
 
 Product.prototype.linkView = function($view){
-    fields.forEach(function(field){
+    this.$fields = fields.map(function(field){
         var $field = $view.find('.'+field.name);
         $field.on('paste input', this.changeHandle.bind(this, field, $field));
         $field.val(this[field.name]);
         if(field.type === "number")
             Product.validateNumberInput($field);
+
+        return $field;
     }, this);
 };
 
@@ -88,14 +91,10 @@ Product.prototype.changeHandle = function(field, $field, v){
         this.callbacks[field.name]($field.val());
 };
 
-var product = new Product({
+Product.prototype.enabled = function(e){
+    this.$fields.forEach(function($field){
+        $field.attr('disabled', !e);
+    }, this);
+};
 
-}, {
-    description: function(v){
-        console.log('description', 'changed', v);
-    },
-    mass: function(v){
-        console.log('mass', 'changed', v);
-    }
-});
-product.linkView($('#app'));
+module.exports = Product;
