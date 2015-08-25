@@ -31,10 +31,12 @@ var ProductList = React.createClass({
         //product._id = "";
         product.reactId = Math.random();
         this.props.products.push(product);
-        this.prefixTree.addString(product.description, this.props.products[this.props.products.length-1]);
-        this.refs.newProduct.clear();
+
         this.reorder();
         this.updateProducts();
+
+        this.prefixTree.addString(product.description, this.props.products[this.props.products.length-1]);
+        this.refs.newProduct.clear();
         //socket.emit('newProduct', product);
     },
     changeHandle: function(product){
@@ -77,7 +79,7 @@ var ProductList = React.createClass({
         this.refs[i].makeDisabled();
     },
     componentDidMount: function() {
-        this.deferredCaller = new DeferredCaller(100);
+        this.deferredCaller = new DeferredCaller(500);
         this.prefixTree = new PrefixTree.Node();
         this.sortingFun = greater.bind(null, 'description');
 
@@ -94,11 +96,7 @@ var ProductList = React.createClass({
             }
             console.log("Got local products");
             var products = JSON.parse(localStorage.getItem("localProducts"));
-            this.props.products = products.map(function(p){
-                p.reactId = Math.random();
-                return p;
-            });
-            this.reorder();
+
             this.buildPrefixTree();
             this.updateProducts();
         }.bind(this));
@@ -113,12 +111,6 @@ var ProductList = React.createClass({
             this.buildPrefixTree();
             this.updateProducts();
         }.bind(this));
-        //socket.on('newProduct', function(product) {
-        //    this.props.products.push(product);
-        //    this.prefixTree.addString(product.description, product);
-        //    this.reorder();
-        //    this.updateProducts();
-        //}.bind(this));
     },
     changeSorting: function(sortBy, sortOrder){
         this.sortingFun = (sortOrder === 'greater' ? greater : less).bind(null, sortBy);
@@ -130,20 +122,19 @@ var ProductList = React.createClass({
     },
     searchHandle: function(str){
         this.props.searchStr = str;
-        this.updateProducts();
+        this.deferredCaller.tryToCall(this.updateProducts.bind(this));
     },
     updateProducts: function(){
-        this.deferredCaller.tryToCall(function(){
-            var choosenProducts = this.props.searchStr ? this.prefixTree.getLinksByString(this.props.searchStr) : this.props.products;
-            this.props.products.map(function(p){
-                p.hidden = true;
-            });
-            choosenProducts.map(function(p){
-                p.hidden = false;
-            });
 
-            this.setState();
-        }.bind(this));
+        var choosenProducts = this.props.searchStr ? this.prefixTree.getLinksByString(this.props.searchStr) : this.props.products;
+        this.props.products.map(function(p){
+            p.hidden = true;
+        });
+        choosenProducts.map(function(p){
+            p.hidden = false;
+        });
+
+        this.setState();
         //return choosedProducts.sort(this.props.compareFunction);
     },
     buildPrefixTree: function(){
