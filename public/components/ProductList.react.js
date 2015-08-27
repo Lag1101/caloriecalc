@@ -84,22 +84,7 @@ var ProductList = React.createClass({
         this.sortingFun = greater.bind(null, 'description');
 
 
-
-        socket.emit('productsLastUpdate');
-        socket.on('productsLastUpdate', function(productsLastUpdate){
-            var localLastUpdate = JSON.parse(localStorage.getItem("localLastUpdate"));
-
-            if(!localLastUpdate || !productsLastUpdate || new Date(localLastUpdate) <= new Date(productsLastUpdate)) {
-                console.log("Try to get products from server");
-                socket.emit('list');
-                return;
-            }
-            console.log("Got local products");
-            var products = JSON.parse(localStorage.getItem("localProducts"));
-
-            this.buildPrefixTree();
-            this.updateProducts();
-        }.bind(this));
+        socket.emit('list');
 
         socket.on('list', function(list) {
             console.log("Got products from server");
