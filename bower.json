@@ -8,6 +8,7 @@
     "async": "*",
     "react": "*",
     "mathjs": "latest",
-    "pubsub-js": "latest"
+    "pubsub-js": "latest",
+    "react-bootstrap": "latest"
   }
 }

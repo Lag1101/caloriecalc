@@ -81,6 +81,19 @@ var Daily = React.createClass({
             calorie: parseFloat(res.calorie.toFixed(2))
         });
     },
+    statics: {
+        dayPartNames: [
+            'Завтрак',
+            'Ланч',
+            'Обед',
+            'Перекус',
+            'Ужин',
+            'Перед сном'
+        ]
+    },
+    getDayPartNames: function(){
+        return   this.constructor.dayPartNames;
+    },
     componentDidMount: function() {
 
         socket.emit('getCurrentDate');
@@ -92,12 +105,10 @@ var Daily = React.createClass({
             this.props.daily[day.date] = day;
             this.update();
         }.bind(this));
-        //socket.on('addDailyProduct', function(date, newDailyProduct){
-        //    if(date ===  this.props.date){
-        //        this.props.additionalParts.push(newDailyProduct);
-        //        this.update();
-        //    }
-        //}.bind(this));
+        PubSub.subscribe( 'newDailyProduct', function(msg, newProduct){
+            this.addTo(newProduct.dayPartName, newProduct.portion);
+            this.update();
+        }.bind(this));
     },
     dateChanged: function(){
         var date = this.refs.date.getDOMNode().value;
@@ -113,25 +124,38 @@ var Daily = React.createClass({
     },
     update: function(){
         this.recalc();
-        this.setState();
+        this.forceUpdate();
     },
     getValue: function(){
         return this.props.daily;
     },
+    addTo: function(dayPartName, newProduct){
+        if('additional' === dayPartName){
+            this.currentDay().additional.push(newProduct);
+        } else {
+            this.currentDay().main.forEach(function(product, i){
+                if( dayPartName !== this.constructor.dayPartNames[i] ) return;
+
+                if(product.description)
+                    product.description += '\n' + newProduct.description;
+                else
+                    product.description = newProduct.description;
+                product.proteins +=  newProduct.proteins;
+                product.triglyceride +=  newProduct.triglyceride;
+                product.carbohydrate +=  newProduct.carbohydrate;
+                product.calorie += newProduct.calorie;
+
+            }, this);
+        }
+    },
     render: function(){
-        var dayPartName = [
-            'Завтрак',
-            'Ланч',
-            'Обед',
-            'Перекус',
-            'Ужин',
-            'Перед сном'];
+        var dayPartNames = this.getDayPartNames();
 
         var dayView = this.currentDay().main.map(function(product, i){
             return (
                 <div key={i}>
                     <div className="product">
-                        <div className="myLabel item inline-block disableForInput">{dayPartName[i]}</div>
+                        <div className="myLabel item inline-block disableForInput">{dayPartNames[i]}</div>
                         <div className="inline-block">
 
                             <Product

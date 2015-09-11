@@ -96,6 +96,10 @@ var TextInput = React.createClass({
         dom.style.height = dom.scrollHeight + 'px';
     },
     componentDidMount: function(){
+        this.created = true;
+        this.resize();
+    },
+    componentDidUpdate: function(){
         this.resize();
     },
     render: function() {

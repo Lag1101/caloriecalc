@@ -5,9 +5,15 @@
 var utils = require('../utils');
 var socket = require('../socket');
 var Product = require('./Product.react.js');
+var Daily = require('./Daily.react.js');
 var Dish = require('./Dish.react.js');
 var Calculator = require('./Calculator.react.js');
 var DishListHead = require('./DishListHead.react.js');
+
+var Button = ReactBootstrap.Button;
+var ButtonGroup = ReactBootstrap.ButtonGroup;
+var DropdownButton = ReactBootstrap.DropdownButton;
+var MenuItem = ReactBootstrap.MenuItem;
 
 var DishList = React.createClass({
     getDefaultProps: function() {
@@ -52,14 +58,37 @@ var DishList = React.createClass({
     getValue: function(){
         return this.props.dishes;
     },
+    publishNweDailyItem: function(dayPartName, dish){
+        var portion = dish.contain[1];
+        portion.description = dish.description + ' ' + portion.mass;
+        PubSub.publish('newDailyProduct', {
+            dayPartName: dayPartName,
+            portion: portion
+        });
+    },
     render: function() {
+
         var dishes = this.props.dishes.map(function (dish, i) {
             var css = 'product';
 
-            return (
+            var menuItems = Daily.dayPartNames.map(function(dayPartName){
+                return (
+                    <MenuItem onSelect={this.publishNweDailyItem.bind(null, dayPartName, dish)}>{'Добавить в ' + dayPartName}</MenuItem>
+                );
+            }, this);
 
+            menuItems.push((
+                <MenuItem onSelect={this.publishNweDailyItem.bind(null, 'additional', dish)}>{'Добавить в дополнительное'}</MenuItem>
+            ));
+
+            return (
                 <div className={css} key =             {dish._id}>
-                    <input type='button' className='btn btn-xs btn-danger inline-block item remove' value='-' onClick={this.removeHandle.bind(this, i)}></input>
+                    <ButtonGroup >
+                        <Button bsSize='xsmall' bsStyle='danger' className='item remove' onClick={this.removeHandle.bind(this, i)}>-</Button>
+                        <DropdownButton noCaret bsSize='xsmall' bsStyle='primary' title='+'>
+                            {menuItems}
+                        </DropdownButton>
+                    </ButtonGroup>
                     <div className='inline-block'>
                         <Dish
                             hide=             {{details: true, mass: true}}
