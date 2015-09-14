@@ -7,8 +7,8 @@ var Dish = React.createClass({
         return {
             _id: this.props._id,
             description: this.props.description,
-            portion: this.refs.portion.getProduct(),
-            full: this.refs.full.getProduct()
+            portion: this.props.portion,
+            full: this.props.full
         }
     },
     getDefaultProps: function() {
@@ -30,40 +30,53 @@ var Dish = React.createClass({
         this.props.changeHandle && this.props.changeHandle(this.getDish());
     },
     portionChangeHandle: function(portion){
-        this.props.portion = portion;
-        this.setState();
+        this.props.portion = this.refs.portion.getProduct();
+        this.calcPortion();
+        console.log(this.props.portion);
         this.props.changeHandle && this.props.changeHandle(this.getDish());
+        this.forceUpdate();
     },
     fullChangeHandle: function(full){
         this.props.full = full;
-        this.setState();
+        this.calcPortion();
         this.props.changeHandle && this.props.changeHandle(this.getDish());
+        this.forceUpdate();
+    },
+    calcPortion: function(){
+        var portion = this.props.portion,
+            full = this.props.full;
+        var k = portion.mass / full.mass;
+        this.props.portion = {
+            proteins:       (full.proteins * k),
+            triglyceride:   (full.triglyceride * k),
+            carbohydrate:   (full.carbohydrate * k),
+            calorie:        (full.calorie * k),
+            mass:           portion.mass
+        };
     },
     componentDidMount: function() {
-
-    },
-    render: function() {
         var fullP =     this.props.full;
         var portionP =  this.props.portion;
+        this.props.full = {
+            proteins:       parseFloat(fullP.proteins || 0),
+            triglyceride:   parseFloat(fullP.triglyceride || 0),
+            carbohydrate:   parseFloat(fullP.carbohydrate || 0),
+            calorie:        parseFloat(fullP.calorie || 0),
+            mass:           parseFloat(fullP.mass)
+        };
+        this.props.portion = {
+            proteins:       parseFloat(portionP.proteins || 0),
+            triglyceride:   parseFloat(portionP.triglyceride || 0),
+            carbohydrate:   parseFloat(portionP.carbohydrate || 0),
+            calorie:        parseFloat(portionP.calorie || 0),
+            mass:           parseFloat(portionP.mass)
+        };
+    },
+    render: function() {
+        var full =     this.props.full;
+        var portion =  this.props.portion;
 
         var description = this.props.description;
-
-        var full = {
-            proteins:       parseFloat(this.props.full.proteins || 0).toFixed(2),
-            triglyceride:   parseFloat(this.props.full.triglyceride || 0).toFixed(2),
-            carbohydrate:   parseFloat(this.props.full.carbohydrate || 0).toFixed(2),
-            calorie:        parseFloat(this.props.full.calorie || 0).toFixed(2),
-            mass:           fullP.mass
-        };
-
-        var k = portionP.mass / fullP.mass;
-        var portion = {
-            proteins:       (this.props.full.proteins * k).toFixed(2),
-            triglyceride:   (this.props.full.triglyceride * k).toFixed(2),
-            carbohydrate:   (this.props.full.carbohydrate * k).toFixed(2),
-            calorie:        (this.props.full.calorie * k).toFixed(2),
-            mass:           portionP.mass
-        };
 
         var descriptionCSS = 'description item';
         if(this.props.hideDescription)

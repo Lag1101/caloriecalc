@@ -58,7 +58,8 @@ var DishList = React.createClass({
     getValue: function(){
         return this.props.dishes;
     },
-    publishNweDailyItem: function(dayPartName, dish){
+    publishNweDailyItem: function(dayPartName, i){
+        var dish = this.props.dishes[i];
         var portion = dish.contain[1];
         portion.description = dish.description + ' ' + portion.mass;
         PubSub.publish('newDailyProduct', {
@@ -73,12 +74,12 @@ var DishList = React.createClass({
 
             var menuItems = Daily.dayPartNames.map(function(dayPartName){
                 return (
-                    <MenuItem onSelect={this.publishNweDailyItem.bind(null, dayPartName, dish)}>{'Добавить в ' + dayPartName}</MenuItem>
+                    <MenuItem onSelect={this.publishNweDailyItem.bind(null, dayPartName, i)}>{'Добавить в ' + dayPartName}</MenuItem>
                 );
             }, this);
 
             menuItems.push((
-                <MenuItem onSelect={this.publishNweDailyItem.bind(null, 'additional', dish)}>{'Добавить в дополнительное'}</MenuItem>
+                <MenuItem onSelect={this.publishNweDailyItem.bind(null, 'additional', i)}>{'Добавить в дополнительное'}</MenuItem>
             ));
 
             return (
