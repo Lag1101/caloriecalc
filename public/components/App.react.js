@@ -52,6 +52,20 @@ var App = React.createClass({
                 s.daily[bundle.date] = bundle.daily;
                 s.dishProductList = bundle.currentDishProducts;
                 s.currentDishes = bundle.currentDishes;
+                s.norm = {
+                    min : {
+                        proteins: bundle.norm.proteins.min,
+                            triglyceride: bundle.norm.triglyceride.min,
+                            carbohydrate: bundle.norm.carbohydrate.min,
+                            calorie: bundle.norm.calorie.min
+                    },
+                    max : {
+                        proteins: bundle.norm.proteins.max,
+                            triglyceride: bundle.norm.triglyceride.max,
+                            carbohydrate: bundle.norm.carbohydrate.max,
+                            calorie: bundle.norm.calorie.max
+                    }
+                };
                 this.setState(s);
             }.bind(this));
     },
@@ -61,6 +75,7 @@ var App = React.createClass({
                 <div className='container-fluid'>
                     <Daily className="myTable daily"
                         ref="daily"
+                        norm = {this.state.norm}
                         date =  {this.state.date}
                         daily = {this.state.daily}/>
                 </div>

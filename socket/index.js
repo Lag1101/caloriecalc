@@ -88,6 +88,9 @@ function getBundle(socket, user){
         },
         currentDishes: function(cb){
             user.getCurrentDishes(cb);
+        },
+        norm: function(cb){
+            return cb(null, user.norm);
         }
     }, function(err, bundle){
         if(err){

@@ -67,13 +67,13 @@ var Daily = React.createClass({
             res.calorie += parseFloat(p.calorie);
         });
 
-        PubSub.publish('DailyChanged', {
+        this.props.result = {
             proteins: parseFloat(res.proteins.toFixed(2)),
-            triglyceride: parseFloat(res.triglyceride.toFixed(2))
-            ,
+            triglyceride: parseFloat(res.triglyceride.toFixed(2)),
             carbohydrate: parseFloat(res.carbohydrate.toFixed(2)),
             calorie: parseFloat(res.calorie.toFixed(2))
-        });
+        };
+        //PubSub.publish('DailyChanged', );
     },
     statics: {
         dayPartNames: [
@@ -88,8 +88,8 @@ var Daily = React.createClass({
     getDayPartNames: function(){
         return   this.constructor.dayPartNames;
     },
-    componentDidUpdate: function(){
-        this.recalc();
+    componentWillUpdate: function(){
+
     },
     componentDidMount: function() {
         this.socket = require('../socket');
@@ -137,6 +137,8 @@ var Daily = React.createClass({
         }
     },
     render: function(){
+        this.recalc();
+
         var dayPartNames = this.getDayPartNames();
 
         var dayView = this.currentDay().main.map(function(product, i){
@@ -187,7 +189,9 @@ var Daily = React.createClass({
                         <input ref="date" type='date' className='dailyDate' value={this.props.date} onChange={this.dateChanged}/>
                     </div>
                 </div>
-                <DailyHead/>
+                <DailyHead
+                    result = {this.props.result}
+                    norm = {this.props.norm}/>
                 {dayView}
                 {additionalPartsView}
 

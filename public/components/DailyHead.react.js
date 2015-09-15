@@ -28,47 +28,38 @@ var DailyHead = React.createClass({
         product._id = parts[i]._id;
         parts[i] = product;
         this.update();
-        socket.emit('fixDailyProduct', this.props.date, product);
     },
     addChangeHandle: function(i, product){
         var parts = this.props.additionalParts;
         product._id = parts[i]._id;
         parts[i] = product;
         this.update();
-        socket.emit('fixDailyProduct', this.props.date, product);
     },
     componentDidMount: function() {
 
-        socket.emit('getNorm');
+        //socket.emit('getNorm');
 
-        socket.on('addDailyProduct', function(date, newDailyProduct){
-            if(date ===  this.props.date){
-                this.props.additionalParts.push(newDailyProduct);
-                this.update();
-            }
-        }.bind(this));
+        //PubSub.subscribe( 'DailyChanged', function(msg, newSum){
+        //    this.props.result = newSum;
+        //    this.setState();
+        //}.bind(this));
 
-        PubSub.subscribe( 'DailyChanged', function(msg, newSum){
-            this.props.result = newSum;
-            this.setState();
-        }.bind(this));
-
-        socket.on('getNorm', function(newNorm){
-            var norm = this.props.norm;
-            norm.min = {
-                proteins: newNorm.proteins.min,
-                triglyceride: newNorm.triglyceride.min,
-                carbohydrate: newNorm.carbohydrate.min,
-                calorie: newNorm.calorie.min
-            };
-            norm.max = {
-                proteins: newNorm.proteins.max,
-                triglyceride: newNorm.triglyceride.max,
-                carbohydrate: newNorm.carbohydrate.max,
-                calorie: newNorm.calorie.max
-            };
-            this.setState();
-        }.bind(this));
+        //socket.on('getNorm', function(newNorm){
+        //    var norm = this.props.norm;
+        //    norm.min = {
+        //        proteins: newNorm.proteins.min,
+        //        triglyceride: newNorm.triglyceride.min,
+        //        carbohydrate: newNorm.carbohydrate.min,
+        //        calorie: newNorm.calorie.min
+        //    };
+        //    norm.max = {
+        //        proteins: newNorm.proteins.max,
+        //        triglyceride: newNorm.triglyceride.max,
+        //        carbohydrate: newNorm.carbohydrate.max,
+        //        calorie: newNorm.calorie.max
+        //    };
+        //    this.setState();
+        //}.bind(this));
     },
     render: function(){
         var norm = this.props.norm;
