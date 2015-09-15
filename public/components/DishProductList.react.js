@@ -4,7 +4,6 @@
 
 "use strict";
 
-var socket = require('../socket');
 var Product = require('./Product.react.js');
 
 var DishProductList = React.createClass({
@@ -15,8 +14,6 @@ var DishProductList = React.createClass({
     },
     changeHandle: function(i, product){
 
-        //socket.emit('fixDishProduct', product);
-
         var changedProduct = this.props.dishProducts[i];
 
         changedProduct.proteins =       product.proteins;
@@ -25,32 +22,22 @@ var DishProductList = React.createClass({
         changedProduct.calorie =        product.calorie;
         changedProduct.mass =          product.mass;
 
-        this.calcFull();
+        this.forceUpdate();
     },
     removeHandle: function(i){
         var products = this.props.dishProducts;
-        var product = products[i];
-
         products.splice(i, 1);
-        this.setState();
-        //socket.emit('removeDishProduct', product._id);
-
-        this.calcFull();
+        this.forceUpdate();
     },
     componentDidMount: function() {
-        socket.emit('getCurrentDishProducts');
-        socket.on('getCurrentDishProducts', function(data){
-            this.props.dishProducts = data;
-            this.calcFull();
-            this.setState();
-        }.bind(this));
-
         PubSub.subscribe( 'newDishProduct', function(msg, newProduct){
             var products = this.props.dishProducts;
             products.push(newProduct);
-            this.calcFull();
-            this.setState();
+            this.forceUpdate();
         }.bind(this));
+    },
+    componentDidUpdate: function(){
+        this.calcFull();
     },
     getValue: function(cb){
         return this.props.dishProducts

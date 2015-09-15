@@ -10,46 +10,6 @@ var async = require('async');
 var logger = require('../lib/logger');
 var DeferredCaller = require('../public/js/DeferredCaller');
 
-function getCurrentDishes(socket, user){
-    async.waterfall([
-        function(cb){
-            user.getCurrentDishes(cb);
-        },
-        function(dishes, cb){
-            socket.emit('getCurrentDishes', dishes);
-            return cb();
-        }
-    ], function(err){
-        if(err) {
-            logger.error(err);
-            socket.emit('error', err);
-        }else{
-            logger.info('Got dishes');
-            //return getCurrentDishes(socket, username);
-        }
-    });
-}
-
-function getCurrentDishProducts(socket, user){
-    async.waterfall([
-        function(cb){
-            user.getCurrentDishProducts(cb);
-        },
-        function(products, cb){
-            socket.emit('getCurrentDishProducts', products);
-            return cb();
-        }
-    ], function(err){
-        if(err) {
-            logger.error(err);
-            socket.emit('error', err);
-        }else
-        {
-            logger.info('Got current dish products');
-        }
-    });
-}
-
 
 function getDaily(socket, user, date){
     async.waterfall([
@@ -111,27 +71,33 @@ function setNorm(socket, user, cb, norm){
     logger.info('set norm', norm);
     return cb();
 }
-function list(socket, user){
-    async.waterfall([
-        function(cb){
+
+function getBundle(socket, user){
+    async.parallel({
+        list: function(cb){
             user.gerRawProductList(cb);
         },
-        function(rawProducts, cb){
-            socket.emit('list', rawProducts);
-            cb();
+        date: function(cb){
+            return cb(null, user.date);
+        },
+        daily: function(cb){
+            user.getRawDailyByDate(user.date, cb);
+        },
+        currentDishProducts: function(cb){
+            user.getCurrentDishProducts(cb);
+        },
+        currentDishes: function(cb){
+            user.getCurrentDishes(cb);
         }
-    ],function(err){
-        if(err) {
+    }, function(err, bundle){
+        if(err){
             logger.error(err);
-            socket.emit('error', err);
-        }else{
-            logger.info('Got list');
+            socket.emit(err);
+        } else {
+            logger.info('Got bundle');
+            socket.emit('bundle', bundle);
         }
     });
-}
-function productsLastUpdate(socket, user){
-    socket.emit('productsLastUpdate', user.productsLastUpdate);
-    logger.info('Got listLastTouch');
 }
 
 function saveUser(user, cb){
@@ -145,7 +111,6 @@ function saveCurrentDishProducts(user, dishProductList){
     user.currentDishProducts = dishProductList;
 }
 function saveProductList(user, productList){
-    user.productsLastUpdate = Date.now();
     user.products = productList;
 }
 function saveDishes(user, dishes){
@@ -184,13 +149,11 @@ function socketSetupHandles(socket, user){
         .on('saveDishes',               saveDishes.bind(null, user))
         .on('saveDaily',                saveDaily.bind(null, user))
 
-        .on('list',                     list.bind(null, socket, user))
-        .on('productsLastUpdate',            productsLastUpdate.bind(null, socket, user))
-        .on('getCurrentDishProducts',   getCurrentDishProducts.bind(null, socket, user))
         .on('getDaily',                 getDaily.bind(null, socket, user))
         .on('setCurrentDate',           setCurrentDate.bind(null, socket, user, save))
         .on('getCurrentDate',           getCurrentDate.bind(null, socket, user))
-        .on('getCurrentDishes',         getCurrentDishes.bind(null, socket, user))
+
+        .on('bundle',                   getBundle.bind(null, socket, user))
 
         .on('getBody', getBody.bind(null, socket, user))
         .on('setBody', setBody.bind(null, socket, user, save))
@@ -218,7 +181,7 @@ function socketSetupHandles(socket, user){
                         function(cb){
                             saveDaily(user, bundle.daily);
                             return cb(null);
-                        }
+                        },
                     ], cb);
                 },
                 function(cb){

@@ -3,7 +3,6 @@
  */
 
 var utils = require('../utils');
-var socket = require('../socket');
 var Product = require('./Product.react.js');
 var Daily = require('./Daily.react.js');
 var Dish = require('./Dish.react.js');
@@ -24,7 +23,6 @@ var DishList = React.createClass({
     changeHandle: function(i, dish){
         this.props.dishes[i].contain = [dish.full, dish.portion];
         this.props.dishes[i].description = dish.description;
-        //socket.emit('fixDish', dish);
     },
     removeHandle: function(i){
         utils.confirmDialog(
@@ -35,21 +33,11 @@ var DishList = React.createClass({
     removeDish: function(i){
         var dishes = this.props.dishes;
 
-        var dish = dishes[i];
-
         dishes.splice(i, 1);
         this.setState();
-        //socket.emit('removeDish', dish._id);
 
     },
     componentDidMount: function() {
-        socket.emit('getCurrentDishes');
-
-        socket.on('getCurrentDishes', function(list) {
-            this.props.dishes = list;
-            this.setState();
-        }.bind(this));
-
         PubSub.subscribe( 'newDish', function(msg, dish){
             this.props.dishes.push(dish);
             this.forceUpdate();

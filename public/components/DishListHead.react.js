@@ -2,7 +2,6 @@
  * Created by vasiliy.lomanov on 11.08.2015.
  */
 
-var socket = require('../socket');
 var Dish = require('./Dish.react.js');
 
 var DishListHead = React.createClass({
@@ -16,11 +15,7 @@ var DishListHead = React.createClass({
                 calorie: 0.0,
                 mass: 100
             },
-            portion: {
-                proteins: 0.0,
-                triglyceride: 0.0,
-                carbohydrate: 0.0,
-                calorie: 0.0,
+            portion:{
                 mass: 100
             }
         }
@@ -42,7 +37,6 @@ var DishListHead = React.createClass({
     },
     componentDidMount: function() {
         PubSub.subscribe( 'ProductDishesChanged', function(msg, newSum){
-
             this.setState({
                 full: {
                     proteins: newSum.proteins,

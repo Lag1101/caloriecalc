@@ -3,7 +3,6 @@
  */
 
 var utils = require('../utils');
-var socket = require('../socket');
 var Product = require('./Product.react.js');
 var NumericInput = require('./Input.react.js').NumericInput;
 var DailyHead = require('./DailyHead.react.js');
@@ -25,29 +24,24 @@ var Daily = React.createClass({
 
         this.refs.newProduct.clear();
         this.currentDay().additional.push(newProduct);
-        this.update();
-
-        //socket.emit('addDailyProduct', this.props.date, newProduct);
+        this.forceUpdate();
     },
     mainChangeHandle: function(i, product){
         var parts = this.currentDay().main;
         product._id = parts[i]._id;
         parts[i] = product;
-        this.recalc();
-        //socket.emit('fixDailyProduct', this.props.date, product);
+        this.forceUpdate();
     },
     addChangeHandle: function(i, product){
         var parts = this.currentDay().additional;
         product._id = parts[i]._id;
         parts[i] = product;
-        this.recalc();
-        //socket.emit('fixDailyProduct', this.props.date, product);
+        this.forceUpdate();
     },
     removeHandle: function(i, productToRemove){
         var additionalParts = this.currentDay().additional;
         additionalParts.splice(i, 1);
-        this.update();
-        //socket.emit('removeDailyProduct', this.props.date, productToRemove._id);
+        this.forceUpdate();
     },
     currentDay: function(){
         return this.props.daily[this.props.date];
@@ -94,20 +88,18 @@ var Daily = React.createClass({
     getDayPartNames: function(){
         return   this.constructor.dayPartNames;
     },
+    componentDidUpdate: function(){
+        this.recalc();
+    },
     componentDidMount: function() {
-
-        socket.emit('getCurrentDate');
-        socket.on('getCurrentDate', function(date){
-            this.props.date = date;
-            socket.emit('getDaily', date);
-        }.bind(this));
-        socket.on('getDaily', function(day){
+        this.socket = require('../socket');
+        this.socket.on('getDaily', function(day){
             this.props.daily[day.date] = day;
             this.update();
         }.bind(this));
         PubSub.subscribe( 'newDailyProduct', function(msg, newProduct){
             this.addTo(newProduct.dayPartName, newProduct.portion);
-            this.update();
+            this.forceUpdate();
         }.bind(this));
     },
     dateChanged: function(){
@@ -115,16 +107,12 @@ var Daily = React.createClass({
         this.props.date = date;
         console.log(this.props.date);
 
-        socket.emit('setCurrentDate', date);
+        this.socket.emit('setCurrentDate', date);
         if(!this.props.daily[date])
-            socket.emit('getDaily', date);
+            this.socket.emit('getDaily', date);
         else {
-            this.update();
+            this.forceUpdate();
         }
-    },
-    update: function(){
-        this.recalc();
-        this.forceUpdate();
     },
     getValue: function(){
         return this.props.daily;

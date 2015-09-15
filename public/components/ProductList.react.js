@@ -3,7 +3,6 @@
  */
 
 var utils = require('../utils');
-var socket = require('../socket');
 var Product = require('./Product.react.js');
 var Sorting = require('./Sorting.react.js');
 var PrefixTree = require('../js/PrefixTree');
@@ -37,10 +36,9 @@ var ProductList = React.createClass({
 
         this.prefixTree.addString(product.description, this.props.products[this.props.products.length-1]);
         this.refs.newProduct.clear();
-        //socket.emit('newProduct', product);
     },
     changeHandle: function(product){
-        //socket.emit('fixProduct', product);
+
     },
     addHandle: function(i){
         var product = this.props.products[i];
@@ -53,7 +51,6 @@ var ProductList = React.createClass({
                 mass: product.mass,
                 details: product.details
             });
-        //socket.emit('newDishProduct', id);
     },
     removeHandle: function(i){
         utils.confirmDialog(
@@ -69,7 +66,6 @@ var ProductList = React.createClass({
         this.prefixTree.removeString(product.description, product);
         originsProducts.splice(i, 1);
         this.updateProducts();
-        //socket.emit('removeProduct', product._id);
 
     },
     editHandle: function(i){
@@ -83,19 +79,12 @@ var ProductList = React.createClass({
         this.prefixTree = new PrefixTree.Node();
         this.sortingFun = greater.bind(null, 'description');
 
-
-        socket.emit('list');
-
-        socket.on('list', function(list) {
-            console.log("Got products from server");
-            this.props.products = list.map(function(p){
-                p.reactId = Math.random();
-                return p;
-            });
-            this.reorder();
-            this.buildPrefixTree();
-            this.updateProducts();
-        }.bind(this));
+        this.props.products.forEach(function(p){
+            p.reactId = Math.random();
+        });
+        this.reorder();
+        this.buildPrefixTree();
+        this.updateProducts();
     },
     changeSorting: function(sortBy, sortOrder){
         this.sortingFun = (sortOrder === 'greater' ? greater : less).bind(null, sortBy);
