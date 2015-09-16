@@ -4,6 +4,7 @@
 
 "use strict";
 
+var Panel = ReactBootstrap.Panel;
 var Product = require('./Product.react.js');
 
 var DishProductList = React.createClass({
@@ -82,10 +83,9 @@ var DishProductList = React.createClass({
         }.bind(this));
 
         return (
-            <div className={this.props.className}>
-                <p className='product inline-block'>Компоненты блюда</p>
+            <Panel bsStyle="primary" header={'Компоненты блюда'} className="inline-block myTable">
                 {products}
-            </div>
+            </Panel>
         );
     }
 });

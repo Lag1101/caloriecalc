@@ -9,6 +9,7 @@ var Dish = require('./Dish.react.js');
 var Calculator = require('./Calculator.react.js');
 var DishListHead = require('./DishListHead.react.js');
 
+var Panel = ReactBootstrap.Panel;
 var Button = ReactBootstrap.Button;
 var ButtonGroup = ReactBootstrap.ButtonGroup;
 var DropdownButton = ReactBootstrap.DropdownButton;
@@ -93,14 +94,11 @@ var DishList = React.createClass({
             );
         }.bind(this));
         return (
-            <div className={this.props.className}>
-                <div className='dishList'>
-                    <DishListHead/>
-                    <p className='product inline-block'>Список блюд</p>
-                    {dishes}
-                    <Calculator className="product"/>
-                </div>
-            </div>
+            <Panel bsStyle="primary" header={'Список блюд'} className="inline-block myTable">
+                <DishListHead/>
+                {dishes}
+                <Calculator className="product"/>
+            </Panel>
         );
     }
 });

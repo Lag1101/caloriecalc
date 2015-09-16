@@ -7,6 +7,11 @@ var Product = require('./Product.react.js');
 var NumericInput = require('./Input.react.js').NumericInput;
 var DailyHead = require('./DailyHead.react.js');
 
+var Panel = ReactBootstrap.Panel;
+var Input = ReactBootstrap.Input;
+var Row = ReactBootstrap.Row;
+var Col = ReactBootstrap.Col;
+
 var Daily = React.createClass({
     getDefaultProps: function() {
         return {
@@ -103,7 +108,7 @@ var Daily = React.createClass({
         }.bind(this));
     },
     dateChanged: function(){
-        var date = this.refs.date.getDOMNode().value;
+        var date = this.refs.date.getValue();
         this.props.date = date;
         console.log(this.props.date);
 
@@ -182,13 +187,19 @@ var Daily = React.createClass({
             );
         }.bind(this));
 
+        var header = (
+            <Row>
+                <Col xs={6}>
+                    Расписание на день
+                </Col>
+                <Col xs={6}>
+                    <Input ref="date" type='date' className='dailyDate' value={this.props.date} onChange={this.dateChanged}/>
+                </Col>
+            </Row>
+        );
+
         return (
-            <div className={this.props.className}>
-                <div>
-                    <div className='product inline-block'>
-                        <input ref="date" type='date' className='dailyDate' value={this.props.date} onChange={this.dateChanged}/>
-                    </div>
-                </div>
+            <Panel bsStyle="primary" header={header} className="inline-block myTable">
                 <DailyHead
                     result = {this.props.result}
                     norm = {this.props.norm}/>
@@ -202,7 +213,7 @@ var Daily = React.createClass({
                         enabled =         {{all:true}}
                         ref =             {"newProduct"}/>
                 </div>
-            </div>
+            </Panel>
         );
     }
 });

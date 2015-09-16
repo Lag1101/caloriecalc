@@ -52,7 +52,6 @@ var DishListHead = React.createClass({
         return (
             <div className={this.props.className}>
                 <div className='dishList'>
-                    <p className='product inline-block'>Новое блюдо</p>
                     <div className='product'>
                         <button className='save item btn btn-xs btn-default'
                                 onClick={this.newDishHandle}>

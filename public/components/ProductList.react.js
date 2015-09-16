@@ -8,6 +8,12 @@ var Sorting = require('./Sorting.react.js');
 var PrefixTree = require('../js/PrefixTree');
 var DeferredCaller = require('../js/DeferredCaller');
 
+var Button = ReactBootstrap.Button;
+var ButtonGroup = ReactBootstrap.ButtonGroup;
+var DropdownButton = ReactBootstrap.DropdownButton;
+var MenuItem = ReactBootstrap.MenuItem;
+var Panel = ReactBootstrap.Panel;
+
 function greater (sortBy, p1, p2) {
     if (p1[sortBy] < p2[sortBy]) return -1;
     if (p1[sortBy] > p2[sortBy]) return 1;
@@ -130,53 +136,42 @@ var ProductList = React.createClass({
 
                 <div className={css} key =             {product.reactId}>
 
-                    <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.addHandle.bind(this, i)}></input>
-                    <div className="btn-group btn-group-xs">
-                        <a className="btn btn-block btn-default  dropdown-toggle" data-toggle="dropdown">
-                            <span className="caret"></span>
-                        </a>
-                        <ul className="dropdown-menu">
-                            <li>
-                                <a className="btn btn-xs edit" data-toggle="dropdown dropdown2" onClick={this.editHandle.bind(this, i)}>
-                                    <i className="icon-pencil">Править</i>
-                                </a>
-                            </li>
-                            <li>
-                                <a className="btn btn-xs btn-danger remove" data-toggle="dropdown" onClick={this.removeHandle.bind(this, i)}>
-                                    <i className="icon-trash">Удалить</i>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className='inline-block'>
-                        <Product
-                                hide=             {{details: true, mass: true}}
-                                enabled =         {false}
-                                ref =             {i}
-                                changeHandle=     {this.changeHandle}
-                                product={product}>
-                        </Product>
-                    </div>
+                    <ButtonGroup >
+                        <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.addHandle.bind(this, i)}>+</Button>
+                        <DropdownButton bsSize='xsmall' bsStyle='default'>
+                            <MenuItem eventKey="1" onSelect={this.editHandle.bind(this, i)}>{'Править'}</MenuItem>
+                            <MenuItem eventKey="2" bsStyle='danger' onSelect={this.removeHandle.bind(this, i)}>{'Удалить'}</MenuItem>
+                        </DropdownButton>
+                    </ButtonGroup>
+                    <Product
+                            hide=             {{details: true, mass: true}}
+                            enabled =         {false}
+                            ref =             {i}
+                            changeHandle=     {this.changeHandle}
+                            product={product}>
+                    </Product>
                 </div>
             );
         }.bind(this));
+
+        var header = (
+            <div className='newProduct'>
+                <p>Список продуктов</p>
+                <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.newProduct}>+</Button>
+                <Product
+                    enabled= {{all:true}}
+                    ref='newProduct'
+                    hide=             {{details: true, mass: true}}/>
+            </div>
+        );
+
         return (
-            <div className={this.props.className}>
+            <Panel bsStyle="primary" header={header} className="inline-block products myTable">
                 <Sorting ref='sortBar' searchHandle={this.searchHandle} changeHandle={this.changeSorting}/>
-                <div className='product newProduct'>
-                    <input type='button' className='btn btn-xs btn-default inline-block item' value='+' onClick={this.newProduct}></input>
-                    <div className='inline-block'>
-                        <Product
-                            enabled= {{all:true}}
-                            ref='newProduct'
-                            hide=             {{details: true, mass: true}}/>
-                    </div>
-                </div>
-                <p className='product inline-block'>Список продуктов</p>
-                <div className='productList'>
+                <div className="productList">
                     {products}
                 </div>
-            </div>
+            </Panel>
         );
     }
 });

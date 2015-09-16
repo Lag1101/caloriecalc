@@ -55,11 +55,8 @@ var NumericInput = React.createClass({
         className += this.props.css;
 
 
-        if(enabled) return (
-            <input ref='input' value={value} className={className} onChange={this.changeHandle}></input>
-        );
-        else return (
-            <input ref='input' disabled value={value} className={className} onChange={this.changeHandle}></input>
+       return (
+            <input ref='input' disabled ={!enabled} value={value} className={className} onChange={this.changeHandle}></input>
         );
     }
 });
@@ -110,11 +107,10 @@ var TextInput = React.createClass({
 
         var className = this.props.css + " ";
 
-        if(enabled) return (
-            <textarea ref='div' type="text" className={className}  onInput={this.changeHandle} value={value} ></textarea>
-        );
-        else return (
-            <textarea disabled ref='div' type="text" className={className}  onInput={this.changeHandle} value={value} ></textarea>
+        className += enabled ? " enableForInput " : " disableForInput ";
+
+        return (
+            <textarea disabled ={!enabled}  ref='div' type="text" className={className}  onInput={this.changeHandle} value={value} ></textarea>
         );
     }
 });
