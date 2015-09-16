@@ -54,16 +54,16 @@ var App = React.createClass({
                 s.currentDishes = bundle.currentDishes;
                 s.norm = {
                     min : {
-                        proteins: bundle.norm.proteins.min,
-                            triglyceride: bundle.norm.triglyceride.min,
-                            carbohydrate: bundle.norm.carbohydrate.min,
-                            calorie: bundle.norm.calorie.min
+                        proteins:       parseFloat(bundle.norm.proteins.min),
+                        triglyceride:   parseFloat(bundle.norm.triglyceride.min),
+                        carbohydrate:   parseFloat(bundle.norm.carbohydrate.min),
+                        calorie:        parseFloat(bundle.norm.calorie.min)
                     },
                     max : {
-                        proteins: bundle.norm.proteins.max,
-                            triglyceride: bundle.norm.triglyceride.max,
-                            carbohydrate: bundle.norm.carbohydrate.max,
-                            calorie: bundle.norm.calorie.max
+                        proteins:       parseFloat(bundle.norm.proteins.max),
+                        triglyceride:   parseFloat(bundle.norm.triglyceride.max),
+                        carbohydrate:   parseFloat(bundle.norm.carbohydrate.max),
+                        calorie:        parseFloat(bundle.norm.calorie.max)
                     }
                 };
                 this.setState(s);
