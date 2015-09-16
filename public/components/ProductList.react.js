@@ -138,7 +138,7 @@ var ProductList = React.createClass({
 
                     <ButtonGroup >
                         <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.addHandle.bind(this, i)}>+</Button>
-                        <DropdownButton bsSize='xsmall' bsStyle='default'>
+                        <DropdownButton title="" bsSize='xsmall' bsStyle='default'>
                             <MenuItem eventKey="1" onSelect={this.editHandle.bind(this, i)}>{'Править'}</MenuItem>
                             <MenuItem eventKey="2" bsStyle='danger' onSelect={this.removeHandle.bind(this, i)}>{'Удалить'}</MenuItem>
                         </DropdownButton>

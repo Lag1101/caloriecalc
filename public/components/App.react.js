@@ -9,6 +9,9 @@ var ProductList = require('./ProductList.react.js');
 var DishProductList = require('./DishProductList.react.js');
 var Daily = require('./Daily.react.js');
 
+var Col = ReactBootstrap.Col;
+var Row = ReactBootstrap.Row;
+
 var App = React.createClass({
     getInitialState: function(){
         return {
@@ -72,24 +75,32 @@ var App = React.createClass({
     render: function() {
         return (
             <div >
-                <div className='container-fluid'>
-                    <Daily className="myTable daily"
-                        ref="daily"
-                        norm = {this.state.norm}
-                        date =  {this.state.date}
-                        daily = {this.state.daily}/>
-                </div>
-                <DishList className="dishList myTable"
-                    ref='dishList'
-                    dishes = {this.state.currentDishes}/>
-                <div className='container-fluid'>
-                    <DishProductList className='currentDishProducts myTable'
-                        ref="dishProductList"
-                        dishProducts = {this.state.dishProductList} />
-                    <ProductList className='myTable inline-block'
-                        ref="productList"
-                        products = {this.state.productList}/>
-                </div>
+                <Row>
+                    <Col xs={12} md={6}>
+                        <Daily
+                            ref="daily"
+                            norm = {this.state.norm}
+                            date =  {this.state.date}
+                            daily = {this.state.daily}/>
+                    </Col>
+                    <Col xs={12} md={6}>
+                        <DishList
+                            ref='dishList'
+                            dishes = {this.state.currentDishes}/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12} md={6}>
+                        <DishProductList
+                            ref="dishProductList"
+                            dishProducts = {this.state.dishProductList} />
+                    </Col>
+                    <Col xs={12} md={6}>
+                        <ProductList
+                            ref="productList"
+                            products = {this.state.productList}/>
+                    </Col>
+                </Row>
                 <button ref="hardSaveButton" className="btn btn-primary hardSaveButton" onClick={this.save} data-loading-text="Сохранение ...">Сохранить</button>
             </div>
         );
