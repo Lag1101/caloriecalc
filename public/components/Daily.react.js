@@ -190,7 +190,7 @@ var Daily = React.createClass({
         var header = (
             <Row>
                 <Col xs={6}>
-                    Расписание на день
+                    <p>Расписание на день</p>
                 </Col>
                 <Col xs={6}>
                     <Input ref="date" type='date' className='dailyDate' value={this.props.date} onChange={this.dateChanged}/>

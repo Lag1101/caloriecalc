@@ -146,6 +146,7 @@ var ProductList = React.createClass({
                     <Product
                             hide=             {{details: true, mass: true}}
                             enabled =         {false}
+                            css =             {css}
                             ref =             {i}
                             changeHandle=     {this.changeHandle}
                             product={product}>
@@ -155,7 +156,7 @@ var ProductList = React.createClass({
         }.bind(this));
 
         var header = (
-            <div className='newProduct'>
+            <div className='newProduct input-group input-group-sm'>
                 <p>Список продуктов</p>
                 <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.newProduct}>+</Button>
                 <Product

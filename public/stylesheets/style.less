@@ -1,3 +1,7 @@
+@itemWidth: 60px;
+@itemHeight: 22px;
+@descWidth: 150px;
+
 body{
   background: url("../images/background.jpg") no-repeat fixed;
   background-size: cover;
@@ -20,8 +24,9 @@ body{
   //border: green solid 1px;
 }
 .productList{
+  width: auto;
   max-height: 500px;
-  overflow-x: hidden;
+  overflow-x: auto;
 }
 
 .products .product{
@@ -39,8 +44,8 @@ body{
 }
 .item{
   display: inline-block;
-  width: 60px;
-  min-height: 22px;
+  width: @itemWidth;
+  min-height: @itemHeight;
   vertical-align: top;
   padding: 0;
 }
@@ -51,9 +56,9 @@ body{
   text-align: center;
 }
 .blankmyLabel{
-  min-height: 24px;
+  min-height: @itemHeight;
   display: inline-block;
-  width:72px;
+  width: @itemWidth;
   border: none;
 }
 
@@ -62,9 +67,9 @@ body{
 }
 
 .myLabel{
-  min-height: 22px;
+  min-height: @itemHeight;
   display: inline-block;
-  width:70px;
+  width: @itemWidth;
   text-align: center;
 }
 .myLabel:not(button){
@@ -81,35 +86,33 @@ body{
 }
 
 .product{
-  margin: 5px;
-  border-radius: 5px;
-  background-color: #46b8da;
-  box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.75);;
-  padding: 3px;
+  //margin: 5px;
+  //border-radius: 5px;
+  //background-color: #46b8da;
+  //box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.75);;
+  //padding: 3px;
 }
 .blankItem{
   display: inline-block;
-  width: 60px;
-  min-height: 22px;
+  width: @itemWidth;
+  min-height: @itemHeight;
   border: none;
 }
 .blankDescription{
   display: inline-block;
-  width: 150px;
-  min-height: 22px;
+  width: @descWidth;
+  min-height: @itemHeight;
   border: none;
 }
 .description{
-  min-height: 22px;
+  min-height: @itemHeight;
   display: inline-block;
-  width: 150px;
+  width: @descWidth;
 }
 .details{
-  min-height: 22px;
+  min-height: @itemHeight;
   display: inline-block;
-  min-width: 50px;
-  width: auto;
-  max-width: 600px;
+  width: @descWidth;
 }
 .normal{
   //background-color: greenyellow;
@@ -151,4 +154,7 @@ body{
 textarea{
   box-sizing: border-box;
   overflow: hidden;
+}
+.bigBtn{
+  width: (19+22)px;
 }

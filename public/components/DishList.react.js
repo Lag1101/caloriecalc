@@ -93,8 +93,9 @@ var DishList = React.createClass({
                 </div>
             );
         }.bind(this));
+        var header = (<p>Список блюд</p>);
         return (
-            <Panel bsStyle="primary" header={'Список блюд'} className="inline-block myTable">
+            <Panel bsStyle="primary" header={header} className="inline-block myTable">
                 <DishListHead/>
                 {dishes}
                 <Calculator className="product"/>
