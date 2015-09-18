@@ -39,14 +39,14 @@ var DailyHead = React.createClass({
                 <div className="blankmyLabel"/>
                 <div className='product norm inline-block'>
                     <div>
-                        <input disabled className='description item' value='Минимум'/>
+                        <input disabled className='disableForInput description item' value='Минимум'/>
                         <Product ref="minimum"
                                  hide=             {{mass: true, details: true, description: true}}
                                  enabled =         {{}}
                                  product =         {norm.min}/>
                     </div>
                     <div>
-                        <input disabled className='description item' value='Максимум'/>
+                        <input disabled className='disableForInput description item' value='Максимум'/>
                         <Product ref="maximum"
                                  hide=             {{mass: true, details: true, description: true}}
                                  enabled =         {{}}
