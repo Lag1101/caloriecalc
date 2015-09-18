@@ -74,8 +74,8 @@ var DishList = React.createClass({
             return (
                 <div className={css} key =             {dish._id}>
                     <ButtonGroup >
-                        <Button bsSize='xsmall' bsStyle='danger' className='item remove' onClick={this.removeHandle.bind(this, i)}>-</Button>
-                        <DropdownButton noCaret bsSize='xsmall' bsStyle='primary' title='+'>
+                        <Button bsSize='xsmall' bsStyle='default' className='item remove' onClick={this.removeHandle.bind(this, i)}>-</Button>
+                        <DropdownButton noCaret bsSize='xsmall' bsStyle='default' title='+'>
                             {menuItems}
                         </DropdownButton>
                     </ButtonGroup>

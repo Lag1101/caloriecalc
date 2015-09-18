@@ -6,6 +6,7 @@
 
 var Panel = ReactBootstrap.Panel;
 var Product = require('./Product.react.js');
+var Button = ReactBootstrap.Button;
 
 var DishProductList = React.createClass({
     getDefaultProps: function() {
@@ -68,7 +69,7 @@ var DishProductList = React.createClass({
                 <div className='product'
                      key =             {product._id}>
 
-                    <input type='button' className='btn btn-xs btn-danger inline-block item' value='-' onClick={this.removeHandle.bind(this, i)}></input>
+                    <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.removeHandle.bind(this, i)}>-</Button>
                     <div className='inline-block'>
                         <Product
                                 hide=             {{details: true}}
@@ -82,9 +83,8 @@ var DishProductList = React.createClass({
             );
         }.bind(this));
 
-        var header = (<p>Компоненты блюда</p>);
         return (
-            <Panel bsStyle="primary" header={header} className="inline-block myTable">
+            <Panel bsStyle="primary" header={'Компоненты блюда'} className="inline-block myTable">
                 {products}
             </Panel>
         );

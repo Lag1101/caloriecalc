@@ -171,7 +171,7 @@ var Daily = React.createClass({
             return (
                 <div>
                     <div className="product" key={i}>
-                        <button className='btn btn-xs btn-danger inline-block item myLabel' onClick={this.removeHandle.bind(this, i, product)}><i>-</i></button>
+                        <button className='btn btn-xs btn-default inline-block item myLabel' onClick={this.removeHandle.bind(this, i, product)}><i>-</i></button>
                         <div className="inline-block">
 
                             <Product
@@ -190,7 +190,8 @@ var Daily = React.createClass({
         var header = (
             <Row>
                 <Col xs={6}>
-                    <p>Расписание на день</p>
+                    <p></p>
+                    Расписание на день
                 </Col>
                 <Col xs={6}>
                     <Input ref="date" type='date' className='dailyDate' value={this.props.date} onChange={this.dateChanged}/>
