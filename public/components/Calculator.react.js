@@ -55,6 +55,7 @@ var Calculator = React.createClass({
     },
     componentDidMount: function(){
         function resize(){
+            this.style.height = '0px';
             this.style.height = this.scrollHeight + 'px';
         }
 
