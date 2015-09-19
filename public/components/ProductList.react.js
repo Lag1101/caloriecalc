@@ -46,8 +46,7 @@ var ProductList = React.createClass({
     changeHandle: function(product){
 
     },
-    addHandle: function(i){
-        var product = this.props.products[i];
+    addHandle: function(product){
         PubSub.publish('newDishProduct', {
                 description: product.description,
                 proteins: product.proteins,
@@ -58,20 +57,25 @@ var ProductList = React.createClass({
                 details: product.details
             });
     },
-    removeHandle: function(i){
+    removeHandle: function(product){
         utils.confirmDialog(
-            "Вы уверены, что хотите удалить " + this.props.products[i].description + " ?",
-            this.removeProduct.bind(this, i)
+            "Вы уверены, что хотите удалить " + product.description + " ?",
+            this.removeProduct.bind(this, product)
         );
     },
-    removeProduct: function(i){
-        var originsProducts = this.props.products;
+    removeProduct: function(product){
+        var products = this.props.products;
 
-        var product = originsProducts[i];
+        for(var i = 0; i < products.length; i++){
+            var cP = products[i];
 
-        this.prefixTree.removeString(product.description, product);
-        originsProducts.splice(i, 1);
-        this.forceUpdate();
+            if(cP.reactId === product.react.Id){
+                this.prefixTree.removeString(cP.description, cP);
+                products.splice(i, 1);
+                this.forceUpdate();
+                return;
+            }
+        }
 
     },
     editHandle: function(i){
@@ -139,10 +143,10 @@ var ProductList = React.createClass({
                 <div className={css} key =             {product.reactId}>
 
                     <ButtonGroup >
-                        <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.addHandle.bind(this, i)}>+</Button>
+                        <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.addHandle.bind(this, product)}>+</Button>
                         <DropdownButton title="" bsSize='xsmall' bsStyle='default'>
                             <MenuItem eventKey="1" onSelect={this.editHandle.bind(this, i)}>{'Править'}</MenuItem>
-                            <MenuItem eventKey="2" bsStyle='danger' onSelect={this.removeHandle.bind(this, i)}>{'Удалить'}</MenuItem>
+                            <MenuItem eventKey="2" bsStyle='danger' onSelect={this.removeHandle.bind(this, product)}>{'Удалить'}</MenuItem>
                         </DropdownButton>
                     </ButtonGroup>
                     <Product
