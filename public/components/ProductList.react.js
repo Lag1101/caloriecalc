@@ -37,11 +37,11 @@ var ProductList = React.createClass({
         product.reactId = Math.random();
         this.props.products.push(product);
 
-        this.reorder();
-        this.updateProducts();
-
         this.prefixTree.addString(product.description, this.props.products[this.props.products.length-1]);
+
+        this.reorder();
         this.refs.newProduct.clear();
+        this.forceUpdate();
     },
     changeHandle: function(product){
 
@@ -71,7 +71,7 @@ var ProductList = React.createClass({
 
         this.prefixTree.removeString(product.description, product);
         originsProducts.splice(i, 1);
-        this.updateProducts();
+        this.forceUpdate();
 
     },
     editHandle: function(i){
@@ -88,23 +88,25 @@ var ProductList = React.createClass({
         this.props.products.forEach(function(p){
             p.reactId = Math.random();
         });
-        this.reorder();
-        this.buildPrefixTree();
-        this.updateProducts();
+    },
+    componentWillReceiveProps: function(nextProps){
+
+        nextProps.products = nextProps.products.sort(this.sortingFun);
+        this.buildPrefixTree(nextProps.products);
     },
     changeSorting: function(sortBy, sortOrder){
         this.sortingFun = (sortOrder === 'greater' ? greater : less).bind(null, sortBy);
         this.reorder();
-        this.updateProducts();
+        this.forceUpdate();
     },
     reorder: function(){
         this.props.products = this.props.products.sort(this.sortingFun);
     },
     searchHandle: function(str){
         this.props.searchStr = str;
-        this.deferredCaller.tryToCall(this.updateProducts.bind(this));
+        this.deferredCaller.tryToCall(this.forceUpdate.bind(this));
     },
-    updateProducts: function(){
+    choosenProducts: function(){
 
         var choosenProducts = this.props.searchStr ? this.prefixTree.getLinksByString(this.props.searchStr) : this.props.products;
         this.props.products.map(function(p){
@@ -114,12 +116,12 @@ var ProductList = React.createClass({
             p.hidden = false;
         });
 
-        this.setState();
+        return choosenProducts;
         //return choosedProducts.sort(this.props.compareFunction);
     },
-    buildPrefixTree: function(){
+    buildPrefixTree: function(proucts){
         console.time("buildPrefixTree");
-        this.props.products.map(function(product){
+        proucts.map(function(product){
             this.prefixTree.addString(product.description, product);
         }.bind(this));
         console.timeEnd("buildPrefixTree");
@@ -128,7 +130,7 @@ var ProductList = React.createClass({
         return this.props.products
     },
     render: function() {
-        var products = this.props.products.map(function (product, i) {
+        var products = this.choosenProducts().map(function (product, i) {
             var css = 'product';
             if(product.hidden)
                 css += ' hidden ';

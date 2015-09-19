@@ -4,16 +4,6 @@
     <file url="file://$PROJECT_DIR$" libraries="{caloriecalc node_modules}" />
     <file url="file://$PROJECT_DIR$/app.js" libraries="{Node.js Globals}" />
     <file url="file://$PROJECT_DIR$/lib/logger.js" libraries="{Node.js Globals}" />
-    <file url="file://$PROJECT_DIR$/public/JQcomponents/product.js" libraries="{jquery}" />
-    <file url="file://$PROJECT_DIR$/public/components/App.react.js" libraries="{Node.js v0.10.33 Core Modules}" />
-    <file url="file://$PROJECT_DIR$/public/components/Daily.react.js" libraries="{Node.js v0.10.33 Core Modules}" />
-    <file url="file://$PROJECT_DIR$/public/components/DailyHead.react.js" libraries="{Node.js v0.10.33 Core Modules}" />
-    <file url="file://$PROJECT_DIR$/public/components/Dish.react.js" libraries="{Node.js v0.10.33 Core Modules}" />
-    <file url="file://$PROJECT_DIR$/public/components/DishList.react.js" libraries="{Node.js v0.10.33 Core Modules}" />
-    <file url="file://$PROJECT_DIR$/public/components/DishListHead.react.js" libraries="{Node.js v0.10.33 Core Modules}" />
-    <file url="file://$PROJECT_DIR$/public/components/DishProductList.react.js" libraries="{Node.js v0.10.33 Core Modules}" />
-    <file url="file://$PROJECT_DIR$/public/components/ProductList.react.js" libraries="{Node.js v0.10.33 Core Modules}" />
-    <file url="file://$PROJECT_DIR$/routes/calculator.js" libraries="{Node.js v0.10.33 Core Modules}" />
     <file url="file://$PROJECT_DIR$/socket/index.js" libraries="{Node.js Globals}" />
     <includedPredefinedLibrary name="ECMAScript 6" />
   </component>
