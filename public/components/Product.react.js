@@ -13,11 +13,11 @@ var Product = React.createClass({
         var product = this.props.product;
         return {
             description: product.description,
-            proteins: parseFloat(product.proteins),
-            triglyceride: parseFloat(product.triglyceride),
-            carbohydrate: parseFloat(product.carbohydrate),
-            calorie: parseFloat(product.calorie),
-            mass: parseFloat(product.mass),
+            proteins: (product.proteins),
+            triglyceride: (product.triglyceride),
+            carbohydrate: (product.carbohydrate),
+            calorie: (product.calorie),
+            mass: (product.mass),
             details: product.details
         };
     },
@@ -49,11 +49,11 @@ var Product = React.createClass({
         var product = this.props.product;
         this.props.product = {
             description:    product.description,
-            proteins:       parseFloat(product.proteins || 0),
-            triglyceride:   parseFloat(product.triglyceride || 0),
-            carbohydrate:   parseFloat(product.carbohydrate || 0),
-            calorie:        parseFloat(product.calorie || 0),
-            mass:           parseFloat(product.mass || 0),
+            proteins:       (product.proteins || 0),
+            triglyceride:   (product.triglyceride || 0),
+            carbohydrate:   (product.carbohydrate || 0),
+            calorie:        (product.calorie || 0),
+            mass:           (product.mass || 0),
             details:        product.details
         };
     },
@@ -102,7 +102,7 @@ var Product = React.createClass({
         product.mass = 0;
         product.details = " ";
 
-        this.setState();
+        this.forceUpdate();
     },
     render: function() {
         var hide = this.props.hide;
@@ -118,6 +118,7 @@ var Product = React.createClass({
             mass : product.mass || 0.0,
             details : product.details || ""
         };
+
         return (
             <div className=' input-group input-group-sm inline-block'>
                 <TextInput    enabled={enabled.all || enabled.description}  danger={danger['description']}   css={'description item '}   changeHandle={this.descriptionChanged} value={viewProduct.description}      hidden={hide.description}          ref='description'></TextInput>

@@ -14,7 +14,9 @@ var NumericInput = React.createClass({
 
         this.props.value = str;
         this.props.valid = !isNaN(parseFloat(str));
-        this.props.changeHandle(parseFloat(this.props.value));
+
+        if(this.props.valid)
+            this.props.changeHandle(this.props.value);
 
         this.forceUpdate();
     },
@@ -29,7 +31,8 @@ var NumericInput = React.createClass({
     getDefaultProps: function() {
         return {
             value: 0,
-            enabled: false,
+            enabled: false
+            ,
             hidden: false,
             danger: false,
             valid: true

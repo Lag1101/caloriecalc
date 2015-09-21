@@ -69,7 +69,7 @@ var ProductList = React.createClass({
         for(var i = 0; i < products.length; i++){
             var cP = products[i];
 
-            if(cP.reactId === product.react.Id){
+            if(cP.reactId === product.reactId){
                 this.prefixTree.removeString(cP.description, cP);
                 products.splice(i, 1);
                 this.forceUpdate();
@@ -88,13 +88,11 @@ var ProductList = React.createClass({
         this.deferredCaller = new DeferredCaller(500);
         this.prefixTree = new PrefixTree.Node();
         this.sortingFun = greater.bind(null, 'description');
-
-        this.props.products.forEach(function(p){
-            p.reactId = Math.random();
-        });
     },
     componentWillReceiveProps: function(nextProps){
-
+        nextProps.products.forEach(function(p){
+            p.reactId = Math.random();
+        });
         nextProps.products = nextProps.products.sort(this.sortingFun);
         this.buildPrefixTree(nextProps.products);
     },

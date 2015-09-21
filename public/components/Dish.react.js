@@ -40,10 +40,10 @@ var Dish = React.createClass({
             full = this.props.full;
         var k = portion.mass / full.mass;
         this.props.portion = {
-            proteins:       (full.proteins * k),
-            triglyceride:   (full.triglyceride * k),
-            carbohydrate:   (full.carbohydrate * k),
-            calorie:        (full.calorie * k),
+            proteins:       (full.proteins * k).toFixed(2),
+            triglyceride:   (full.triglyceride * k).toFixed(2),
+            carbohydrate:   (full.carbohydrate * k).toFixed(2),
+            calorie:        (full.calorie * k).toFixed(2),
             mass:           portion.mass
         };
     },

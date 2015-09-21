@@ -53,7 +53,7 @@ var DishListHead = React.createClass({
             <div className={this.props.className}>
                 <div className='dishList'>
                     <div className='product'>
-                        <button className='save item btn btn-xs btn-default'
+                        <button className=' saveBtn item btn btn-xs btn-default'
                                 onClick={this.newDishHandle}>
                             <i className='glyphicon glyphicon-floppy-disk'/>
                         </button>
