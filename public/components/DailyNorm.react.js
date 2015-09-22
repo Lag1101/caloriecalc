@@ -90,6 +90,14 @@ var DailyNorm = React.createClass({
 
         this.socket.emit('getBody');
         this.socket.on('getBody', this.handleGetBody);
+
+        this.socket.on('save', function(){
+            $(this.refs.hardSaveButton.getDOMNode()).button('reset');
+        }.bind(this))
+    },
+    save: function(){
+        $(this.refs.hardSaveButton.getDOMNode()).button('loading');
+        this.socket.emit('justSave');
     },
     render: function() {
         var calorie = this.state.norm.calorie;
@@ -150,6 +158,9 @@ var DailyNorm = React.createClass({
                         <p>{'Максимум: ' + carbohydrate.max}</p>
                     </div>
                 </div>
+
+
+                <button ref="hardSaveButton" className="btn btn-primary hardSaveButton" onClick={this.save} data-loading-text="Сохранение ...">Сохранить</button>
             </div>
         );
     }

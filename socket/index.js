@@ -164,6 +164,12 @@ function socketSetupHandles(socket, user){
         .on('getNorm', getNorm.bind(null, socket, user))
         .on('setNorm', setNorm.bind(null, socket, user, save))
 
+        .on('justSave', function(){
+            saveUser(user, function(err){
+                if(err) socket.emit('error', err);
+                else socket.emit('save');
+            });
+        })
         .on('save', function(bundle){
 
             async.series([
