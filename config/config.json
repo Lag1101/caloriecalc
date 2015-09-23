@@ -10,7 +10,7 @@
       "maxAge": null
     }
   },
-  "cacheExpireTimeSecs": 31557600,
+  "cacheExpireTimeSecs": 3600,
   "mongoose": {
     "uri": "mongodb://127.0.0.1/caloriecalc"
   }
