@@ -19,6 +19,7 @@ var NumericInput = React.createClass({
             this.props.changeHandle(this.props.value);
 
         this.forceUpdate();
+
     },
     makeDisabled: function(){
         this.props.enabled = false;
@@ -31,16 +32,12 @@ var NumericInput = React.createClass({
     getDefaultProps: function() {
         return {
             value: 0,
-            enabled: false
-            ,
-            hidden: false,
+            enabled: false,
             danger: false,
             valid: true
         };
     },
     render: function() {
-        //console.log('NumericInput rendered');
-        if(this.props.hidden) return (<div className = {this.props.css + " hidden"}/>);
 
         var value = this.props.value;
         var enabled = this.props.enabled;
@@ -103,8 +100,6 @@ var TextInput = React.createClass({
         this.resize();
     },
     render: function() {
-        if(this.props.hidden) return (<textarea className = {this.props.css + " hidden"}/>);
-
         var value = this.props.value;
         var enabled = this.props.enabled;
 
@@ -117,5 +112,19 @@ var TextInput = React.createClass({
         );
     }
 });
+
+
+var GeneralInput = React.createClass({
+    render: function(){
+        return this.props.type === 'text' ?
+            (
+                <TextInput {...this.props} />
+            ) :
+            (
+                <NumericInput {...this.props} />
+            )
+    }
+});
+module.exports.GeneralInput = GeneralInput;
 module.exports.TextInput = TextInput;
 module.exports.NumericInput = NumericInput;

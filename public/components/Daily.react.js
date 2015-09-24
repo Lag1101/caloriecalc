@@ -60,25 +60,26 @@ var Daily = React.createClass({
         };
         var day = this.currentDay();
         day.main.map(function(p){
-            res.proteins += parseFloat(p.proteins);
-            res.triglyceride += parseFloat(p.triglyceride);
-            res.carbohydrate += parseFloat(p.carbohydrate);
-            res.calorie += parseFloat(p.calorie);
+            Product.fields.forEach(function(field){
+                var id = field.id;
+                if(field.type === 'number' && id !== 'mass')
+                    res[id] += parseFloat(p[id]);
+            });
         });
         day.additional.map(function(p){
-            res.proteins += parseFloat(p.proteins);
-            res.triglyceride += parseFloat(p.triglyceride);
-            res.carbohydrate += parseFloat(p.carbohydrate);
-            res.calorie += parseFloat(p.calorie);
+            Product.fields.forEach(function(field){
+                var id = field.id;
+                if(field.type === 'number' && id !== 'mass')
+                    res[id] += parseFloat(p[id]);
+            });
         });
 
-        this.props.result = {
-            proteins: parseFloat(res.proteins.toFixed(2)),
-            triglyceride: parseFloat(res.triglyceride.toFixed(2)),
-            carbohydrate: parseFloat(res.carbohydrate.toFixed(2)),
-            calorie: parseFloat(res.calorie.toFixed(2))
-        };
-        //PubSub.publish('DailyChanged', );
+        this.props.result = {};
+        Product.fields.forEach(function(field){
+            var id = field.id;
+            if(field.type === 'number' && id !== 'mass')
+                this.props.result[id] = res[id].toFixed(2);
+        }, this);
     },
     statics: {
         dayPartNames: [
@@ -133,10 +134,12 @@ var Daily = React.createClass({
                     product.description += '\n' + newProduct.description;
                 else
                     product.description = newProduct.description;
-                product.proteins +=  newProduct.proteins;
-                product.triglyceride +=  newProduct.triglyceride;
-                product.carbohydrate +=  newProduct.carbohydrate;
-                product.calorie += newProduct.calorie;
+
+                Product.fields.forEach(function(field){
+                    var id = field.id;
+                    if(field.type === 'number' && id !== 'mass')
+                        product[id] = (parseFloat(product[id]) + parseFloat(newProduct[id])).toFixed(2)
+                });
 
             }, this);
         }

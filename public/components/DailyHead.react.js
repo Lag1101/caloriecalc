@@ -57,10 +57,10 @@ var DailyHead = React.createClass({
                     <div className="myLabel item inline-block disableForInput">{"Итог"}</div>
                     <Product
                         danger =          {{
-                                    proteins: result.proteins           > norm.max.proteins,
-                                    triglyceride: result.triglyceride   > norm.max.triglyceride,
-                                    carbohydrate: result.carbohydrate   > norm.max.carbohydrate,
-                                    calorie: result.calorie             > norm.max.calorie
+                                    proteins:       parseFloat(result.proteins)           > norm.max.proteins,
+                                    triglyceride:   parseFloat(result.triglyceride)   > norm.max.triglyceride,
+                                    carbohydrate:   parseFloat(result.carbohydrate)   > norm.max.carbohydrate,
+                                    calorie:        parseFloat(result.calorie)             > norm.max.calorie
                                  }}
                         hide=             {{mass: true}}
                         enabled =         {{}}

@@ -52,13 +52,21 @@ var DishProductList = React.createClass({
             calorie: 0.0
         };
 
-       this.props.dishProducts.map(function(p){
-           var mass = p.mass || 1.0;
-           res.proteins += p.proteins * mass / 100;
-           res.triglyceride += p.triglyceride * mass / 100;
-           res.carbohydrate += p.carbohydrate * mass / 100;
-           res.calorie += p.calorie * mass / 100;
-       });
+        this.props.dishProducts.map(function(p){
+           var mass = parseFloat(p.mass || 100.0);
+
+           Product.fields.forEach(function(field){
+               var id = field.id;
+               if(field.type === 'number' && id !== 'mass')
+                    res[id] +=      parseFloat(p[id]) * mass / 100;
+           });
+        });
+
+        Product.fields.forEach(function(field){
+            var id = field.id;
+            if(field.type === 'number' && id !== 'mass')
+                res[id] = res[id].toFixed(2);
+        });
 
         PubSub.publish('ProductDishesChanged', res);
     },

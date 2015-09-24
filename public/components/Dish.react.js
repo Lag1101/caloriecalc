@@ -36,33 +36,25 @@ var Dish = React.createClass({
         this.props.changeHandle && this.props.changeHandle(this.getDish());
     },
     calcPortion: function(){
-        var portion = this.props.portion,
-            full = this.props.full;
-        var k = portion.mass / full.mass;
-        this.props.portion = {
-            proteins:       (full.proteins * k).toFixed(2),
-            triglyceride:   (full.triglyceride * k).toFixed(2),
-            carbohydrate:   (full.carbohydrate * k).toFixed(2),
-            calorie:        (full.calorie * k).toFixed(2),
-            mass:           portion.mass
-        };
+        this.calc(this.props.full, this.props.portion);
     },
     componentDidMount: function() {
-        var fullP =     this.props.full;
-        var portionP =  this.props.portion;
-        this.props.full = {
-            proteins:       parseFloat(fullP.proteins || 0),
-            triglyceride:   parseFloat(fullP.triglyceride || 0),
-            carbohydrate:   parseFloat(fullP.carbohydrate || 0),
-            calorie:        parseFloat(fullP.calorie || 0),
-            mass:           parseFloat(fullP.mass)
-        };
-        this.props.portion = {
-            mass : parseFloat(portionP.mass)
-        };
+        this.calcPortion();
+    },
+    calc: function(full, portion){
+        var k = parseFloat(portion.mass) / parseFloat(full.mass);
+        Product.fields.forEach(function(field){
+            var id = field.id;
+            if(field.type === 'number' && field.id !== 'mass'){
+                portion[id] = (parseFloat(full[id]) * k).toFixed(2);
+            }
+        });
+    },
+    componentWillReceiveProps: function(nextProps) {
+        this.calc(nextProps.full, nextProps.portion);
+        this.forceUpdate();
     },
     render: function() {
-        this.calcPortion();
 
         var full =     this.props.full;
         var portion =  this.props.portion;
