@@ -2,6 +2,8 @@
  * Created by vasiliy.lomanov on 17.06.2015.
  */
 
+var Well = ReactBootstrap.Well;
+
 
 var Sorting = React.createClass({
     searchHandle: function(e){
@@ -18,7 +20,7 @@ var Sorting = React.createClass({
     },
     render: function() {
         return (
-            <div className='product form-inline'>
+            <Well bsSize='sm' className='product form-inline'>
                 <select ref='SortBy' className='form-control input-sm' onChange={this.changeHandle}>
                     <option value="description">Имя</option>
                     <option value="proteins">Белки</option>
@@ -31,7 +33,7 @@ var Sorting = React.createClass({
                     <option value="lower">По убыванию</option>
                 </select>
                 <input className="searchBox form-control input-sm" onChange={this.searchHandle} placeholder="Поиск по имени"></input>
-            </div>
+            </Well>
         );
     }
 });

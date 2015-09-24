@@ -2,6 +2,8 @@
  * Created by vasiliy.lomanov on 06.08.2015.
  */
 
+var Well = ReactBootstrap.Well;
+
 var Calculator = React.createClass({
     getDefaultProps: function() {
         return {};
@@ -74,10 +76,10 @@ var Calculator = React.createClass({
             return <div key={i}>{r || '|'}</div>
         });
         return (
-            <div className={"input-group input-group-sm calculator " + this.props.className}>
+            <Well bsSize='sm' className={"input-group input-group-sm calculator " + this.props.className}>
                 <textarea ref='input' type="text" className="form-control" placeholder="Посчитай меня" onInput={this.changeHandle}/>
                 <span className="input-group-addon">{results}</span>
-            </div>
+            </Well>
         );
     }
 });
