@@ -3,6 +3,13 @@
  */
 
 var Dish = require('./Dish.react.js');
+var Daily = require('./Daily.react.js');
+
+var Glyphicon = ReactBootstrap.Glyphicon;
+var Button = ReactBootstrap.Button;
+var ButtonGroup = ReactBootstrap.ButtonGroup;
+var DropdownButton = ReactBootstrap.DropdownButton;
+var MenuItem = ReactBootstrap.MenuItem;
 
 var DishListHead = React.createClass({
     getInitialState: function() {
@@ -48,15 +55,36 @@ var DishListHead = React.createClass({
             });
         }.bind(this));
     },
+    publishNweDailyItem: function(dayPartName){
+        var dish = this.refs.dish.getDish();
+        var portion = dish.portion;
+
+        portion.description = dish.description + ' ' + portion.mass;
+        PubSub.publish('newDailyProduct', {
+            dayPartName: dayPartName,
+            portion: portion
+        });
+    },
     render: function() {
+        var menuItems = Daily.dayPartNames.map(function(dayPartName){
+            return (
+                <MenuItem onSelect={this.publishNweDailyItem.bind(null, dayPartName)}>{'Добавить в ' + dayPartName}</MenuItem>
+            );
+        }, this);
+
+        menuItems.push((
+            <MenuItem onSelect={this.publishNweDailyItem.bind(null, 'additional')}>{'Добавить в дополнительное'}</MenuItem>
+        ));
         return (
             <div className={this.props.className}>
                 <div className='dishList'>
                     <div className='product'>
-                        <button className=' saveBtn item btn btn-xs btn-default'
-                                onClick={this.newDishHandle}>
-                            <i className='glyphicon glyphicon-floppy-disk'/>
-                        </button>
+                        <ButtonGroup >
+                            <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.newDishHandle}><Glyphicon glyph="floppy-disk"/></Button>
+                            <DropdownButton noCaret bsSize='xsmall' bsStyle='default' title='+'>
+                                {menuItems}
+                            </DropdownButton>
+                        </ButtonGroup>
                         <Dish className='inline-block'
                             //hideDescription = {true}
                               ref = 'dish'
