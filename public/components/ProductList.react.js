@@ -13,6 +13,7 @@ var ButtonGroup = ReactBootstrap.ButtonGroup;
 var DropdownButton = ReactBootstrap.DropdownButton;
 var MenuItem = ReactBootstrap.MenuItem;
 var Panel = ReactBootstrap.Panel;
+var Glyphicon = ReactBootstrap.Glyphicon;
 
 function greater (sortBy, p1, p2) {
     if (p1[sortBy] < p2[sortBy]) return -1;
@@ -66,23 +67,25 @@ var ProductList = React.createClass({
     removeProduct: function(product){
         var products = this.props.products;
 
+        var i = this.getIndexByReactId(product.reactId);
+        this.prefixTree.removeString(product.description, products[i]);
+
+        products.splice(i, 1);
+        this.forceUpdate();
+
+    },
+    getIndexByReactId: function(id){
+        var products = this.props.products;
         for(var i = 0; i < products.length; i++){
             var cP = products[i];
 
-            if(cP.reactId === product.reactId){
-                this.prefixTree.removeString(cP.description, cP);
-                products.splice(i, 1);
-                this.forceUpdate();
-                return;
+            if(cP.reactId === id){
+                return i;
             }
         }
-
     },
-    editHandle: function(i){
-        this.refs[i].makeEnabled();
-    },
-    endEditHandle: function(i){
-        this.refs[i].makeDisabled();
+    editHandle: function(product){
+        this.refs[product.reactId].edit();
     },
     componentDidMount: function() {
         this.deferredCaller = new DeferredCaller(500);
@@ -136,14 +139,14 @@ var ProductList = React.createClass({
             var css = 'product';
             if(product.hidden)
                 css += ' hidden ';
+
             return (
 
-                <div className={css} key =             {product.reactId}>
-
+                <div className={css} ref =             {'con' + product.reactId} key =             {product.reactId}>
                     <ButtonGroup >
                         <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.addHandle.bind(this, product)}>+</Button>
                         <DropdownButton title="" bsSize='xsmall' bsStyle='default'>
-                            <MenuItem eventKey="1" onSelect={this.editHandle.bind(this, i)}>{'Править'}</MenuItem>
+                            <MenuItem eventKey="1" onSelect={this.editHandle.bind(this, product)}>{'Править'}</MenuItem>
                             <MenuItem eventKey="2" bsStyle='danger' onSelect={this.removeHandle.bind(this, product)}>{'Удалить'}</MenuItem>
                         </DropdownButton>
                     </ButtonGroup>
@@ -151,7 +154,7 @@ var ProductList = React.createClass({
                             hide=             {{details: true, mass: true}}
                             enabled =         {false}
                             css =             {css}
-                            ref =             {i}
+                            ref =             {product.reactId}
                             changeHandle=     {this.changeHandle}
                             product={product}>
                     </Product>

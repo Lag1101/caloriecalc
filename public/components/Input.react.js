@@ -115,13 +115,22 @@ var TextInput = React.createClass({
 
 
 var GeneralInput = React.createClass({
+    getValue: function(){
+        return this.refs.impl.getValue();
+    },
+    makeDisabled: function(){
+        this.refs.impl.makeDisabled();
+    },
+    makeEnabled: function(){
+        this.refs.impl.makeEnabled();
+    },
     render: function(){
         return this.props.type === 'text' ?
             (
-                <TextInput {...this.props} />
+                <TextInput ref={'impl'} {...this.props} />
             ) :
             (
-                <NumericInput {...this.props} />
+                <NumericInput ref={'impl'} {...this.props} />
             )
     }
 });

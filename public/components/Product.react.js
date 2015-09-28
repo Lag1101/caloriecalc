@@ -5,6 +5,11 @@
 var GeneralInput = require('./Input.react.js').GeneralInput;
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
+
+var Button = ReactBootstrap.Button;
+var ButtonGroup = ReactBootstrap.ButtonGroup;
+var Glyphicon = ReactBootstrap.Glyphicon;
+
 var fields = [
     {
         id: 'description',
@@ -65,7 +70,9 @@ var Product = React.createClass({
             hide:{},
             enabled:{all: true},
             danger: {},
-            product: defaultProduct
+            product: defaultProduct,
+            editable: false,
+            bkp: null
         };
     },
     changeHandle: function(){
@@ -84,14 +91,34 @@ var Product = React.createClass({
     makeEnabled: function(){
         var refs = this.refs;
         fields.forEach(function(field){
-            refs[field.id].makeEnabled();
+            if(refs[field.id])
+                refs[field.id].makeEnabled();
         });
+    },
+    edit: function(){
+        this.props.editable = true;
+        this.props.bkp = this.getProduct();
+        this.forceUpdate();
+    },
+    okEdit: function(){
+        this.props.editable = false;
+        this.props.bkp = null;
+        this.props.changeHandle && this.props.changeHandle(this.getProduct());
+        this.forceUpdate();
+    },
+    cancellEdit: function(){
+        this.props.product = this.props.bkp;
+        this.props.editable = false;
+        this.props.bkp = null;
+        this.props.changeHandle && this.props.changeHandle(this.getProduct());
+        this.forceUpdate();
     },
     clear : function(){
         var product = this.props.product;
 
         fields.forEach(function(field){
-            product[field.id] = field.default;
+            if(refs[field.id])
+                product[field.id] = field.default;
         });
 
         this.forceUpdate();
@@ -100,6 +127,7 @@ var Product = React.createClass({
         var hide = this.props.hide;
         var enabled = this.props.enabled;
         var danger = this.props.danger;
+        var editable = this.props.editable;
         var product = this.props.product;
 
         var viewFields = fields.map(function(field){
@@ -107,7 +135,7 @@ var Product = React.createClass({
 
             if(hide[id]) return;
 
-            var e = enabled.all || enabled[id];
+            var e = editable || enabled.all || enabled[id];
             var d = danger[id];
             var css = id + ' item ';
             var value = product[id];
@@ -125,6 +153,14 @@ var Product = React.createClass({
                     />
             );
         }, this);
+
+        if(editable)
+            viewFields.push((
+                <ButtonGroup >
+                    <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.okEdit}>Ok</Button>
+                    <Button bsSize='xsmall' bsStyle='default' className='item' onClick={this.cancellEdit}>Cancel</Button>
+                </ButtonGroup>
+            ));
 
         return (
             <div className=' input-group input-group-sm inline-block'>
