@@ -116,6 +116,8 @@ var Product = React.createClass({
     clear : function(){
         var product = this.props.product;
 
+        var refs = this.refs;
+
         fields.forEach(function(field){
             if(refs[field.id])
                 product[field.id] = field.default;
