@@ -130,11 +130,6 @@ var Daily = React.createClass({
             this.currentDay().main.forEach(function(product, i){
                 if( dayPartName !== this.constructor.dayPartNames[i] ) return;
 
-                if(product.description)
-                    product.description += '\n' + newProduct.description;
-                else
-                    product.description = newProduct.description;
-
                 Product.fields.forEach(function(field){
                     var id = field.id;
                     if(field.type === 'number' && id !== 'mass')
