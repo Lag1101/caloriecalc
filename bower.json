@@ -6,9 +6,9 @@
     "socket.io-client": "*",
     "bootstrap-dialog": "*",
     "async": "*",
-    "react": "*",
+    "react": "0.13.3",
     "mathjs": "latest",
     "pubsub-js": "latest",
-    "react-bootstrap": "latest"
+    "react-bootstrap": "0.24.2"
   }
 }

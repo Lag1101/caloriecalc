@@ -12,10 +12,10 @@ function Bound(bound){
 
 var DailyNorm = React.createClass({
     calcCalorieNormPerDay: function(){
-        var weight = React.findDOMNode(this.refs.weight).value;
-        var height = React.findDOMNode(this.refs.height).value;
-        var age = React.findDOMNode(this.refs.age).value;
-        var activity = React.findDOMNode(this.refs.activity).value;
+        var weight = this.refs.weight.getDOMNode().value;
+        var height = this.refs.height.getDOMNode().value;
+        var age = this.refs.age.getDOMNode().value;
+        var activity = this.refs.activity.getDOMNode().value;
 
         var calorieNorm = 0.8 * activity * (655 + 9.6 * weight + 1.8 * height - 4.7 * age);
 

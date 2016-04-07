@@ -27,20 +27,18 @@
     "socket.io": "~1.3.4",
     "nconf": "*",
     "intel": "*",
-    "mongoose": "4.0.1",
+    "mongoose": "latest",
     "async": "*",
-    "mongoose-redis-cache": "*",
     "compression": "*",
     "express-session": "*",
     "socket.io-express-session": "*",
     "connect-mongo": "latest",
-    "react": "latest"
+    "react": "0.13.3"
   },
   "devDependencies": {
     "browserify": "^11.0.1",
-    "react-tools": "latest",
+    "react-tools": "0.12",
     "reactify": "^1.1.1",
-    "reactify ": "latest",
     "uglifyify": "^3.0.1",
     "uglifyjs": "latest"
   }

@@ -14,7 +14,7 @@ var Calculator = React.createClass({
         }
     },
     parseExpressions: function(){
-        var input = React.findDOMNode(this.refs.input).value;
+        var input = this.refs.input.getDOMNode().value;
         var expressions= input.split('\n');
 
         return expressions.map(function(e){
@@ -49,7 +49,7 @@ var Calculator = React.createClass({
     },
     changeHandle: function(v){
 
-        var dom = React.findDOMNode(this.refs.input);
+        var dom = this.refs.input.getDOMNode();
 
         var input = dom.value;
 
@@ -61,7 +61,7 @@ var Calculator = React.createClass({
             this.style.height = this.scrollHeight + 'px';
         }
 
-        var dom = React.findDOMNode(this.refs.input);
+        var dom = this.refs.input.getDOMNode();
         dom.addEventListener('keyup', resize, false);
 
         var input = localStorage.getItem("calcInner") || "";
