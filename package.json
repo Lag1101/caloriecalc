@@ -36,10 +36,10 @@
     "react": "0.13.3"
   },
   "devDependencies": {
-    "browserify": "^11.0.1",
+    "browserify": "~11.0.1",
     "react-tools": "0.12",
-    "reactify": "^1.1.1",
-    "uglifyify": "^3.0.1",
+    "reactify": "~1.1.1",
+    "uglifyify": "~3.0.1",
     "uglifyjs": "latest"
   }
 }
