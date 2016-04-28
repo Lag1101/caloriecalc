@@ -33,7 +33,12 @@
     "express-session": "*",
     "socket.io-express-session": "*",
     "connect-mongo": "latest",
-    "react": "0.13.3"
+    "react": "0.13.3",
+    "browserify": "~11.0.1",
+    "react-tools": "0.12",
+    "reactify": "~1.1.1",
+    "uglifyify": "~3.0.1",
+    "uglifyjs": "latest"
   },
   "devDependencies": {
     "browserify": "~11.0.1",
