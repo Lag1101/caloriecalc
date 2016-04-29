@@ -53,7 +53,8 @@ var App = React.createClass({
                         message: err.body + "\nИзвините, мы не смогли отправить на сервер ваши изменения\nПопробуйте еще раз",
                         closable: true
                 });
-            }
+                $(this.refs.hardSaveButton.getDOMNode()).button('reset');
+            }.bind(this)
         });
     },
     componentDidMount: function(){
