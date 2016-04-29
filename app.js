@@ -43,7 +43,6 @@ app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public'), options));
 app.use(session);
-app.use(compression());
 
 
 app.use(function(req, res, next){
