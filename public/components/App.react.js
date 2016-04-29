@@ -40,7 +40,7 @@ var App = React.createClass({
 
         $.post({
             url: window.location.href + "/save",
-            data: {data: bundle},
+            data: {data: JSON.stringify(bundle)},
             success: function() {
                 console.log("success");
                 BootstrapDialog.show({

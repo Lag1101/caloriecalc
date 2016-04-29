@@ -196,7 +196,7 @@ router.post('/save', function(req, res) {
             getUser(req, cb);
         },
         function(user, cb) {
-            var bundle = req.body.data;
+            var bundle = JSON.parse(req.body.data);
             db_methods.save(user, bundle, cb);
         }
     ], function(err){
