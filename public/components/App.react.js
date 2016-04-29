@@ -46,7 +46,13 @@ var App = React.createClass({
                 $(this.refs.hardSaveButton.getDOMNode()).button('reset');
             }.bind(this),
             fail: function(err) {
-                console.error(err);
+                BootstrapDialog.show({
+                        type: BootstrapDialog.TYPE_DANGER,
+                        title: 'DANGER',
+                        draggable: true,
+                        message: err.body + "\nИзвините, мы не смогли отправить на сервер ваши изменения\nПопробуйте еще раз",
+                        closable: true
+                });
             }
         });
     },
