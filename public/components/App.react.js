@@ -120,8 +120,10 @@ var App = React.createClass({
         );
     }
 });
+document.addEventListener('DOMContentLoaded', function () {
+    React.render(
+        <App />,
+        document.getElementById('app')
+    );
+});
 
-React.render(
-    <App />,
-    document.getElementById('app')
-);
