@@ -26,8 +26,8 @@ block content
                 url: "/login",
                 method: "POST",
                 data: form.serialize(),
-                    complete: function() {
-                $(":submit", form).button("reset");
+                complete: function() {
+                    $(":submit", form).button("reset");
                 },
                 statusCode: {
                     200: function() {
