@@ -9,6 +9,7 @@
     "build-min": "browserify -e ./public/js/app.js -t reactify -t uglifyify -o ./public/bundle.min.js",
     "3rd-build": "uglifyjs ./public/bower_components/pubsub-js/src/pubsub.js ./public/bower_components/react/react.min.js ./public/bower_components/react-bootstrap/react-bootstrap.min.js  ./public/bower_components/jquery/dist/jquery.min.js ./public/bower_components/async/lib/async.js ./public/bower_components/bootstrap/dist/js/bootstrap.min.js ./public/bower_components/bootstrap-dialog/dist/js/bootstrap-dialog.min.js ./public/bower_components/mathjs/dist/math.min.js -o ./public/3rd.js",
     "all-build": "npm run build-min | npm run build-dev | npm run 3rd-build | npm run build-norm",
+    "minify-css": "purifycss ./public/stylesheets/main.css ./public/bundle.min.js ./public/3rd.js --min --info --out ./public/stylesheets/min.css",
     "monitor": "nodemon ./bin/www.js",
     "build-norm": "browserify -e ./public/js/norm.js -t reactify -t uglifyify -o ./public/norm.min.js",
     "deploy": "gcloud preview app deploy app.yaml --set-default"
