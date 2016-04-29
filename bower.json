@@ -3,7 +3,6 @@
   "dependencies": {
     "bootstrap": "*",
     "jquery": "*",
-    "socket.io-client": "*",
     "bootstrap-dialog": "*",
     "async": "*",
     "react": "0.13.3",

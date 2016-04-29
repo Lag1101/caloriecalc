@@ -98,11 +98,6 @@ var Daily = React.createClass({
 
     },
     componentDidMount: function() {
-        this.socket = require('../socket');
-        this.socket.on('getDaily', function(day){
-            this.props.daily[day.date] = day;
-            this.update();
-        }.bind(this));
         PubSub.subscribe( 'newDailyProduct', function(msg, newProduct){
             this.addTo(newProduct.dayPartName, newProduct.portion);
             this.forceUpdate();
@@ -113,12 +108,14 @@ var Daily = React.createClass({
         this.props.date = date;
         console.log(this.props.date);
 
-        this.socket.emit('setCurrentDate', date);
-        if(!this.props.daily[date])
-            this.socket.emit('getDaily', date);
-        else {
-            this.forceUpdate();
-        }
+        $.post({
+            url: window.location.href + "/setCurrentDate",
+            data: {data: date},
+            success: function(day){
+                this.props.daily[day.date] = day;
+                this.forceUpdate();
+            }.bind(this)
+        });
     },
     getValue: function(){
         return this.props.daily;

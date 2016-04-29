@@ -52,9 +52,6 @@ var DailyNorm = React.createClass({
             norm: norm,
             body: body
         });
-
-        this.setBody(body);
-        this.setNorm(norm);
     },
     handleChange: function(event){
         this.calcCalorieNormPerDay();
@@ -75,29 +72,39 @@ var DailyNorm = React.createClass({
             }
         }
     },
-    setBody: function(body){
-        this.socket.emit('setBody', body);
-    },
-    setNorm: function(norm){
-        this.socket.emit('setNorm', norm);
-    },
-    handleGetBody: function(body){
-        this.setState({body: body});
+    handleGetBody: function(NormAndBody){
+        this.setState({
+            body: NormAndBody.body,
+            norm: NormAndBody.norm,
+        });
         this.calcCalorieNormPerDay();
     },
     componentDidMount: function() {
-        this.socket = require("../socket");
 
-        this.socket.emit('getBody');
-        this.socket.on('getBody', this.handleGetBody);
-
-        this.socket.on('save', function(){
-            $(this.refs.hardSaveButton.getDOMNode()).button('reset');
-        }.bind(this))
+        $.post({
+            url: window.location.href + "/getNormAndBody",
+            success: function (NormAndBody) {
+                this.handleGetBody(NormAndBody);
+            }.bind(this)
+        });
     },
     save: function(){
         $(this.refs.hardSaveButton.getDOMNode()).button('loading');
-        this.socket.emit('justSave');
+        $.post({
+            url: window.location.href + "/save",
+            data: {
+                data: {
+                    body: this.state.body,
+                    norm: this.state.norm
+                }
+            },
+            success: function(){
+                $(this.refs.hardSaveButton.getDOMNode()).button('reset');
+            }.bind(this),
+            fail: function(err) {
+                console.error(err);
+            }
+        });
     },
     render: function() {
         var calorie = this.state.norm.calorie;

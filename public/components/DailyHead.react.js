@@ -5,7 +5,6 @@
  * Created by vasiliy.lomanov on 10.08.2015.
  */
 
-var socket = require('../socket');
 var Product = require('./Product.react.js');
 
 var DailyHead = React.createClass({
