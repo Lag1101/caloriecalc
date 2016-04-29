@@ -43,6 +43,16 @@ var App = React.createClass({
             data: {data: bundle},
             success: function() {
                 console.log("success");
+                BootstrapDialog.show({
+                    type: BootstrapDialog.TYPE_SUCCESS,
+                    message: "Успешно сохранено",
+                    onshow: function(dialogRef){
+
+                        setTimeout(function(){
+                            dialogRef.close();
+                        }, 1200);
+                    }
+                });
                 $(this.refs.hardSaveButton.getDOMNode()).button('reset');
             }.bind(this),
             fail: function(err) {
