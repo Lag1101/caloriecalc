@@ -37,8 +37,8 @@ app.set('view engine', 'jade');
 
 app.use(compression());
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({limit: '64mb'}));
+app.use(bodyParser.urlencoded({ extended: true, limit: '64mb' }));
 app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public'), options));
