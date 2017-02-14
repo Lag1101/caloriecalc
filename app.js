@@ -67,12 +67,6 @@ app.use(function(err, req, res, next) {
 
     if(err instanceof AuthError) {
         res.redirect('/login');
-    } else if(app.get('env') === 'production') {
-        res.status(403);
-        res.send({
-            message: err.message,
-            error: {}
-        });
     } else {
         res.status(err.status || 500);
         res.render('error', {
